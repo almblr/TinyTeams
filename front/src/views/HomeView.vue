@@ -44,7 +44,7 @@
         <div class="post__image">
           <img
             :src="post.imageUrl"
-            v-show="post.imageUrl !== null"
+            v-if="post.imageUrl !== null"
             ref="postImage"
           />
         </div>
@@ -81,26 +81,26 @@
     <PostModal
       :show="showModifyModal"
       @close="showModifyModal = false"
-      :title="'Modifier'"
+      :modalType="'Modify'"
       :post="postToModify"
     >
     </PostModal>
     <!-- :show sert à basculer la propriété display d'un élément -->
   </main>
-  <div class="newpost" @click="showCreateModal = true" text="Nouveau post">
+  <div class="newpost" @click="showCreateModal = true">
     <fa icon="fa-solid fa-feather" class="show-modal test" />
   </div>
   <PostModal
     :show="showCreateModal"
     @close="closeCreateModal"
-    :title="'Nouveau post'"
+    :modalType="'New'"
     :post="{}"
   >
   </PostModal>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { usePostStore, useLikeStore } from '../stores/index.js';
 import PostModal from '../views/PostModalView.vue';
 // import ButtonFormComponent from '../components/ButtonFormComponent.vue';
@@ -333,7 +333,7 @@ main {
     font-size: 18px;
     width: 95%;
     overflow-wrap: break-word;
-    margin-top: 7px;
+    margin-top: 15px;
   }
   &__footer {
     display: flex;

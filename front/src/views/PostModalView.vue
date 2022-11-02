@@ -1,74 +1,65 @@
 <template>
   <Transition name="modal">
-    <div v-if="show" class="modal__layer" @click.self="$emit('close')">
+    <div
+      v-if="show"
+      class="modal__layer"
+      @click.self="
+        {
+          emit('close'), (image = null);
+        }
+      "
+    >
       <div class="modal__container">
         <div class="modal__body">
-          <h1 ref="titleModal">{{ title }}</h1>
           <textarea
-            ref="textarea"
-            :placeholder="placeholder"
+            :placeholder="placeHolder"
             v-model="postData.content"
             maxlength="560"
             @input="autoResizing(textarea)"
           ></textarea>
-          <div
-            ref="imgModify"
-            class="img__postModify"
-            v-if="title === 'Modifier' && postData.imageUrl"
-          >
-            <img :src="postData.imageUrl" alt="postPicture" />
+          <div class="modal__body__imgPreview" v-if="image !== null">
+            <img :src="image" />
+            <button @click="deleteImg()" class="delete-img">
+              <fa icon="fa-solid fa-xmark" />
+            </button>
           </div>
-          <div class="image-send">
-            <div class="imageInfo" v-if="title === 'Nouveau post'">
-              <div class="previewImg">
-                <label
-                  for="image-input"
-                  id="custom-label"
-                  ref="label"
-                  :style="`background-image:url(${postData.imageUrl})`"
-                  >+</label
-                >
-                <input
-                  ref="input"
-                  id="image-input"
-                  type="file"
-                  accept="image/png, image/jpg, image/jpeg"
-                  @change="showUploadedImg"
-                />
-                <button @click="deleteImg()" class="delete-img">X</button>
+          <div class="modal__footer">
+            <div class="modal__footer__file" v-if="props.modalType === 'New'">
+              <div class="modal__footer__file__label">
+                <label for="image-input" id="custom-label" ref="label"
+                  ><fa icon="fa-solid fa-image" />
+                </label>
               </div>
-              <div>
-                <p>
-                  <b> Cliquez pour insérer une image. </b>
-                  <br />
-                  Formats acceptés : png, jpg, jpeg.
-                </p>
-              </div>
+              <input
+                ref="input"
+                id="image-input"
+                type="file"
+                accept="image/png, image/jpg, image/jpeg"
+                @change="showUploadedImg"
+              />
             </div>
-            <ButtonFormComponent
-              text="Publier"
-              @click="sendPost"
-            ></ButtonFormComponent>
+            <button class="modal__footer__button" @click="sendPost">
+              {{ textButton }}
+            </button>
           </div>
-          <p class="emptyPostMsg" v-if="emptyPost">
-            Votre post ne peut pas être vide.
-          </p>
         </div>
+      </div>
+      <div class="error" v-if="emptyPost">
+        <span>Votre post ne peut pas être vide.</span>
       </div>
     </div>
   </Transition>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { usePostStore } from '../stores/index.js';
-import ButtonFormComponent from '../components/ButtonFormComponent.vue';
 
 const props = defineProps({
   show: {
     type: Boolean,
   },
-  title: {
+  modalType: {
     type: String,
   },
   post: {
@@ -80,37 +71,47 @@ const emit = defineEmits(['close']);
 const postStore = usePostStore();
 const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
 const token = locStr.token;
+const postData = ref({});
 const input = ref(null);
 const label = ref(null);
-const postData = ref({});
-const titleModal = ref(null);
-const imgModify = ref(null);
+const image = ref(null);
 const emptyPost = ref(null);
-const textarea = ref(null);
 const userName = locStr.userName;
 const firstName = userName.split(' ')[0];
-const placeholder = `Quoi de neuf, ${firstName} ?`;
+const textarea = ref(null);
+
+const placeHolder = computed(() => {
+  if (props.modalType === 'New') {
+    return `Quoi de neuf, ${firstName} ?`;
+  } else {
+    return 'Modifiez-moi';
+  }
+});
+
+const textButton = computed(() => {
+  if (props.modalType === 'New') {
+    return 'Publier';
+  } else {
+    return 'Modifier';
+  }
+});
 
 /* Affiche la preview du fichier (l'image) uploadé  */
 const showUploadedImg = (event) => {
-  const image = URL.createObjectURL(event.target.files[0]);
-  label.value.style.backgroundImage = `url(${image})`;
+  image.value = URL.createObjectURL(event.target.files[0]);
 };
 
 /* Supprime le fichier uploadé de l'input et du label qui sert de preview */
 const deleteImg = () => {
+  image.value = null;
   input.value.value = null;
-  label.value.style.backgroundImage = '';
-  if (postData.value.imageUrl) {
-    postData.value.imageUrl = null;
-  }
 };
 
 /* Fonction qui permet de modifier ou de supprimer un post (selon la modal ouverte) */
 const sendPost = async () => {
-  if (titleModal.value.innerText === 'Nouveau post') {
+  const formData = new FormData();
+  if (props.modalType === 'New') {
     if (postData.value.content || input.value.value !== '') {
-      const formData = new FormData();
       if (postData.value.content) {
         formData.append('content', postData.value.content);
       }
@@ -124,21 +125,13 @@ const sendPost = async () => {
       emptyPost.value = true;
     }
   }
-  if (titleModal.value.innerText === 'Modifier') {
-    if (imgModify.value === null) {
-      // Si le post n'a pas d'image
-      if (postData.value.content === '') {
-        emptyPost.value = true;
-      } else {
-        const formData = new FormData();
-        formData.append('content', postData.value.content);
-        await postStore.updateOne(postData.value.id, formData, token);
-        emit('close');
-        emptyPost.value === true ? (emptyPost.value = false) : null;
-      }
+  if (props.modalType === 'Modify') {
+    if (postData.value.imageUrl === null && postData.value.content === '') {
+      emptyPost.value = true;
+      setTimeout(() => {
+        emptyPost.value = false;
+      }, 7000);
     } else {
-      // S'il en a une
-      const formData = new FormData();
       formData.append('content', postData.value.content);
       await postStore.updateOne(postData.value.id, formData, token);
       emit('close');
@@ -187,11 +180,12 @@ onMounted(() => {
   @include row-justify-center;
   align-items: center;
   position: relative;
-  min-height: 450px;
-  max-width: 600px;
+  width: 100%;
+  max-width: 500px;
   margin: 0px auto;
-  background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  background-color: #fff;
+  border-radius: 5px;
   transition: all 0.3s ease;
 }
 
@@ -214,117 +208,134 @@ onMounted(() => {
   @include width-height_max;
   justify-content: center;
   flex-wrap: nowrap;
-  background-color: rgb(255, 255, 255);
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  & h1 {
-    margin-top: 6%;
-    color: red;
-    font-size: 26px;
-  }
-}
-textarea {
-  margin-top: 25px;
-  width: 90%;
   border-radius: 5px;
-  resize: none;
-  min-height: 150px;
-  max-height: 200px;
-  padding: 10px 0 0 10px;
-  font-size: 16px;
-  border: none;
-  &::placeholder {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+  padding: 20px;
+  gap: 20px;
+  textarea {
+    width: 100%;
+    border-radius: 5px;
+    resize: none;
+    min-height: 150px;
+    max-height: 2000px;
+    padding: 10px 0 0 10px;
+    font-size: 20px;
+    border: none;
+    border: 1px solid #00000027;
+    &::placeholder {
+      opacity: 0.7;
+      top: 10px;
+      left: 10px;
+    }
+    &:focus {
+      outline: none;
+    }
   }
-  &:focus {
-    outline: none;
-    border: 2px solid rgb(224, 33, 33);
+  &__imgPreview {
+    position: relative;
+    img {
+      width: 100%;
+    }
+    button {
+      @include justify-and-align_center;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 25px;
+      height: 25px;
+      background-color: rgba(255, 0, 0, 0.411);
+      font-size: 18px;
+      border: none;
+      color: rgba(255, 255, 255, 0.815);
+      border-radius: 3px;
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }
 
-.img__postModify {
-  width: 100px;
-  height: 100px;
-  margin-top: 4%;
-  & > img {
-    @include width-height-max;
-    object-fit: cover;
-  }
-}
-
-.image-send {
+.modal__footer {
   @include justify-and-align-center;
   flex-wrap: wrap;
-  margin: 30px 0 20px 0;
-  width: 90%;
-  .imageInfo {
-    display: flex;
-    flex: 1;
-    min-width: 100%;
-    margin-bottom: 50px;
-  }
+  width: 100%;
+  gap: 5px;
   input[type='file'] {
     display: none;
   }
-  #custom-label {
+  &__file__label {
     @include justify-and-align_center;
-    font-size: 55px;
-    width: 100px;
-    height: 100px;
-    opacity: 0.8;
-    left: 10px;
-    color: rgba(255, 255, 255, 0.411);
-    border-radius: 13px;
-    background-color: rgba(72, 93, 105, 0.507);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    transition: 0.1s;
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+    transition: 0.2s;
+    background-color: rgba(248, 183, 183, 0.281);
     &:hover {
       opacity: 1;
       cursor: pointer;
+      transition: 0.2s;
+      background-color: rgba(248, 183, 183, 0.767);
+    }
+    label {
+      @include justify-and-align_center;
       transition: 0.1s;
+      color: rgba(218, 39, 39, 0.918);
+      font-size: 24px;
+      background-color: rgba(248, 183, 183, 0.281);
+      &:hover {
+        opacity: 1;
+        cursor: pointer;
+        transition: 0.1s;
+      }
     }
   }
-  .previewImg {
-    position: relative;
-  }
-  p {
-    max-width: 400px;
-    margin-left: 15px;
-    font-size: 14px;
-  }
-}
-
-.delete-img {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 25px;
-  height: 25px;
-  background-color: rgba(255, 0, 0, 0.63);
-  border: 1px solid rgba(255, 255, 255, 0.103);
-  color: white;
-  border-radius: 5px;
-  &:hover {
+  &__button {
+    flex: 1;
+    background: #ff2a00d8;
+    color: white;
+    font-size: 16px;
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 3px;
+    height: 35px;
     cursor: pointer;
   }
 }
 
-.emptyPostMsg {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
-  margin-bottom: 10px;
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 300px;
+  height: 40px;
+  background-color: #fd1e01d5;
+  border-radius: 10px;
+  bottom: 3%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  animation: showError 7s 1;
+  box-shadow: 5px 5px 20px #0000003d;
+  opacity: 0;
+  & > span {
+    font-size: 18px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+  }
 }
 
-@media all and (min-width: 700px) {
-  #custom-label {
-    width: 130px !important;
-    height: 110px !important;
+@keyframes showError {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.9;
+  }
+  95% {
+    opacity: 0;
   }
 }
 </style>

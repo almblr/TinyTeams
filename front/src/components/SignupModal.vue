@@ -136,7 +136,7 @@ const signup = async () => {
 }
 .modal__container {
   width: 100%;
-  max-width: 600px;
+  max-width: 550px;
   min-height: 400px;
   border-radius: 10px;
   gap: 20px;

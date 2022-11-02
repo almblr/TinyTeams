@@ -6,13 +6,23 @@ import {
   faPenToSquare,
   faPowerOff,
   faFeather,
+  faImage,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import router from './router';
 import App from './App.vue';
 
-library.add(faEye, faPenToSquare, faTrashCan, faPowerOff, faFeather);
+library.add(
+  faEye,
+  faPenToSquare,
+  faTrashCan,
+  faPowerOff,
+  faFeather,
+  faImage,
+  faXmark
+);
 
 const app = createApp(App);
 

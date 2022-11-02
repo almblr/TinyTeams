@@ -208,6 +208,7 @@ footer {
   width: 300px;
   height: 50px;
   background-color: #fd0101f6;
+  background-color: #fd0101;
   border-radius: 10px;
   bottom: 3%;
   left: 50%;
@@ -228,10 +229,10 @@ footer {
     opacity: 0;
   }
   10% {
-    opacity: 0.7;
+    opacity: 0.8;
   }
   90% {
-    opacity: 0.7;
+    opacity: 0.8;
   }
   95% {
     opacity: 0;
