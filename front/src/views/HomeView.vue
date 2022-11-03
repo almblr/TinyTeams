@@ -41,6 +41,9 @@
             </div>
           </div>
         </header>
+        <p class="post__text" v-show="post.content !== null">
+          {{ post.content }}
+        </p>
         <div class="post__image">
           <img
             :src="post.imageUrl"
@@ -48,9 +51,6 @@
             ref="postImage"
           />
         </div>
-        <p class="post__text" v-show="post.content !== null">
-          {{ post.content }}
-        </p>
         <footer class="post__footer">
           <span>{{
             post.reactions.length === 0 ? '' : post.reactions.length
@@ -270,7 +270,7 @@ main {
 .post {
   @include column-align-center;
   width: 95%;
-  max-width: 800px;
+  max-width: 700px;
   min-width: 260px;
   border-radius: 15px;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
@@ -333,7 +333,7 @@ main {
     font-size: 18px;
     width: 95%;
     overflow-wrap: break-word;
-    margin-top: 15px;
+    margin: 15px 0;
   }
   &__footer {
     display: flex;

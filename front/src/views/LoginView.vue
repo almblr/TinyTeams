@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import LoginFormComponent from '../components/LoginFormComponent.vue';
+import LoginFormComponent from "../components/LoginFormComponent.vue";
 </script>
 
 <style lang="scss" scoped>
@@ -15,7 +15,7 @@ import LoginFormComponent from '../components/LoginFormComponent.vue';
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url('../assets/entreprise.jpg');
+  background: url("../assets/entreprise.jpg");
   background-size: cover;
 }
 
