@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const usePostStore = defineStore('post', {
-  id: 'Post',
+export const usePostStore = defineStore("post", {
+  id: "Post",
   state: () => ({
     posts: [],
   }),
@@ -24,16 +24,16 @@ export const usePostStore = defineStore('post', {
       return data;
     },
     async getAll() {
-      const response = await fetch('http://localhost:3000/api/posts/getAll');
+      const response = await fetch("http://localhost:3000/api/posts/getAll");
       const data = await response.json();
       this.posts = data;
     },
     async createOne(data, token) {
-      await fetch('http://localhost:3000/api/posts/createOne', {
-        method: 'POST',
+      await fetch("http://localhost:3000/api/posts/createOne", {
+        method: "POST",
         body: data,
         headers: {
-          Accept: 'application/json',
+          Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -41,10 +41,10 @@ export const usePostStore = defineStore('post', {
     },
     async updateOne(id, data, token) {
       await fetch(`http://localhost:3000/api/posts/updateOne/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: data,
         headers: {
-          Accept: 'application/json',
+          Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -52,9 +52,9 @@ export const usePostStore = defineStore('post', {
     },
     async deleteOne(id, token) {
       await fetch(`http://localhost:3000/api/posts/deleteOne/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          Accept: 'application/json',
+          Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -62,51 +62,72 @@ export const usePostStore = defineStore('post', {
   },
 });
 
-export const useUserStore = defineStore('user', {
-  actions: {
-    async login(email, password) {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
-      return data;
+export const useUserStore = defineStore("user", {
+  id: "User",
+  state: () => ({
+    user: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
     },
-    async signup(data) {
-      const response = await fetch('http://localhost:3000/api/auth/signup', {
-        method: 'POST',
+  }),
+  getters: {
+    getUser(state) {
+      state.user;
+    },
+  },
+  actions: {
+    async login() {
+      const data = {
+        email: this.user.email,
+        password: this.user.password,
+      };
+      const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
         body: JSON.stringify(data),
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
-      const resData = await response.json();
-      return resData;
+      const res = await response.json();
+      return res;
+    },
+    async signup() {
+      const data = {
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        email: this.user.email,
+        password: this.user.password,
+      };
+      const response = await fetch("http://localhost:3000/api/auth/signup", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const res = await response.json();
+      return res;
     },
   },
 });
 
-export const useLikeStore = defineStore('like', {
+export const useLikeStore = defineStore("like", {
   actions: {
     async likePost(token, postId) {
       const res = await fetch(
         `http://localhost:3000/api/posts/${postId}/reactions`,
         {
-          method: 'POST',
+          method: "POST",
           body: JSON.stringify({
             postId,
           }),
           headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            Accept: "application/json",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }

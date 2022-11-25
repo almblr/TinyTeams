@@ -1,19 +1,23 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-import Login from '../views/LoginView.vue';
-import Home from '../views/HomeView.vue';
+import { createRouter, createWebHashHistory } from "vue-router";
+import Login from "../views/LoginView.vue";
+import News from "../views/NewsFeedView.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'Login',
+    path: "/",
+    redirect: "/login",
+  },
+  {
+    path: "/login",
+    name: "Login",
     component: Login,
   },
   {
-    path: '/news',
-    name: 'News',
-    component: Home,
-    beforeEnter: (to, from, next) => {
-      window.localStorage.getItem('TokenUser') ? next() : next('/');
+    path: "/news",
+    name: "News",
+    component: News,
+    beforeEnter: (_, _2, next) => {
+      window.localStorage.getItem("TokenUser") ? next() : next("/login");
     },
   },
 ];

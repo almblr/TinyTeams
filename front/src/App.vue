@@ -8,6 +8,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 @import "./scss/_var.scss";
 
+#app {
+  position: relative;
+  height: 10px;
+}
+
 *,
 ::after,
 ::before {
@@ -15,10 +20,5 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Lato", sans-serif;
-}
-
-#app {
-  position: relative;
-  height: 100vh;
 }
 </style>

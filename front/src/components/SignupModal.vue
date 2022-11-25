@@ -1,116 +1,109 @@
 <template>
-  <transition name="modal">
-    <div
-      class="modal__layer"
-      v-if="show"
-      @click.self="$emit('close'), resetForm()"
-    >
-      <div class="modal__container">
-        <main class="form">
-          <h2 class="form__title">Inscription</h2>
-          <form class="form__body" @submit.prevent="signup">
-            <div class="form__body__name">
-              <input
-                class="nameInput"
-                name="firstName"
-                type="text"
-                placeholder="Prénom*"
-                v-model="firstName"
-                required
-              />
-              <input
-                class="nameInput"
-                name="lastName"
-                type="text"
-                placeholder="Nom*"
-                v-model="lastName"
-                required
-              />
-            </div>
+  <ModalLayerComponent v-if:="show" @click.self="emit('close')">
+    <div class="modal__container">
+      <main class="form">
+        <h2 class="form__title">Inscription</h2>
+        <form class="form__body" @submit.prevent="signup">
+          <div class="form__body__name">
             <input
-              name="email"
-              type="email"
-              placeholder="Adresse mail*"
-              v-model="email"
+              class="nameInput"
+              name="firstName"
+              type="text"
+              placeholder="Prénom*"
+              v-model="userStore.user.firstName"
               required
             />
-            <div class="form__body__password">
-              <input
-                id="password"
-                name="password"
-                :type="inputType"
-                placeholder="Mot de passe*"
-                v-model="password"
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-                required
-              />
-              <eye-component
-                :type="inputType"
-                :click="showPassword"
-              ></eye-component>
-              <span>
-                Doit contenir une majuscule, un chiffre et un caractère spécial
-                (8 caractères min.)
-              </span>
-            </div>
-            <button-form-component
-              type="submit"
-              text="S'inscrire"
-            ></button-form-component>
-          </form>
-        </main>
-      </div>
-    </div>
-  </transition>
+            <input
+              class="nameInput"
+              name="lastName"
+              type="text"
+              placeholder="Nom*"
+              v-model="userStore.user.lastName"
+              required
+            />
+          </div>
+          <input
+            name="email"
+            type="email"
+            placeholder="Adresse mail*"
+            v-model="userStore.user.email"
+            required
+          />
+          <div class="form__body__password">
+            <input
+              id="password"
+              name="password"
+              :type="inputType"
+              placeholder="Mot de passe*"
+              v-model="userStore.user.password"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+              required
+            />
+            <eye-component
+              :type="inputType"
+              :click="showPassword"
+            ></eye-component>
+            <span>
+              Doit contenir une majuscule, un chiffre et un caractère spécial (8
+              caractères min.)
+            </span>
+          </div>
+          <button-form-component
+            type="submit"
+            text="S'inscrire"
+          ></button-form-component>
+        </form>
+      </main></div
+  ></ModalLayerComponent>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useUserStore } from '../stores/index.js';
-import router from '../router/index.js';
-import EyeComponent from './EyeComponent.vue';
-import ButtonFormComponent from './ButtonFormComponent.vue';
+import { ref, reactive } from "vue";
+import { useUserStore } from "../stores/index.js";
+import router from "../router/index.js";
+import EyeComponent from "./EyeComponent.vue";
+import ButtonFormComponent from "./ButtonFormComponent.vue";
+import ModalLayerComponent from "./ModalLayerComponent.vue";
 
-const userStore = useUserStore();
-const inputType = ref('password');
-const firstName = ref(null);
-const lastName = ref(null);
-const email = ref(null);
-const password = ref(null);
-
+const emit = defineEmits(["close"]);
 const props = defineProps({
   show: {
     type: Boolean,
   },
 });
 
-/* Permet de reset les inputs */
+const userStore = useUserStore();
+const inputType = ref("password");
+const user = userStore.user; // user copie seulement l'objet, il ne devient pas le store direct
+// const emptyUser = reactive({
+//   firstName: "",
+//   lastName: "",
+//   email: "",
+//   password: "",
+// });
+// const user = reactive({ ...emptyUser });
+
+/* Permet de reset les inputs (l'objet user pour être précis) */
 const resetForm = () => {
-  firstName.value = '';
-  lastName.value = '';
-  email.value = '';
-  password.value = '';
+  //Object.assign(user, emptyUser);
+  userStore.$reset();
+  console.log(user);
 };
 
 /* Permet de switch le type de l'input afin de voir le mdp */
 function showPassword() {
-  inputType.value === 'password'
-    ? (inputType.value = 'text')
-    : (inputType.value = 'password');
+  inputType.value === "password"
+    ? (inputType.value = "text")
+    : (inputType.value = "password");
 }
 
 /* Fonction d'inscription' */
 const signup = async () => {
-  const data = {
-    email: email.value,
-    password: password.value,
-    firstName: firstName.value,
-    lastName: lastName.value,
-  };
-  await userStore.signup(data);
-  const result = await userStore.login(email.value, password.value);
+  await userStore.signup();
+  // const result = await userStore.login(user.email, user.password);
+  const result = await userStore.login();
   localStorage.setItem(
-    'TokenUser',
+    "TokenUser",
     JSON.stringify({
       token: result.token,
       userId: result.userId,
@@ -118,22 +111,11 @@ const signup = async () => {
       userName: result.userName,
     })
   );
-  router.push('/news');
+  router.push("/news");
 };
 </script>
 
 <style scoped lang="scss">
-.modal__layer {
-  @include row-justify-center;
-  @include width-height_max;
-  align-items: center;
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.267);
-  transition: opacity 0.3s ease;
-}
 .modal__container {
   width: 100%;
   max-width: 550px;
@@ -205,7 +187,7 @@ const signup = async () => {
 }
 
 footer {
-  @include row-justify-center;
+  @include jcCt;
   align-items: center;
   gap: 10px;
 }
@@ -252,19 +234,5 @@ footer {
   .container {
     border-radius: 5px;
   }
-}
-
-.modal-enter-from {
-  opacity: 0;
-}
-
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-from .modal__container,
-.modal-leave-to .modal__container {
-  -webkit-transform: scale(1.02);
-  transform: scale(1.02);
 }
 </style>

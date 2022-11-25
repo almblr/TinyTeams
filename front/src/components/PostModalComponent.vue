@@ -1,59 +1,50 @@
 <template>
-  <Transition name="modal">
-    <div
-      v-if="show"
-      class="modal__layer"
-      @click.self="
-        {
-          emit('close'), (image = null);
-        }
-      "
-    >
-      <div class="modal__container">
-        <div class="modal__body">
-          <textarea
-            :placeholder="placeHolder"
-            v-model="postData.content"
-            maxlength="560"
-            @input="autoResizing(textarea)"
-          ></textarea>
-          <div class="modal__body__imgPreview" v-if="image !== null">
-            <img :src="image" />
-            <button @click="deleteImg()" class="delete-img">
-              <fa icon="fa-solid fa-xmark" />
-            </button>
-          </div>
-          <div class="modal__footer">
-            <div class="modal__footer__file" v-if="props.modalType === 'New'">
-              <div class="modal__footer__file__label">
-                <label for="image-input" id="custom-label" ref="label"
-                  ><fa icon="fa-solid fa-image" />
-                </label>
-              </div>
-              <input
-                ref="input"
-                id="image-input"
-                type="file"
-                accept="image/png, image/jpg, image/jpeg"
-                @change="showUploadedImg"
-              />
-            </div>
-            <button class="modal__footer__button" @click="sendPost">
-              {{ textButton }}
-            </button>
-          </div>
+  <ModalLayer v-if:="show" @click.self="emit('close')">
+    <div class="container">
+      <main class="main">
+        <textarea
+          :placeholder="placeHolder"
+          v-model="postData.content"
+          maxlength="560"
+          @input="autoResizing(textarea)"
+        ></textarea>
+        <div class="main__imgPreview" v-if="image !== null">
+          <img :src="image" />
+          <button @click="deleteImg()" class="delete-img">
+            <fa icon="fa-solid fa-xmark" />
+          </button>
         </div>
-      </div>
-      <div class="error" v-if="emptyPost">
-        <span>Votre post ne peut pas être vide.</span>
-      </div>
+        <footer>
+          <div class="file" v-if="props.modalType === 'New'">
+            <div class="file__label">
+              <label for="image-input" id="custom-label" ref="label"
+                ><fa icon="fa-solid fa-image" />
+              </label>
+            </div>
+            <input
+              ref="input"
+              id="image-input"
+              type="file"
+              accept="image/png, image/jpg, image/jpeg"
+              @change="showUploadedImg"
+            />
+          </div>
+          <button @click="sendPost">
+            {{ textButton }}
+          </button>
+        </footer>
+      </main>
     </div>
-  </Transition>
+    <div class="error" v-if="emptyPost">
+      <span>Votre post ne peut pas être vide.</span>
+    </div>
+  </ModalLayer>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
-import { usePostStore } from '../stores/index.js';
+import ModalLayer from "@/components/ModalLayerComponent.vue";
+import { ref, onMounted, watch, computed } from "vue";
+import { usePostStore } from "../stores/index.js";
 
 const props = defineProps({
   show: {
@@ -66,7 +57,7 @@ const props = defineProps({
     type: Object,
   },
 });
-const emit = defineEmits(['close']);
+const emit = defineEmits(["close"]);
 
 const postStore = usePostStore();
 const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
@@ -77,22 +68,22 @@ const label = ref(null);
 const image = ref(null);
 const emptyPost = ref(null);
 const userName = locStr.userName;
-const firstName = userName.split(' ')[0];
+const firstName = userName.split(" ")[0];
 const textarea = ref(null);
 
 const placeHolder = computed(() => {
-  if (props.modalType === 'New') {
+  if (props.modalType === "New") {
     return `Quoi de neuf, ${firstName} ?`;
   } else {
-    return 'Modifiez-moi';
+    return "Modifiez-moi";
   }
 });
 
 const textButton = computed(() => {
-  if (props.modalType === 'New') {
-    return 'Publier';
+  if (props.modalType === "New") {
+    return "Publier";
   } else {
-    return 'Modifier';
+    return "Modifier";
   }
 });
 
@@ -110,38 +101,38 @@ const deleteImg = () => {
 /* Fonction qui permet de modifier ou de supprimer un post (selon la modal ouverte) */
 const sendPost = async () => {
   const formData = new FormData();
-  if (props.modalType === 'New') {
-    if (postData.value.content || input.value.value !== '') {
+  if (props.modalType === "New") {
+    if (postData.value.content || input.value.value !== "") {
       if (postData.value.content) {
-        formData.append('content', postData.value.content);
+        formData.append("content", postData.value.content);
       }
       if (input.value.value) {
-        formData.append('imageUrl', input.value.files[0]);
+        formData.append("imageUrl", input.value.files[0]);
       }
       await postStore.createOne(formData, token);
-      emit('close');
+      emit("close");
       emptyPost.value === true ? (emptyPost.value = false) : null;
     } else {
       emptyPost.value = true;
     }
   }
-  if (props.modalType === 'Modify') {
-    if (postData.value.imageUrl === null && postData.value.content === '') {
+  if (props.modalType === "Modify") {
+    if (postData.value.imageUrl === null && postData.value.content === "") {
       emptyPost.value = true;
       setTimeout(() => {
         emptyPost.value = false;
       }, 7000);
     } else {
-      formData.append('content', postData.value.content);
+      formData.append("content", postData.value.content);
       await postStore.updateOne(postData.value.id, formData, token);
-      emit('close');
+      emit("close");
       emptyPost.value === true ? (emptyPost.value = false) : null;
     }
   }
 };
 
 const autoResizing = (el) => {
-  el.style.height = '50px';
+  el.style.height = "50px";
   el.style.height = `${el.scrollHeight}px`;
 };
 
@@ -164,20 +155,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.modal__layer {
-  @include row-justify-center;
-  @include width-height_max;
-  align-items: center;
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.267);
-  transition: opacity 0.3s ease;
-}
-
-.modal__container {
-  @include row-justify-center;
+.container {
+  @include jcCt;
   align-items: center;
   position: relative;
   width: 100%;
@@ -189,22 +168,8 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 
-.modal-enter-from {
-  opacity: 0;
-}
-
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-from .modal__container,
-.modal-leave-to .modal__container {
-  -webkit-transform: scale(1.02);
-  transform: scale(1.02);
-}
-
-.modal__body {
-  @include column-align-center;
+.main {
+  @include fdCol-aaCt;
   @include width-height_max;
   justify-content: center;
   flex-wrap: nowrap;
@@ -236,7 +201,7 @@ onMounted(() => {
       width: 100%;
     }
     button {
-      @include justify-and-align_center;
+      @include jcCt-aaCt;
       position: absolute;
       top: 5px;
       right: 5px;
@@ -254,16 +219,16 @@ onMounted(() => {
   }
 }
 
-.modal__footer {
-  @include justify-and-align-center;
+footer {
+  @include jcCt-aaCt;
   flex-wrap: wrap;
   width: 100%;
   gap: 5px;
-  input[type='file'] {
+  input[type="file"] {
     display: none;
   }
-  &__file__label {
-    @include justify-and-align_center;
+  & .file__label {
+    @include jcCt-aaCt;
     width: 35px;
     height: 35px;
     border-radius: 5px;
@@ -276,7 +241,7 @@ onMounted(() => {
       background-color: rgba(248, 183, 183, 0.767);
     }
     label {
-      @include justify-and-align_center;
+      @include jcCt-aaCt;
       transition: 0.1s;
       color: rgba(218, 39, 39, 0.918);
       font-size: 24px;
@@ -288,12 +253,11 @@ onMounted(() => {
       }
     }
   }
-  &__button {
+  & button {
     flex: 1;
     background: #ff2a00d8;
     color: white;
     font-size: 16px;
-    border: 1px solid red;
     border-radius: 5px;
     padding: 3px;
     height: 35px;

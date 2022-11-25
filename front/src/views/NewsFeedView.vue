@@ -1,27 +1,5 @@
 <template>
-  <header class="header">
-    <div class="header__logo">
-      <img
-        class="basicLogo"
-        src="../assets/icon-left-font-monochrome-white.png"
-        alt="logo Groupomania"
-      />
-      <img
-        class="reducedLogo"
-        src="../assets/logo-white.png"
-        alt="logo Groupomania"
-      />
-    </div>
-    <nav class="header__nav">
-      <span class="header__nav__button">Accueil</span>
-      <router-link to="/" @click="logout" class="header__nav__button"
-        >Profil</router-link
-      >
-      <router-link to="/" @click="logout" class="header__nav__button logout">
-        <fa icon="fa-solid fa-power-off" />
-      </router-link>
-    </nav>
-  </header>
+  <the-header></the-header>
   <main>
     <div class="posts">
       <div
@@ -53,7 +31,7 @@
         </div>
         <footer class="post__footer">
           <span>{{
-            post.reactions.length === 0 ? '' : post.reactions.length
+            post.reactions.length === 0 ? "" : post.reactions.length
           }}</span>
           <span
             @click="updateLike(post.id)"
@@ -78,36 +56,41 @@
         </footer>
       </div>
     </div>
-    <PostModal
-      :show="showModifyModal"
-      @close="showModifyModal = false"
-      :modalType="'Modify'"
-      :post="postToModify"
-    >
-    </PostModal>
+    <Teleport to="body">
+      <post-modal
+        :show="showModifyModal"
+        @close="showModifyModal = false"
+        :modalType="'Modify'"
+        :post="postToModify"
+      >
+      </post-modal>
+    </Teleport>
     <!-- :show sert à basculer la propriété display d'un élément -->
   </main>
   <div class="newpost" @click="showCreateModal = true">
     <fa icon="fa-solid fa-feather" class="show-modal test" />
   </div>
-  <PostModal
-    :show="showCreateModal"
-    @close="closeCreateModal"
-    :modalType="'New'"
-    :post="{}"
-  >
-  </PostModal>
+  <Teleport to="body">
+    <post-modal
+      :show="showCreateModal"
+      @close="closeCreateModal"
+      :modalType="'New'"
+      :post="{}"
+    >
+    </post-modal>
+  </Teleport>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue';
-import { usePostStore, useLikeStore } from '../stores/index.js';
-import PostModal from '../views/PostModalView.vue';
+import { ref, onMounted, nextTick } from "vue";
+import { usePostStore, useLikeStore } from "../stores/index.js";
+import PostModal from "../components/PostModalComponent.vue";
 // import ButtonFormComponent from '../components/ButtonFormComponent.vue';
-import dayjs from 'dayjs';
-import 'dayjs/locale/fr';
-import relativeTime from 'dayjs/plugin/relativeTime';
-dayjs.locale('fr');
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+import relativeTime from "dayjs/plugin/relativeTime";
+import TheHeader from "@/components/TheHeaderComponent.vue";
+dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
 const postStore = usePostStore();
@@ -186,62 +169,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 6%;
-  max-height: 50px;
-  z-index: 99;
-  background-color: rgba(9, 9, 10, 0.925);
-  background-color: rgba(0, 0, 0, 0.849);
-  backdrop-filter: blur(10px);
-  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.178);
-  &__logo {
-    position: absolute;
-    margin-left: 1%;
-    & .basicLogo {
-      width: 200px;
-      height: 50px;
-      object-fit: cover;
-    }
-
-    .reducedLogo {
-      display: none;
-    }
-  }
-  &__nav {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    min-height: 100%;
-    &__button {
-      @include justify-and-align-center;
-      min-width: 80px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      text-decoration: none;
-      color: #f15050;
-      color: #ffffff;
-      &:hover {
-        cursor: pointer;
-        box-shadow: inset 0px 0px 10px rgb(0, 0, 0);
-      }
-    }
-    & .logout {
-      position: absolute;
-      right: 0;
-      height: 50px;
-    }
-  }
-}
-
 main {
-  @include column-align-center;
+  @include fdCol-aaCt;
   @include width-height_max;
   row-gap: 30px;
   background-color: rgb(240, 240, 240);
@@ -253,7 +182,7 @@ main {
 }
 
 .posts {
-  @include column-align-center;
+  @include fdCol-aaCt;
   width: 100%;
   gap: 30px;
   padding-bottom: 20px;
@@ -268,7 +197,7 @@ main {
 }
 
 .post {
-  @include column-align-center;
+  @include fdCol-aaCt;
   width: 95%;
   max-width: 700px;
   min-width: 260px;
@@ -355,7 +284,7 @@ main {
       }
     }
     &__buttons {
-      @include justify-and-align_center;
+      @include jcCt-aaCt;
       gap: 5px;
       & > * {
         font-size: 18px;
@@ -427,16 +356,6 @@ main {
   }
 }
 @media all and (max-width: 789px) {
-  .basicLogo {
-    display: none;
-  }
-
-  .reducedLogo {
-    display: block !important;
-    width: 32px;
-    height: 50px;
-    object-fit: contain;
-  }
   .newpost {
     bottom: 20px;
     right: 20px;
