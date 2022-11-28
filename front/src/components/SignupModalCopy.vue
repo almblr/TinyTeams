@@ -4,29 +4,13 @@
       <main class="form">
         <h2 class="form__title">Inscription</h2>
         <form class="form__body" @submit.prevent="signup">
-          <div class="form__body__name">
-            <input
-              class="nameInput"
-              name="firstName"
-              type="text"
-              placeholder="Prénom*"
-              v-model="userStore.user.firstName"
-              required
-            />
-            <input
-              class="nameInput"
-              name="lastName"
-              type="text"
-              placeholder="Nom*"
-              v-model="userStore.user.lastName"
-              required
-            />
-          </div>
           <input
-            name="email"
-            type="email"
-            placeholder="Adresse mail*"
-            v-model="userStore.user.email"
+            v-for="input in formInputs"
+            :name="input.name"
+            :type="input.type"
+            :placeholder="input.placeholder"
+            v-model="input.vmodel"
+            @input="test"
             required
           />
           <div class="form__body__password">
@@ -58,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "../stores/index.js";
 import router from "../router/index.js";
 import EyeComponent from "./EyeComponent.vue";
@@ -71,13 +55,38 @@ const props = defineProps({
     type: Boolean,
   },
 });
-
+const test = () => {
+  console.log(formInputs[0].vmodel);
+};
+const firstName = ref(null);
 const userStore = useUserStore();
 const inputType = ref("password");
+const formInputs = [
+  {
+    name: "firstName",
+    type: "text",
+    placeholder: "Prénom*",
+    vmodel: firstName.value,
+  },
+  {
+    name: "lastName",
+    type: "text",
+    placeholder: "Nom*",
+    vmodel: "",
+  },
+  {
+    name: "email",
+    type: "email",
+    placeholder: "Adresse mail*",
+    vmodel: "",
+  },
+];
 
 /* Permet de reset les inputs (l'objet user pour être précis) */
 const resetForm = () => {
+  //Object.assign(user, emptyUser);
   userStore.$reset();
+  console.log(userStore.user);
 };
 
 /* Permet de switch le type de l'input afin de voir le mdp */
@@ -89,6 +98,7 @@ function showPassword() {
 
 /* Fonction d'inscription' */
 const signup = async () => {
+  console.log(userStore.user);
   await userStore.signup();
   // const result = await userStore.login(user.email, user.password);
   const result = await userStore.login();
@@ -137,12 +147,6 @@ const signup = async () => {
     align-items: center;
     width: 100%;
     padding: 0 3%;
-    &__name {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      width: 100%;
-    }
     &__password {
       position: relative;
       width: 100%;

@@ -1,5 +1,5 @@
 <template>
-  <ModalLayer v-if:="show" @click.self="emit('close')">
+  <ModalLayer v-if="show" @click.self="emit('close')">
     <div class="container">
       <main class="main">
         <textarea

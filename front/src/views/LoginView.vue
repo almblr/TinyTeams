@@ -38,7 +38,7 @@
           >
         </p>
       </footer>
-      <div class="error" v-if="errorMsg">
+      <div class="error" v-if="showErrorMsg">
         <span>Vérifiez vos informations de connexion.</span>
       </div>
     </div>
@@ -57,9 +57,14 @@ import EyeComponent from "../components/EyeComponent.vue";
 import ButtonForm from "../components/ButtonFormComponent.vue";
 import SignupModal from "../components/SignupModal.vue";
 
+const test = (e) => {
+  console.log(e.target.value);
+  userStore.user.email = e.target.value;
+  console.log("coucou" + userStore.user.email);
+};
 const userStore = useUserStore();
 const inputType = ref("password");
-const errorMsg = ref(false);
+const showErrorMsg = ref(false);
 const showSignupModal = ref(false);
 
 /* Permet de switch le type de l'input afin de voir le mdp */
@@ -74,9 +79,9 @@ const login = async () => {
   const result = await userStore.login();
   if (Object.values(result).includes("Utilisateur non trouvé.")) {
     // Si le resultat du fetch contient "Utilisateur non trouvé !"
-    errorMsg.value = true;
+    showErrorMsg.value = true;
     setTimeout(() => {
-      errorMsg.value = false;
+      showErrorMsg.value = false;
     }, 7000);
   } else {
     if (localStorage !== null) {
