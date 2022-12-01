@@ -1,0 +1,23 @@
+input {
+  width: 100%;
+  min-height: 45px;
+  border: 1px solid #00000085;
+  border-radius: 5px;
+  padding-left: 5px;
+  input::placeholder {
+    height: 30px;
+    font-size: 35px;
+  }
+  &:focus {
+    outline: none;
+    border: 2px solid #fd2d01;
+  }
+}
+
+input:valid {
+  border: 2px solid green !important;
+}
+
+input:not(:placeholder-shown):invalid {
+  border: 2px solid red !important;
+}

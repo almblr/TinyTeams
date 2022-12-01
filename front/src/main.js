@@ -15,6 +15,7 @@ import {
   faImage,
   faXmark,
   faEllipsis,
+  faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import "vuetify/dist/vuetify.min.css";
 
@@ -26,7 +27,8 @@ library.add(
   faFeather,
   faImage,
   faXmark,
-  faEllipsis
+  faEllipsis,
+  faThumbsUp
 );
 
 const app = createApp(App);

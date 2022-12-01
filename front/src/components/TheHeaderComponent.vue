@@ -22,7 +22,12 @@
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+/* Deconnexion : vide le localstorage */
+const logout = () => {
+  window.localStorage.length > 0 ? window.localStorage.clear() : null;
+};
+</script>
 
 <style lang="scss" scoped>
 header {

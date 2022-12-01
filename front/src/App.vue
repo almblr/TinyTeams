@@ -11,6 +11,8 @@
 #app {
   position: relative;
   height: 10px;
+  min-height: 100vh;
+  min-width: 100vw;
 }
 
 *,

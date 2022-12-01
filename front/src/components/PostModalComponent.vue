@@ -6,6 +6,7 @@
           :placeholder="placeHolder"
           v-model="postData.content"
           maxlength="560"
+          ref="textarea"
           @input="autoResizing(textarea)"
         ></textarea>
         <div class="main__imgPreview" v-if="image !== null">
@@ -69,7 +70,7 @@ const image = ref(null);
 const emptyPost = ref(null);
 const userName = locStr.userName;
 const firstName = userName.split(" ")[0];
-const textarea = ref(null);
+const textarea = ref("");
 
 const placeHolder = computed(() => {
   if (props.modalType === "New") {

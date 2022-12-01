@@ -30,29 +30,32 @@
           />
         </div>
         <footer class="post__footer">
-          <span>{{
-            post.reactions.length === 0 ? "" : post.reactions.length
-          }}</span>
-          <span
-            @click="updateLike(post.id)"
-            ref="likeBtn"
-            :class="{
-              likeBtn: checkLikeState(post.id) === true,
-              redLikeBtn: checkLikeState(post.id) === false,
-            }"
-          >
-            ❤
-          </span>
-          <div
-            class="post__footer__buttons"
-            v-if="userId === post.createdBy || isAdmin"
-          >
-            <fa icon="fa-solid fa-pen-to-square" @click="modifyPost(post.id)" />
-            <fa
-              icon="fa-solid fa-trash-can"
-              @click="deletePost(post.id, token)"
-            />
+          <div class="post__footer__stats">
+            <span class="nbrLike">{{ post.reactions.length }}</span>
+            <span
+              ref="likeBtn"
+              :class="{
+                emptyHeart: checkLikeState(post.id) === true,
+                coloredHeart: checkLikeState(post.id) === false,
+              }"
+            >
+              ❤
+            </span>
+            <span class="nbrCom">1 commentaire</span>
           </div>
+          <div class="post__footer__button" @click="updateLike(post.id)">
+            <fa
+              icon="fa-solid fa-thumbs-up"
+              :class="{
+                thumbsup,
+                emptylikeBtn: checkLikeState(post.id) === true,
+                coloredLikeBtn: checkLikeState(post.id) === false,
+              }"
+            />
+            <span>J'aime</span>
+          </div>
+          <v-divider></v-divider>
+          <div class="post__footer__comments">WIP COMMENTS</div>
         </footer>
       </div>
     </div>
@@ -201,15 +204,15 @@ main {
   width: 95%;
   max-width: 700px;
   min-width: 260px;
-  border-radius: 15px;
+  border-radius: 10px;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
   &__header {
     background-color: rgb(248, 248, 248);
     display: flex;
     justify-content: space-between;
     padding: 1% 3%;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     width: 100%;
     & * {
       overflow: hidden !important;
@@ -266,48 +269,68 @@ main {
   }
   &__footer {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: row;
     align-items: center;
-    gap: 3px;
     width: 97%;
-
-    .likeBtn {
-      font-size: 25px;
-      color: transparent;
-      transition: 0.3s;
-      background: rgba(133, 133, 133, 0.507);
-      background-clip: text;
-      -webkit-background-clip: text;
-      &:hover {
-        transition: 0.3s;
-        cursor: pointer;
-      }
-    }
-    &__buttons {
-      @include jcCt-aaCt;
+    &__stats {
+      flex: 1;
+      display: flex;
+      align-items: center;
       gap: 5px;
-      & > * {
-        font-size: 18px;
-        color: rgba(230, 54, 0, 0.95);
-        &:hover {
-          cursor: pointer;
-          transform: scale(1.05);
-        }
+      & .nbrLike {
+        font-size: 15px;
+      }
+      & .nbrCom {
+        font-size: 15px;
       }
     }
-    .redLikeBtn {
-      font-size: 25px;
-      color: transparent;
-      transition: 0.3s;
-      background: rgba(133, 133, 133, 0.507);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: rgba(230, 54, 0, 0.95);
+    &__button {
+      padding: 2px 7px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 5px;
+      border-radius: 5px;
+      & .thumbsup {
+        color: rgb(207, 49, 49);
+      }
       &:hover {
-        transition: 0.3s;
+        background-color: rgba(165, 165, 165, 0.192);
         cursor: pointer;
       }
+      &:hover + .thumbsup {
+        color: rgb(207, 49, 49);
+      }
+      & > span {
+        font-size: 16px;
+      }
     }
+    &__comments {
+      min-height: 45px;
+      width: 100%;
+      background-color: rgb(230, 151, 151);
+    }
+  }
+}
+
+.emptylikeBtn,
+.emptyHeart {
+  font-size: 18px;
+  transition: 0.3s;
+  color: rgba(133, 133, 133, 0.507);
+  &:hover {
+    transition: 0.3s;
+    cursor: pointer;
+  }
+}
+.coloredLikeBtn,
+.coloredHeart {
+  font-size: 18px;
+  transition: 0.3s;
+  color: rgba(230, 54, 0, 0.95);
+  &:hover {
+    transition: 0.3s;
+    cursor: pointer;
   }
 }
 /* SCROLLBAR */
