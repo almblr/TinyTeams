@@ -333,6 +333,13 @@ main {
     cursor: pointer;
   }
 }
+
+.emptyHeart,
+.coloredHeart {
+  &:hover {
+    cursor: initial !important;
+  }
+}
 /* SCROLLBAR */
 
 ::-webkit-scrollbar {
