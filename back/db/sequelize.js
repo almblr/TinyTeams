@@ -1,8 +1,9 @@
 import { sequelize } from "./db_init.js";
 import { DataTypes } from "sequelize";
-import { postModel } from "../models/postModels.js";
-import { userModel } from "../models/userModels.js";
-import { reactionModel } from "../models/reactionModels.js";
+import { postModel } from "../models/postModel.js";
+import { userModel } from "../models/userModel.js";
+import { reactionModel } from "../models/reactionModel.js";
+import { commentModel } from "../models/commentModel.js";
 /* Création des modèles à l'aide de sequelize (et de paramètres) */
 export const user = userModel(sequelize, DataTypes);
 export const post = postModel(sequelize, DataTypes);
@@ -10,13 +11,13 @@ export const react = reactionModel(sequelize, DataTypes);
 export const comment = commentModel(sequelize, DataTypes);
 
 /* Création des associations entre les tables */
-// Créer la foreignKey "createdBy" sur la table post
+// Créer la foreignKey "autor" sur la table post
 user.hasMany(post, {
-  foreignKey: "createdBy",
+  foreignKey: "autor",
   onDelete: "CASCADE",
 });
 post.belongsTo(user, {
-  foreignKey: "createdBy",
+  foreignKey: "autor",
 });
 
 // Créer la foreignKey "postId" sur la table react
@@ -39,6 +40,9 @@ comment.belongsTo(post);
 
 // Créer la foreignKey "userId" sur la table comment
 user.hasMany(comment, {
+  foreignKey: "autor",
   onDelete: "CASCADE",
 });
-comment.belongsTo(user);
+comment.belongsTo(user, {
+  foreignKey: "autor",
+});

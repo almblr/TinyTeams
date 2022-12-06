@@ -4,30 +4,19 @@ import fs from "fs";
 /* Controller POST */
 const postController = {
   createOne: async (req, res) => {
-    if (req.body.content === null && req.file === null) {
+    if (!req.body.content && !req.file) {
       res.status(400).json({ message: "Votre post ne peut pas être vide." });
     } else {
       try {
-        if (!req.file) {
-          // Si la requête ne contient pas de fichier
-          const Post = await post.create({
-            userId: req.auth.userId,
-            content: req.body.content,
-            createdBy: req.auth.userId,
-          });
-          res.status(200).send(Post);
-        } else {
-          // Si elle en contient un
-          const Post = await post.create({
-            userId: req.auth.userId,
-            content: req.body.content,
-            imageUrl: `${req.protocol}://${req.get("host")}/images/${
-              req.file.filename
-            }`,
-            createdBy: req.auth.userId,
-          });
-          res.status(200).send(Post);
-        }
+        const Post = await post.create({
+          userId: req.auth.userId,
+          content: req.body.content,
+          imageUrl: req.file?.filename
+            ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+            : null,
+          autor: req.auth.userId,
+        });
+        res.status(200).send(Post);
       } catch (err) {
         res.status(400).send(err);
       }
@@ -74,7 +63,7 @@ const postController = {
     });
     if (
       findPost &&
-      req.auth.userId !== findPost.createdBy &&
+      req.auth.userId !== findPost.autor &&
       req.auth.role === false
     ) {
       res.status(401).json({ message: "Vous ne pouvez pas modifier ce post." });
@@ -110,7 +99,7 @@ const postController = {
     });
     if (
       findPost &&
-      req.auth.userId !== findPost.createdBy &&
+      req.auth.userId !== findPost.autor &&
       req.auth.role === false
     ) {
       res

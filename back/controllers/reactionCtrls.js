@@ -9,7 +9,7 @@ const reactionController = {
         postId: req.body.postId,
       },
     });
-    if (findReact === null) {
+    if (!findReact) {
       // Dans le cas où il n'y avait pas de like
       try {
         const React = await react.create({
@@ -25,7 +25,7 @@ const reactionController = {
       if (req.auth.userId !== findReact.userId) {
         res.status(401).json({ message: "Non autorisé." });
       } else {
-        if (findReact.value === req.body.value) {
+        if (req.body.value === findReact.value) {
           // On reclique sur like
           findReact.destroy(); //
           res.status(200).json({ message: "Réaction supprimée" });
