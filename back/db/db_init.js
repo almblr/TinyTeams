@@ -1,5 +1,4 @@
 import { Sequelize } from "sequelize";
-import SQLite from "sqlite3";
 import "dotenv/config";
 
 /// Initialisation de la BDD avec l'ORM Sequelize. DB = Database

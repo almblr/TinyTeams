@@ -1,4 +1,5 @@
 import { comment } from "../db/sequelize.js";
+import fs from "fs";
 
 /* Controller POST */
 const commentController = {
@@ -23,41 +24,25 @@ const commentController = {
     }
   },
   updateOne: async (req, res) => {
-    const commentFound = await post.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
+    const Comment = await comment.findbyPk(req.params.id);
     if (
-      commentFound &&
-      req.auth.userId !== commentFound.autor &&
-      req.auth.role === false
+      !Comment ||
+      (req.auth.userId !== Comment.author && req.auth.role === false)
     ) {
-      res
-        .status(401)
-        .json({ message: "Vous ne pouvez pas modifier ce commentaire." });
-    } else {
-      if (commentFound.imageUrl && !req.body.content) {
-        // Si le post de base a une image, on peut modifier et supprimer le texte
-        try {
-          commentFound.update({
-            content: null,
-          });
-          res.status(200).send(commentFound);
-        } catch {
-          res.status(400).send(err);
-        }
-      } else {
-        // Si le post n'a pas d'image
-        try {
-          commentFound.update({
-            content: req.body.content,
-          });
-          res.status(200).send(commentFound);
-        } catch {
-          res.status(400).send(err);
-        }
-      }
+      res.status(401).json({ message: "You cannot update this comment." });
+      return;
+    }
+    try {
+      // update the content of the comment
+      await Comment.update({
+        content: req.body.content || null,
+      });
+
+      // send the updated comment as the response
+      res.status(200).send(Comment);
+    } catch (err) {
+      // handle any errors
+      res.status(400).send(err);
     }
   },
   getAll: async (_, res) => {
@@ -74,36 +59,24 @@ const commentController = {
     }
   },
   deleteOne: async (req, res) => {
-    const commentFound = await comment.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
+    const Comment = await comment.findByPk(req.params.id);
     if (
-      commentFound &&
-      req.auth.userId !== commentFound.autor &&
-      req.auth.role === false
+      !Comment ||
+      (req.auth.userId !== Comment.author && req.auth.role === false)
     ) {
-      res
-        .status(401)
-        .json({ message: "Vous ne pouvez pas supprimer ce commentaire." });
-    } else {
-      try {
-        // Si le comment contenait une image
-        if (commentFound.imageUrl) {
-          const filename = commentFound.imageUrl.split("/images/")[1];
-          fs.unlink(`images/${filename}`, () => {
-            commentFound.destroy();
-            res.status(200).json({ message: "Commentaire supprimé" });
-          });
-        } else {
-          // S'il n'y avait que du texte
-          commentFound.destroy();
-          res.status(200).json({ message: "Comment supprimé" });
-        }
-      } catch (err) {
-        res.status(400).send(err);
+      res.status(401).json({ message: "You cannot delete this Comment." });
+      return;
+    }
+    try {
+      // Si le Comment contenait une image
+      if (Comment.imageUrl) {
+        const filename = Comment.imageUrl.split("/images/")[1];
+        await fs.promises.unlink(`images/${filename}`);
       }
+      await Comment.destroy();
+      res.status(200).json({ message: "Comment deleted." });
+    } catch (err) {
+      res.status(400).send(err);
     }
   },
 };

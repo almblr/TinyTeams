@@ -24,13 +24,13 @@ const postController = {
   },
   getOne: async (req, res) => {
     try {
-      const findPost = await post.findOne({
+      const Post = await post.findOne({
         where: {
           id: req.params.id,
         },
         include: [react, user],
       });
-      res.status(200).send(findPost);
+      res.status(200).send(Post);
     } catch {
       res.status(400);
     }
@@ -56,72 +56,39 @@ const postController = {
     }
   },
   updateOne: async (req, res) => {
-    const findPost = await post.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-    if (
-      findPost &&
-      req.auth.userId !== findPost.autor &&
-      req.auth.role === false
-    ) {
-      res.status(401).json({ message: "Vous ne pouvez pas modifier ce post." });
-    } else {
-      if (findPost.imageUrl && req.body.content === "") {
-        // Si le post de base a une image, on peut modifier et supprimer le texte
-        try {
-          findPost.update({
-            content: null,
-          });
-          res.status(200).send(findPost);
-        } catch {
-          res.status(400).send(err);
-        }
-      } else {
-        // Si le post n'a pas d'image
-        try {
-          findPost.update({
-            content: req.body.content,
-          });
-          res.status(200).send(findPost);
-        } catch {
-          res.status(400).send(err);
-        }
-      }
+    const Post = await post.findByPk(req.params.id);
+    if (!Post || (req.auth.userId !== Post.author && req.auth.role === false)) {
+      res.status(401).json({ message: "You cannot update this post." });
+      return;
+    }
+    try {
+      // update the content of the post
+      await Post.update({
+        content: req.body.content || null,
+      });
+      // send the updated post as the response
+      res.status(200).send(Post);
+    } catch (err) {
+      // handle any errors
+      res.status(400).send(err);
     }
   },
   deleteOne: async (req, res) => {
-    const findPost = await post.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-    if (
-      findPost &&
-      req.auth.userId !== findPost.autor &&
-      req.auth.role === false
-    ) {
-      res
-        .status(401)
-        .json({ message: "Vous ne pouvez pas supprimer ce post." });
-    } else {
-      try {
-        // Si le post contenait une image
-        if (findPost.imageUrl) {
-          const filename = findPost.imageUrl.split("/images/")[1];
-          fs.unlink(`images/${filename}`, () => {
-            findPost.destroy();
-            res.status(200).json({ message: "Post supprimé" });
-          });
-        } else {
-          // S'il n'y avait que du texte
-          findPost.destroy();
-          res.status(200).json({ message: "Post supprimé" });
-        }
-      } catch (err) {
-        res.status(400).send(err);
+    const Post = await post.findByPk(req.params.id);
+    if (!Post || (req.auth.userId !== Post.author && req.auth.role === false)) {
+      res.status(401).json({ message: "You cannot delete this post." });
+      return;
+    }
+    try {
+      // Si le post contenait une image
+      if (Post.imageUrl) {
+        const filename = Post.imageUrl.split("/images/")[1];
+        await fs.promises.unlink(`images/${filename}`);
       }
+      await Post.destroy();
+      res.status(200).json({ message: "Post deleted." });
+    } catch (err) {
+      res.status(400).send(err);
     }
   },
 };
