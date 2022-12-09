@@ -81,7 +81,7 @@ const userController = {
         res.status(500).json({ message: "Failed to login: " + error.message });
       });
   },
-  update: (req, res) => {
+  update: async (req, res) => {
     // Check if the new email address is valid (if provided)
     if (
       req.body.newEmail &&
@@ -100,23 +100,15 @@ const userController = {
           .json({ message: "The new password is not strong enough." });
       }
     }
-
-    // Create an object with the updated user information
-    const updatedUser = {};
-    if (req.body.newEmail) {
-      updatedUser.email = req.body.newEmail;
-    }
-    if (req.body.newPassword) {
-      // Hash the new password
-      updatedUser.password = bcrypt.hashSync(req.body.newPassword, 10);
-    }
-    if (req.body.newProfilPicture) {
-      updatedUser.profilPicture = req.body.newProfilPicture;
-    }
-
+    const User = await user.findByPk(req.params.id);
     // Update the user's information
-    user
-      .update(updatedUser, { where: { email: req.body.email } })
+    User.update({
+      email: req.body.newEmail ? req.body.newEmail : User.email,
+      password: req.body.newPassword ? req.body.newPassword : User.email,
+      profilPicture: req.body.profilPicture
+        ? req.body.profilPicture
+        : User.profilPicture,
+    })
       .then(() => {
         res.status(200).json({ message: "User updated successfully!" });
       })
