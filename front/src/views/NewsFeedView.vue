@@ -8,7 +8,11 @@
         :key="post.id"
         :id="post.id"
       >
-        <header class="post__header">
+        <header
+          class="post__header"
+          @dragover.prevent="makeItRed()"
+          @drop.prevent="dropTest"
+        >
           <div class="post__header__user">
             <div class="post__header__user__pic">
               <img :src="post.user.profilPicture" alt="Photo de profil" />
@@ -55,7 +59,19 @@
             <span>J'aime</span>
           </div>
           <v-divider></v-divider>
-          <div class="post__footer__comments">WIP COMMENTS</div>
+          <div class="post__footer__comments">
+            <input
+              class="post__footer__comments__writeComment"
+              placeholder="Ecrivez quelques chose..."
+              ref="userComment"
+              @keydown.enter="sendComment"
+            />
+            <img v-if="imageDroped !== null" :src="imageDroped" />
+            <div
+              class="post__footer__comments__allComments"
+              v-if="atLeastOneComment"
+            ></div>
+          </div>
         </footer>
       </div>
     </div>
@@ -86,7 +102,11 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-import { usePostStore, useLikeStore } from "../stores/index.js";
+import {
+  usePostStore,
+  useCommentStore,
+  useLikeStore,
+} from "../stores/index.js";
 import PostModal from "../components/PostModalComponent.vue";
 // import ButtonFormComponent from '../components/ButtonFormComponent.vue';
 import dayjs from "dayjs";
@@ -96,17 +116,37 @@ import TheHeader from "@/components/TheHeaderComponent.vue";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
+const imageDroped = ref(null);
 const postStore = usePostStore();
+const commentStore = useCommentStore();
 const likeStore = useLikeStore();
 const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
 const userId = locStr.userId;
 const token = locStr.token;
-const isAdmin = locStr.isAdmin;
+// const isAdmin = locStr.isAdmin;
 const likeBtn = ref(null);
 const postImage = ref(null);
 const postToModify = ref(null);
 let showCreateModal = ref(false);
 let showModifyModal = ref(false);
+const userComment = ref(null);
+
+const makeItRed = () => {
+  // console.log("coucou");
+};
+
+const dropTest = (e) => {
+  console.log(e.dataTransfer.files[0]);
+  const img = URL.createObjectURL(e.dataTransfer.files[0]);
+  console.log(img);
+  imageDroped.value = URL.createObjectURL(e.dataTransfer.files[0]);
+};
+
+const closeCreateModal = async () => {
+  showCreateModal.value = false;
+  await nextTick(); // Attend le prochain cycle de màj Vue (50 ms environ)
+  await postStore.getAll();
+};
 
 const modifyPost = async (id) => {
   postToModify.value = postStore.posts.find((post) => post.id === id);
@@ -114,27 +154,9 @@ const modifyPost = async (id) => {
   await nextTick();
 };
 
-/* Deconnexion : vide le localstorage */
-const logout = () => {
-  window.localStorage.length > 0 ? window.localStorage.clear() : null;
-};
-
-/* Affichage des posts de façon antéchronologique */
-const getPosts = async () => {
-  await postStore.getAll();
-};
-
-/* Ferme la modale et met à jour l'affichage de tous les pots */
-const closeCreateModal = async () => {
-  showCreateModal.value = false;
-  await nextTick(); // Attend le prochain cycle de màj Vue (50 ms environ)
-  getPosts();
-};
-
-/* Permet de supprimer un post et de mettre à jour l'affichage */
 const deletePost = async (postId, token) => {
   await postStore.deleteOne(postId, token);
-  getPosts();
+  await postStore.getAll();
 };
 
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
@@ -156,18 +178,35 @@ const updateLike = async (postId) => {
   const doesUserLike = postReactions.find((react) => react.userId === userId);
   if (doesUserLike === undefined) {
     await likeStore.likePost(token, postId);
-    getPosts();
+    await postStore.getAll();
     return true;
   } else {
     await likeStore.likePost(token, postId);
-    getPosts();
+    await postStore.getAll();
     return false;
+  }
+};
+
+const sendComment = async () => {
+  const formData = new FormData();
+  if (postData.value.content || input.value.value !== "") {
+    if (postData.value.content) {
+      formData.append("content", postData.value.content);
+    }
+    if (input.value.value) {
+      formData.append("imageUrl", input.value.files[0]);
+    }
+    await postStore.createOne(formData, token);
+    emit("close");
+    emptyPost.value === true ? (emptyPost.value = false) : null;
+  } else {
+    emptyPost.value = true;
   }
 };
 
 /* Au chargement de la page */
 onMounted(() => {
-  getPosts();
+  postStore.getAll();
 });
 </script>
 

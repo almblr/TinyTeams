@@ -49,8 +49,8 @@ function showPassword() {
 /* Fonction de connexion */
 const login = async () => {
   const result = await userStore.login();
-  if (Object.values(result).includes("Utilisateur non trouvé.")) {
-    // Si le resultat du fetch contient "Utilisateur non trouvé !"
+  if (Object.values(result).includes("User not found.")) {
+    // Si le resultat du fetch contient "User not found."
     showErrorMsg.value = true;
     setTimeout(() => {
       showErrorMsg.value = false;

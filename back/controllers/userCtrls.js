@@ -52,7 +52,7 @@ const userController = {
           .compare(req.body.password, user.password)
           .then((valid) => {
             if (!valid) {
-              return res.status(401).json({ message: "Incorrect password." });
+              return res.status(401).json({ message: "User not found." });
             }
             // Create a JSON Web Token
             const token = jwt.sign(
