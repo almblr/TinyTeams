@@ -3,6 +3,7 @@ import { sequelize } from "./db/db_init.js";
 import postsRoutes from "./routes/postsRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 import reactionsRoutes from "./routes/reactionsRoutes.js";
+import commentsRoutes from "./routes/commentsRoutes.js";
 import helmet from "helmet";
 import cors from "cors";
 import path from "path";
@@ -67,5 +68,6 @@ app.use((req, res, next) => {
 app.use("/api/auth/", usersRoutes);
 app.use("/api/posts/", postsRoutes);
 app.use("/api/posts/", reactionsRoutes);
+app.use("/api/posts/", commentsRoutes);
 
 app.listen(process.env.PORT || 3000);

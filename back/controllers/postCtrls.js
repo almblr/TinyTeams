@@ -5,7 +5,8 @@ import fs from "fs";
 const postController = {
   createOne: async (req, res) => {
     if (!req.body.content && !req.file) {
-      res.status(400).json({ message: "Votre post ne peut pas être vide." });
+      console.log(req.body);
+      res.status(400).json({ message: "Post vide." });
     } else {
       try {
         const Post = await post.create({

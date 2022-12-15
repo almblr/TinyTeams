@@ -40,9 +40,9 @@ comment.belongsTo(post);
 
 // Créer la foreignKey "userId" sur la table comment
 user.hasMany(comment, {
-  foreignKey: "autor",
+  foreignKey: "author",
   onDelete: "CASCADE",
 });
 comment.belongsTo(user, {
-  foreignKey: "autor",
+  foreignKey: "author",
 });

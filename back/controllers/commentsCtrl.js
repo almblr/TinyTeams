@@ -1,18 +1,16 @@
 import { comment } from "../db/sequelize.js";
 import fs from "fs";
 
-/* Controller POST */
+/* COMMENT Controller */
 const commentController = {
   createOne: async (req, res) => {
-    if (!req.body.content && !req.body.image) {
-      res
-        .status(400)
-        .json({ error: "Le commentaire doit contenir du texte ou une image" });
+    if (!req.body.content && !req.file) {
+      res.status(400).json({ message: "Commentaire vide." });
     } else {
       try {
         const Comment = await comment.create({
-          autor: req.auth.userId,
-          content: req.body.content,
+          author: req.auth.userId,
+          content: req.body.content ? req.body.content : null,
           imageUrl: req.file?.filename
             ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
             : null,
