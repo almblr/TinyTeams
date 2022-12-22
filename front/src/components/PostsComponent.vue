@@ -6,11 +6,7 @@
       :key="post.id"
       :id="post.id"
     >
-      <header
-        class="post__header"
-        @dragover.prevent="makeItRed()"
-        @drop.prevent="dropTest"
-      >
+      <header class="post__header">
         <div class="post__header__user">
           <div class="post__header__user__pic">
             <img :src="post.user.profilPicture" alt="Photo de profil" />
@@ -49,7 +45,6 @@
           <fa
             icon="fa-solid fa-thumbs-up"
             :class="{
-              thumbsup,
               emptylikeBtn: checkLikeState(post.id) === true,
               coloredLikeBtn: checkLikeState(post.id) === false,
             }"
@@ -61,14 +56,19 @@
           <input
             class="post__footer__comments__writeComment"
             placeholder="Ecrivez quelques chose..."
-            ref="userComment"
-            @keydown.enter="sendComment"
+            @keydown.enter="sendComment($event, post.id)"
+            @dragover.prevent="makeItRed($event)"
+            @drop.prevent="dropTest($event, post.id)"
+            @dragleave.prevent="makeItInit($event)"
           />
-          <img v-if="imageDroped !== null" :src="imageDroped" />
-          <div
-            class="post__footer__comments__allComments"
-            v-if="atLeastOneComment"
-          ></div>
+          <input
+            class="inputImageComment"
+            type="file"
+            ref="imgComment"
+            accept="image/png, image/jpg, image/jpeg"
+          />
+          <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
+          <div class="post__footer__comments__allComments"></div>
         </div>
       </footer>
     </div>
@@ -99,27 +99,35 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
-const imageDroped = ref(null);
+const imageDroped = ref({});
 const postStore = usePostStore();
 const commentStore = useCommentStore();
 const likeStore = useLikeStore();
 const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
+const token = locStr.token;
 const userId = locStr.userId;
 const likeBtn = ref(null);
 const postImage = ref(null);
+const inputImageComment = ref(null);
 const postToModify = ref(null);
 const userComment = ref(null);
 let showModifyModal = ref(false);
 
-const makeItRed = () => {
-  // console.log("coucou");
+const makeItRed = (e) => {
+  e.target.style.backgroundColor = "red";
+  e.target.style.transition = "600ms";
 };
 
-const dropTest = (e) => {
+const makeItInit = (e) => {
+  e.target.style.backgroundColor = "initial";
+};
+
+const dropTest = (e, postId) => {
   console.log(e.dataTransfer.files[0]);
-  const img = URL.createObjectURL(e.dataTransfer.files[0]);
-  console.log(img);
-  imageDroped.value = URL.createObjectURL(e.dataTransfer.files[0]);
+  imageDroped.value[postId] = URL.createObjectURL(e.dataTransfer.files[0]);
+  inputImageComment.value = e.dataTransfer.files[0];
+  e.target.style.backgroundColor = "initial";
+  e.target.style.transition = "0ms";
 };
 
 const modifyPost = async (id) => {
@@ -161,21 +169,13 @@ const updateLike = async (postId) => {
   }
 };
 
-const sendComment = async () => {
+const sendComment = async (e, postId) => {
   const formData = new FormData();
-  if (postData.value.content || input.value.value !== "") {
-    if (postData.value.content) {
-      formData.append("content", postData.value.content);
-    }
-    if (input.value.value) {
-      formData.append("imageUrl", input.value.files[0]);
-    }
-    await postStore.createOne(formData, token);
-    emit("close");
-    emptyPost.value === true ? (emptyPost.value = false) : null;
-  } else {
-    emptyPost.value = true;
-  }
+  formData.append("content", e.target.value);
+  formData.append("imageUrl", inputImageComment.value);
+  await commentStore.createOne(postId, formData, token);
+  console.log("commentaire envoyé");
+  e.target.value = null;
 };
 
 /* Au chargement de la page */
@@ -340,5 +340,9 @@ onMounted(() => {
   &:hover {
     cursor: initial !important;
   }
+}
+
+input[type="file"] {
+  display: none;
 }
 </style>
