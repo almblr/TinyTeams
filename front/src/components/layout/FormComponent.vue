@@ -25,7 +25,7 @@
 
 <script setup>
 import Logo from "./LogoComponent.vue";
-import { useUserStore } from "../stores/index.js";
+import { useUserStore } from "../../stores/index.js";
 const userStore = useUserStore();
 
 const props = defineProps({
@@ -51,12 +51,15 @@ const resetForm = () => {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background: url("../assets/entreprise.jpg");
+  background: url("@/assets/entreprise.jpg");
   background-size: cover;
 }
 .container {
-  @include fdCol-jcSe-aaCt;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
   max-width: 600px;
   max-height: min-content;
   background-color: rgb(255, 255, 255);

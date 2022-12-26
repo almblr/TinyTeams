@@ -43,9 +43,9 @@
 </template>
 
 <script setup>
-import ModalLayer from "@/components/ModalLayerComponent.vue";
+import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
 import { ref, onMounted, watch, computed } from "vue";
-import { usePostStore } from "../stores/index.js";
+import { usePostStore } from "../../stores/index.js";
 
 const props = defineProps({
   show: {
@@ -263,6 +263,7 @@ footer {
     padding: 3px;
     height: 35px;
     cursor: pointer;
+    border: none;
   }
 }
 

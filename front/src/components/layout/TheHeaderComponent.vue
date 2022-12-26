@@ -3,12 +3,12 @@
     <div class="logo">
       <img
         class="basicLogo"
-        src="../assets/icon-left-font-monochrome-white.png"
+        src="@/assets/icon-left-font-monochrome-white.png"
         alt="logo Groupomania"
       />
       <img
         class="reducedLogo"
-        src="../assets/logo-white.png"
+        src="@/assets/logo-white.png"
         alt="logo Groupomania"
       />
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="logo">
-    <img src="../assets/logo-black.png" alt="Groupomania logo" />
+    <img src="@/assets/logo-black.png" alt="Groupomania logo" />
   </div>
 </template>
 

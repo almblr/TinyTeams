@@ -51,16 +51,23 @@
           />
           <span>J'aime</span>
         </div>
-        <v-divider></v-divider>
+        <DividerComponent width="99%" height="1px" backgroundColor="#c0c2c4" />
         <div class="post__footer__comments">
-          <input
-            class="post__footer__comments__writeComment"
-            placeholder="Ecrivez quelques chose..."
-            @keydown.enter="sendComment($event, post.id)"
-            @dragover.prevent="makeItRed($event)"
-            @drop.prevent="dropTest($event, post.id)"
-            @dragleave.prevent="makeItInit($event)"
-          />
+          <div class="post__footer__comments__writeComment">
+            <div class="post__footer__comments__writeComment__pic">
+              <img :src="post.user.profilPicture" alt="Photo de profil" />
+            </div>
+            <textarea
+              placeholder="Ecrivez quelque chose..."
+              @keydown.enter="sendComment($event, post.id)"
+              @dragover.prevent="makeItRed($event)"
+              @drop.prevent="dropTest($event, post.id)"
+              @dragleave.prevent="makeItInit($event)"
+            ></textarea>
+            <div title="Insérez une image" @click="!showing">
+              <fa icon="fa-solid fa-image" class="addImage" />
+            </div>
+          </div>
           <input
             class="inputImageComment"
             type="file"
@@ -91,11 +98,12 @@ import {
   usePostStore,
   useCommentStore,
   useLikeStore,
-} from "../stores/index.js";
-import PostModal from "../components/PostModalComponent.vue";
+} from "../../stores/index.js";
+import PostModal from "./PostModalComponent.vue";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 import relativeTime from "dayjs/plugin/relativeTime";
+import DividerComponent from "../layout/DividerComponent.vue";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
@@ -110,8 +118,8 @@ const likeBtn = ref(null);
 const postImage = ref(null);
 const inputImageComment = ref(null);
 const postToModify = ref(null);
-const userComment = ref(null);
 let showModifyModal = ref(false);
+let showing = ref(false);
 
 const makeItRed = (e) => {
   e.target.style.backgroundColor = "red";
@@ -256,6 +264,7 @@ onMounted(() => {
     width: 100%;
     max-height: 450px;
     background-color: rgb(0, 0, 0);
+    margin-bottom: 5px;
     & img {
       width: 100%;
       height: 100%;
@@ -307,9 +316,57 @@ onMounted(() => {
       }
     }
     &__comments {
-      min-height: 45px;
       width: 100%;
-      background-color: rgb(230, 151, 151);
+      margin-top: 10px;
+      &__writeComment {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        &__pic {
+          width: 40px;
+          min-width: 40px;
+          height: 40px;
+          border-radius: 25px;
+          & img {
+            width: 100%;
+            height: 100%;
+            border-radius: 25px;
+            object-fit: cover;
+          }
+        }
+        & > textarea {
+          resize: none;
+          width: 100%;
+          border: 1px solid #c0c2c4;
+          border-radius: 20px;
+          height: 35px;
+          padding-left: 15px;
+          padding-top: 4px;
+          &:focus {
+            outline: none;
+          }
+        }
+        & :nth-child(3) {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          right: 15px;
+          width: 32px;
+          height: 32px;
+          border-radius: 25px;
+          &:hover {
+            background-color: #dfdfdf;
+            cursor: pointer;
+          }
+          & > .addImage {
+            color: #575656;
+            font-size: 19px;
+          }
+        }
+      }
     }
   }
 }

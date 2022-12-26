@@ -19,9 +19,11 @@
 
 <script setup>
 import { ref, nextTick } from "vue";
-import PostModal from "../components/PostModalComponent.vue";
-import TheHeader from "@/components/TheHeaderComponent.vue";
-import PostsComponent from "@/components/PostsComponent.vue";
+import PostModal from "@/components/posts/PostModalComponent.vue";
+import TheHeader from "@/components/layout/TheHeaderComponent.vue";
+import PostsComponent from "@/components/posts/PostsComponent.vue";
+import { usePostStore } from "@/stores/index.js";
+const postStore = usePostStore();
 
 let showCreateModal = ref(false);
 
@@ -67,10 +69,9 @@ main {
 }
 
 .createPost {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include jcCt-aaCt;
   position: absolute;
+  border: none;
   bottom: 40px;
   right: 40px;
   width: 65px;

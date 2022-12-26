@@ -31,9 +31,9 @@
 import { ref } from "vue";
 import { useUserStore } from "../stores/index.js";
 import router from "../router/index.js";
-import FormComponent from "@/components/FormComponent.vue";
-import EyeComponent from "../components/EyeComponent.vue";
-import ButtonForm from "../components/ButtonFormComponent.vue";
+import FormComponent from "@/components/layout/FormComponent.vue";
+import EyeComponent from "../components/buttons/EyeComponent.vue";
+import ButtonForm from "../components/buttons/ButtonFormComponent.vue";
 
 const userStore = useUserStore();
 const inputType = ref("password");
