@@ -64,8 +64,11 @@
               @drop.prevent="dropTest($event, post.id)"
               @dragleave.prevent="makeItInit($event)"
             ></textarea>
-            <div title="Insérez une image" @click="!showing">
-              <fa icon="fa-solid fa-image" class="addImage" />
+            <div class="post__footer__comments__writeComment__buttons">
+              <div title="Insérez une image" @click="!showing">
+                <fa icon="fa-solid fa-image" class="addImage" />
+              </div>
+              <GifTooltipComponent></GifTooltipComponent>
             </div>
           </div>
           <input
@@ -104,6 +107,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/fr";
 import relativeTime from "dayjs/plugin/relativeTime";
 import DividerComponent from "../layout/DividerComponent.vue";
+import GifTooltipComponent from "./GifTooltipComponent.vue";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
@@ -348,22 +352,24 @@ onMounted(() => {
             outline: none;
           }
         }
-        & :nth-child(3) {
+        &__buttons {
           display: flex;
           justify-content: center;
           align-items: center;
           position: absolute;
-          right: 15px;
-          width: 32px;
-          height: 32px;
-          border-radius: 25px;
-          &:hover {
-            background-color: #dfdfdf;
-            cursor: pointer;
-          }
-          & > .addImage {
-            color: #575656;
-            font-size: 19px;
+          right: 10px;
+          gap: 10px;
+          border: 5px solid red;
+          & > * {
+            border: 1px solid blue;
+            &:hover {
+              background-color: #dfdfdf;
+              cursor: pointer;
+            }
+            & > .addImage {
+              color: #575656;
+              font-size: 19px;
+            }
           }
         }
       }
