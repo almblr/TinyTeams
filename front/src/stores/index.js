@@ -173,6 +173,64 @@ export const useUserStore = defineStore("user", {
   },
 });
 
+export const useGiphyStore = defineStore("comment", {
+  id: "Comment",
+  state: () => ({
+    comments: [],
+  }),
+  getters: {
+    getPosts: (state) => {
+      return state.comments;
+    },
+  },
+  actions: {
+    async getAll(postId) {
+      const response = await fetch(
+        `http://localhost:3000/api/posts/${postId}/getAll`
+      );
+      const data = await response.json();
+      this.comments = data;
+    },
+    async createOne(postId, data, token) {
+      await fetch(`http://localhost:3000/api/posts/${postId}/postComment`, {
+        method: "POST",
+        body: data,
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      await this.getAll();
+    },
+    async updateOne(id, data, token) {
+      await fetch(
+        `http://localhost:3000/api/posts/${postId}/${commentId}/modify`,
+        {
+          method: "PUT",
+          body: data,
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      await this.getAll();
+    },
+    async deleteOne(id, token) {
+      await fetch(
+        `http://localhost:3000/api/posts/${postId}/${commentId}/delete`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+  },
+});
+
 export const useLikeStore = defineStore("like", {
   actions: {
     async likePost(token, postId) {

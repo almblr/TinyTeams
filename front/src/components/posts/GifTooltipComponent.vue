@@ -1,77 +1,60 @@
 <template>
-  <!-- <div class="arrow"></div> -->
-  <div class="btn">
-    <img src="@/assets/gif.png" />
-    <div class="tooltip">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias adipisci
-      expedita aliquam ex velit, magnam rem voluptates quibusdam dolore facere.
+  <div class="btn" @click="showGifPanel = !showGifPanel">
+    <fa icon="fa-solid fa-image" />
+    <div class="tooltip" v-show="showGifPanel === true">
+      <div class="researchBar">bar 2 recherche</div>
+      <div class="displayGifs">lé gifs</div>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const GIPHY_API = "P9iLmPWMRmRXCTqxfc6N8QP90TRzh925";
+const showGifPanel = ref(false);
+</script>
 
 <style lang="scss" scoped>
-/* .arrow {
-    width: 0px;
-    height: 0px;
-    background: orange; 
-    border: 1px solid #000;
-
-    border-top: 100px solid crimson;
-    border-bottom: 100px solid transparent;
-    border-right: 70px solid transparent;
-    border-left: 70px solid transparent;
-} */
+.btn {
+  position: relative;
+  color: #575656;
+  & > * {
+    position: relative;
+    top: 1px;
+    font-size: 19px;
+  }
+}
 
 .tooltip {
   position: absolute;
   background: #333;
-  border: 4px solid #666;
-  width: 400px;
-  padding: 30px;
+  width: 250px;
+  padding: 20px;
   color: #f1f1f1;
-  font-size: 20px;
-  top: 52px;
-  left: -224px;
-  /* display: none; */
-  opacity: 0;
+  font-size: 16px;
+  right: 0px;
+  top: -90px;
+  margin-bottom: 10px;
   pointer-events: none;
+  transition: all 0.4s ease;
 }
 
-.tooltip::after,
-.tooltip::before {
+.tooltip::after {
   content: "";
-  bottom: 100%;
-  left: 50%;
-  border: solid transparent;
+  top: 100%;
+  right: 0px;
   height: 0;
   width: 0;
   position: absolute;
-}
-.tooltip::after {
-  border-bottom-color: #333;
-  border-width: 25px;
-  margin-left: -25px;
-}
-.tooltip::before {
-  border-bottom-color: #666;
-  border-width: 30px;
-  margin-left: -30px;
+  border-top: 5px solid #333;
+  border-left: 7px solid transparent;
 }
 
-.btn {
-  position: relative;
-}
-.btn img {
-  position: relative;
-  top: 4px;
-  width: 20px;
-}
 .btn:hover .tooltip {
-  /* display: block; */
-  pointer-events: all;
-  opacity: 1;
-  transition: all 0.4s ease;
+  // /* display: block; */
+  // pointer-events: all;
+  // opacity: 1;
+  // transition: all 0.4s ease;
 }
 </style>

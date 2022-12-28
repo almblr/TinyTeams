@@ -66,9 +66,11 @@
             ></textarea>
             <div class="post__footer__comments__writeComment__buttons">
               <div title="Insérez une image" @click="!showing">
-                <fa icon="fa-solid fa-image" class="addImage" />
+                <fa icon="fa-solid fa-camera" class="addImage" />
               </div>
-              <GifTooltipComponent></GifTooltipComponent>
+              <div title="Insérer un gif">
+                <GifTooltipComponent></GifTooltipComponent>
+              </div>
             </div>
           </div>
           <input
@@ -347,7 +349,7 @@ onMounted(() => {
           border-radius: 20px;
           height: 35px;
           padding-left: 15px;
-          padding-top: 4px;
+          padding-top: 5px;
           &:focus {
             outline: none;
           }
@@ -358,10 +360,14 @@ onMounted(() => {
           align-items: center;
           position: absolute;
           right: 10px;
-          gap: 10px;
-          border: 5px solid red;
+          height: 35px;
           & > * {
-            border: 1px solid blue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 25px;
+            border-radius: 5px;
             &:hover {
               background-color: #dfdfdf;
               cursor: pointer;
