@@ -330,6 +330,7 @@ onMounted(() => {
         justify-content: center;
         align-items: center;
         gap: 5px;
+        margin-bottom: 15px;
         &__pic {
           width: 40px;
           min-width: 40px;

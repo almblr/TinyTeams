@@ -173,60 +173,25 @@ export const useUserStore = defineStore("user", {
   },
 });
 
-export const useGiphyStore = defineStore("comment", {
-  id: "Comment",
+export const useGiphyStore = defineStore("gif", {
+  id: "Gifs",
   state: () => ({
-    comments: [],
+    gifs: [],
+    GIPHY_API: "P9iLmPWMRmRXCTqxfc6N8QP90TRzh925",
   }),
   getters: {
     getPosts: (state) => {
-      return state.comments;
+      return state.gifs;
     },
   },
   actions: {
-    async getAll(postId) {
+    async getTrendsGif() {
       const response = await fetch(
-        `http://localhost:3000/api/posts/${postId}/getAll`
+        `http://api.giphy.com/v1/gifs/trending?api_key=P9iLmPWMRmRXCTqxfc6N8QP90TRzh925&limit=5`
       );
       const data = await response.json();
-      this.comments = data;
-    },
-    async createOne(postId, data, token) {
-      await fetch(`http://localhost:3000/api/posts/${postId}/postComment`, {
-        method: "POST",
-        body: data,
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      await this.getAll();
-    },
-    async updateOne(id, data, token) {
-      await fetch(
-        `http://localhost:3000/api/posts/${postId}/${commentId}/modify`,
-        {
-          method: "PUT",
-          body: data,
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      await this.getAll();
-    },
-    async deleteOne(id, token) {
-      await fetch(
-        `http://localhost:3000/api/posts/${postId}/${commentId}/delete`,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      this.gifs = data;
+      console.log(this.gifs);
     },
   },
 });

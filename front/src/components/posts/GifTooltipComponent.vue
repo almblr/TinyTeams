@@ -3,16 +3,23 @@
     <fa icon="fa-solid fa-image" />
     <div class="tooltip" v-show="showGifPanel === true">
       <div class="researchBar">bar 2 recherche</div>
-      <div class="displayGifs">lé gifs</div>
+      <!--       <div class="displayGifs" v-for="gif of gifStore.gifs">{{ gif }}</div> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useGiphyStore } from "../../stores";
 
-const GIPHY_API = "P9iLmPWMRmRXCTqxfc6N8QP90TRzh925";
+const gifStore = useGiphyStore();
+
 const showGifPanel = ref(false);
+
+/* Au chargement de la page */
+onMounted(() => {
+  gifStore.getTrendsGif();
+});
 </script>
 
 <style lang="scss" scoped>
