@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const usePostStore = defineStore("post", {
   id: "Post",
@@ -180,17 +181,19 @@ export const useGiphyStore = defineStore("gif", {
     GIPHY_API: "P9iLmPWMRmRXCTqxfc6N8QP90TRzh925",
   }),
   getters: {
-    getPosts: (state) => {
+    getGifs: (state) => {
       return state.gifs;
     },
   },
   actions: {
-    async getTrendsGif() {
-      const response = await fetch(
-        `http://api.giphy.com/v1/gifs/trending?api_key=P9iLmPWMRmRXCTqxfc6N8QP90TRzh925&limit=5`
+    async getTrendsGif(start) {
+      const response = await axios(
+        `http://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_API}&limit=1$offset=${start}`
       );
-      const data = await response.json();
-      this.gifs = data;
+      const data = response.data.data;
+      data.forEach((gif) => {
+        this.gifs.push(gif);
+      });
       console.log(this.gifs);
     },
   },

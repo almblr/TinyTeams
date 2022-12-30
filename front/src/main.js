@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import VueClickOutsideElement from "vue-click-outside-element";
 import App from "./App.vue";
 import router from "./router";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -33,5 +34,6 @@ library.add(
 const app = createApp(App);
 app.use(createPinia());
 app.use(router);
+app.use(VueClickOutsideElement);
 app.component("fa", FontAwesomeIcon);
 app.mount("#app");
