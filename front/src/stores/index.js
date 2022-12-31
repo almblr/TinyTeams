@@ -178,23 +178,14 @@ export const useGiphyStore = defineStore("gif", {
   id: "Gifs",
   state: () => ({
     gifs: [],
-    GIPHY_API: "P9iLmPWMRmRXCTqxfc6N8QP90TRzh925",
+    TENOR_KEY: "AIzaSyC85oNe742-SktvLCKSEZjnQCbOuKGmBE4",
   }),
-  getters: {
-    getGifs: (state) => {
-      return state.gifs;
-    },
-  },
   actions: {
-    async getTrendsGif(start) {
+    async getTrendsGif() {
       const response = await axios(
-        `http://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_API}&limit=1$offset=${start}`
+        `https://tenor.googleapis.com/v2/featured?key=${this.TENOR_KEY}&limit=5`
       );
-      const data = response.data.data;
-      data.forEach((gif) => {
-        this.gifs.push(gif);
-      });
-      console.log(this.gifs);
+      this.gifs = response.data.results;
     },
   },
 });

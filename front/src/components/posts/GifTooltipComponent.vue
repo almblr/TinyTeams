@@ -6,21 +6,18 @@
     <div class="tooltip" v-show="showGifPanel === true">
       <input class="researchBar" placeholder="Rechercher" />
       <div class="displayGifs" ref="test" @scroll="viewScroll()">
-        <img
-          v-for="gif of gifStore.getGifs"
-          :src="gif.images.original.url"
-          @click="showUrl($event)"
-        />
+        <img v-for="gif of gifs" :src="gif" @click="showUrl($event)" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useGiphyStore } from "../../stores";
 
 const gifStore = useGiphyStore();
+const gifs = gifStore.gifs;
 const showGifPanel = ref(false);
 const test = ref(null);
 let start = ref(0);
@@ -48,7 +45,9 @@ const viewScroll = () => {
 // };
 
 onMounted(() => {
-  gifStore.getTrendsGif(0);
+  gifStore.getTrendsGif();
+  nextTick();
+  console.log(gifs);
 });
 </script>
 
