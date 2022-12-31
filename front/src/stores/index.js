@@ -178,14 +178,21 @@ export const useGiphyStore = defineStore("gif", {
   id: "Gifs",
   state: () => ({
     gifs: [],
-    TENOR_KEY: "AIzaSyC85oNe742-SktvLCKSEZjnQCbOuKGmBE4",
+    GIPHY_KEY: "lcUOyzUQjkn8d8MZbdFTekgbf0kD25vt",
+    start_index: 2,
+    limit: 5,
   }),
   actions: {
-    async getTrendsGif() {
+    resetGifs() {
+      this.gifs = [];
+      this.start_index = 2;
+    },
+    async getTrendsGif(start) {
       const response = await axios(
-        `https://tenor.googleapis.com/v2/featured?key=${this.TENOR_KEY}&limit=5`
+        `https://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_KEY}&offset=${start}&limit=${this.limit}`
       );
-      this.gifs = response.data.results;
+      this.gifs.push(...response.data.data);
+      this.start_index = start + this.limit; // Permet d'afficher les prochains gifs plutôt que de réafficher les mêmes
     },
   },
 });

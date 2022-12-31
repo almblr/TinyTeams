@@ -69,7 +69,7 @@
                 <fa icon="fa-solid fa-camera" class="addImage" />
               </div>
               <div title="Insérer un gif">
-                <GifTooltipComponent></GifTooltipComponent>
+                <GifTooltipComponent />
               </div>
             </div>
           </div>
@@ -103,6 +103,7 @@ import {
   usePostStore,
   useCommentStore,
   useLikeStore,
+  useGiphyStore,
 } from "../../stores/index.js";
 import PostModal from "./PostModalComponent.vue";
 import dayjs from "dayjs";
@@ -117,6 +118,7 @@ const imageDroped = ref({});
 const postStore = usePostStore();
 const commentStore = useCommentStore();
 const likeStore = useLikeStore();
+const gifStore = useGiphyStore();
 const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
 const token = locStr.token;
 const userId = locStr.userId;

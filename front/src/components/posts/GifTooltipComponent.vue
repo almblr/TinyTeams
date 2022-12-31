@@ -1,53 +1,69 @@
 <template>
-  <div class="btn" v-click-outside-element="close">
-    <div class="icon" @click="showGifPanel = !showGifPanel">
+  <div class="btn" v-click-outside-element="closeGifPanel">
+    <div class="icon" @click="openGifPanel">
       <fa icon="fa-solid fa-image" />
     </div>
     <div class="tooltip" v-show="showGifPanel === true">
       <input class="researchBar" placeholder="Rechercher" />
-      <div class="displayGifs" ref="test" @scroll="viewScroll()">
-        <img v-for="gif of gifs" :src="gif" @click="showUrl($event)" />
+      <div class="displayGifs" ref="gifPanel" @scroll="displayNextGifs()">
+        <img
+          v-for="gif of gifStore.gifs"
+          :src="gif.images.original.url"
+          @click="showUrl($event)"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted } from "vue";
 import { useGiphyStore } from "../../stores";
 
 const gifStore = useGiphyStore();
-const gifs = gifStore.gifs;
+const gifPanel = ref(null);
 const showGifPanel = ref(false);
-const test = ref(null);
-let start = ref(0);
 
-const close = (el) => {
-  showGifPanel.value = false;
-  test.value.scrollTop = 0;
+const openGifPanel = () => {
+  gifStore.resetGifs();
+  gifStore.getTrendsGif(gifStore.start_index);
+  showGifPanel.value = !showGifPanel.value;
+  gifPanel.value.scrollTop = 0;
 };
 
-const viewScroll = () => {
-  if (
-    test.value.scrollTop + test.value.clientHeight >=
-    test.value.scrollHeight
-  ) {
-    console.log(start.value);
-    setTimeout(() => {
-      start.value = start.value + 15;
-      gifStore.getTrendsGif(start.value);
-    }, 500);
+/* Ferme le gif panel, reset l'index de début (pour l'affichage des gifs), vide le tableau des gifs 
+rq : la directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
+const closeGifPanel = () => {
+  if (showGifPanel.value === true) {
+    gifPanel.value.scrollTop = 0;
+    showGifPanel.value = false;
   }
 };
 
-// const showUrl = (e) => {
-//   console.log(e.target.src);
-// };
+/* Appelle l'api GIPHY à chaque fois qu'on arrive à la fin du scroll de la tooltip */
+const displayNextGifs = () => {
+  let start = useGiphyStore().start_index;
+  if (
+    gifPanel.value.scrollTop + gifPanel.value.clientHeight >=
+      gifPanel.value.scrollHeight &&
+    showGifPanel.value === true
+  ) {
+    console.log(start);
+    console.log("test");
+    setTimeout(() => {
+      gifStore.getTrendsGif(start);
+      start = start + 2;
+    }, 1000);
+  }
+};
 
+const showUrl = (e) => {
+  console.log(e.target.src);
+};
+
+/* Ne surtout pas faire le onMounted pour appeler l'api GIPHY au niveau de composant car il se fera autant de fois que le composant est appelé (= nombre de posts sur la page) */
 onMounted(() => {
-  gifStore.getTrendsGif();
-  nextTick();
-  console.log(gifs);
+  gifPanel.value.scrollTop = 0;
 });
 </script>
 
