@@ -1,9 +1,14 @@
 <template>
-  <div class="btn" v-click-outside-element="closeGifPanel" @click="showSpace">
+  <div
+    class="btn"
+    ref="btn"
+    v-click-outside-element="closeGifPanel"
+    @click="calculateAvailableSpace"
+  >
     <div class="icon" @click="openGifPanel">
       <fa icon="fa-solid fa-image" />
     </div>
-    <div class="tooltip" ref="tooltip" v-show="showGifPanel === true">
+    <div :class="downOrUp" v-show="showGifPanel === true">
       <input class="researchBar" placeholder="Rechercher" />
       <div class="displayGifs" ref="gifPanel" @scroll="displayNextGifs()">
         <img
@@ -17,13 +22,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useGiphyStore } from "../../stores";
 
 const gifStore = useGiphyStore();
 const gifPanel = ref(null);
 const showGifPanel = ref(false);
-const tooltip = ref(null);
+const btn = ref(null);
+const spaceUp = ref(null);
 
 const openGifPanel = () => {
   gifStore.resetGifs();
@@ -32,7 +38,14 @@ const openGifPanel = () => {
   gifPanel.value.scrollTop = 0;
 };
 
-/* Ferme le gif panel, reset l'index de début (pour l'affichage des gifs), vide le tableau des gifs 
+const downOrUp = computed(() => {
+  return {
+    "tooltip-up": spaceUp.value === true,
+    "tooltip-down": spaceUp.value === false,
+    tooltip: true, // default class
+  };
+});
+/* Ferme le gif panel, reset l'index de début (pour l'affichage des gifs), vide le tableau des gifs
 rq : la directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
 const closeGifPanel = () => {
   if (showGifPanel.value === true) {
@@ -60,20 +73,18 @@ const showUrl = (e) => {
   console.log(e.target.src);
 };
 
-// window.addEventListener("resize", () => {
-//   var w = document.documentElement.clientWidth;
-//   var h = document.documentElement.clientHeight;
-//   console.log(`La largeur est de ${w} et la hauteur de ${h}`);
-// });
-
-function showSpace() {
-  const result = tooltip.value.getBoundingClientRect();
-  console.log(result.top);
-  if (result.top < 250) {
-    tooltip.value.style.border = "3px solid red";
-    console.log(document.documentElement.clientHeight);
+function calculateAvailableSpace() {
+  const clientHeight = document.documentElement.clientHeight;
+  const bottomToCenterBtn =
+    clientHeight -
+    btn.value.getBoundingClientRect().top -
+    btn.value.style.width / 2;
+  console.log(bottomToCenterBtn);
+  if (bottomToCenterBtn > clientHeight / 2) {
+    spaceUp.value = false; // + de place en bas
+  } else {
+    spaceUp.value = true; // + de place en haut
   }
-  const halfTooltip = 125;
 }
 
 /* Ne surtout pas faire le onMounted pour appeler l'api GIPHY au niveau de composant car il se fera autant de fois que le composant est appelé (= nombre de posts sur la page) */
@@ -92,8 +103,16 @@ onMounted(() => {
   }
 }
 
+.tooltip-down {
+  top: 30px !important;
+}
+
+.tooltip-up {
+  top: -300px;
+}
 .tooltip {
   position: absolute;
+  z-index: 999;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -104,8 +123,6 @@ onMounted(() => {
   color: #f1f1f1;
   font-size: 16px;
   right: 0px;
-  top: -300px;
-  transition: all 0.4s ease;
   & > .researchBar {
     margin: 5px 0;
     background-color: #e0e0e0;
@@ -133,14 +150,20 @@ onMounted(() => {
   }
 }
 
-.tooltip::after {
+.tooltip:after {
   content: "";
   top: 100%;
-  right: 0px;
+  right: 0;
   height: 0;
   width: 0;
   position: absolute;
-  border-top: 6px solid rgb(39, 39, 39);
   border-left: 9px solid transparent;
+  border-top: 6px solid rgb(39, 39, 39);
+}
+.tooltip-down::after {
+  bottom: 100% !important;
+  border-bottom: 6px solid rgb(39, 39, 39) !important;
+  top: initial;
+  border-top: initial;
 }
 </style>
