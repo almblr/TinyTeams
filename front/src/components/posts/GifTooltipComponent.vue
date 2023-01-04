@@ -1,9 +1,9 @@
 <template>
-  <div class="btn" v-click-outside-element="closeGifPanel">
+  <div class="btn" v-click-outside-element="closeGifPanel" @click="showSpace">
     <div class="icon" @click="openGifPanel">
       <fa icon="fa-solid fa-image" />
     </div>
-    <div class="tooltip" v-show="showGifPanel === true">
+    <div class="tooltip" ref="tooltip" v-show="showGifPanel === true">
       <input class="researchBar" placeholder="Rechercher" />
       <div class="displayGifs" ref="gifPanel" @scroll="displayNextGifs()">
         <img
@@ -23,6 +23,7 @@ import { useGiphyStore } from "../../stores";
 const gifStore = useGiphyStore();
 const gifPanel = ref(null);
 const showGifPanel = ref(false);
+const tooltip = ref(null);
 
 const openGifPanel = () => {
   gifStore.resetGifs();
@@ -50,16 +51,30 @@ const displayNextGifs = () => {
   ) {
     console.log(start);
     console.log("test");
-    setTimeout(() => {
-      gifStore.getTrendsGif(start);
-      start = start + 2;
-    }, 1000);
+    gifStore.getTrendsGif(start);
+    start = start + 2;
   }
 };
 
 const showUrl = (e) => {
   console.log(e.target.src);
 };
+
+// window.addEventListener("resize", () => {
+//   var w = document.documentElement.clientWidth;
+//   var h = document.documentElement.clientHeight;
+//   console.log(`La largeur est de ${w} et la hauteur de ${h}`);
+// });
+
+function showSpace() {
+  const result = tooltip.value.getBoundingClientRect();
+  console.log(result.top);
+  if (result.top < 250) {
+    tooltip.value.style.border = "3px solid red";
+    console.log(document.documentElement.clientHeight);
+  }
+  const halfTooltip = 125;
+}
 
 /* Ne surtout pas faire le onMounted pour appeler l'api GIPHY au niveau de composant car il se fera autant de fois que le composant est appelé (= nombre de posts sur la page) */
 onMounted(() => {
@@ -85,6 +100,7 @@ onMounted(() => {
   align-items: center;
   background: rgb(39, 39, 39);
   min-width: 250px;
+  height: 290px;
   color: #f1f1f1;
   font-size: 16px;
   right: 0px;
