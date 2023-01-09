@@ -1,13 +1,14 @@
 <template>
-  <button :type="type">
+  <button :type="buttonType">
     <span>{{ text }}</span>
   </button>
 </template>
 
 <script setup>
 defineProps({
-  type: {
+  buttonType: {
     type: String,
+    required: true,
   },
   text: {
     type: String,
