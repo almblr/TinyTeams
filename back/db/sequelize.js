@@ -13,11 +13,11 @@ export const comment = commentModel(sequelize, DataTypes);
 /* Création des associations entre les tables */
 // Créer la foreignKey "autor" sur la table post
 user.hasMany(post, {
-  foreignKey: "autor",
+  foreignKey: "author",
   onDelete: "CASCADE",
 });
 post.belongsTo(user, {
-  foreignKey: "autor",
+  foreignKey: "author",
 });
 
 // Créer la foreignKey "postId" sur la table react

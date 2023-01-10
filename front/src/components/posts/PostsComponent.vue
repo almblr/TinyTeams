@@ -54,7 +54,7 @@
         <DividerComponent width="99%" height="1px" backgroundColor="#c0c2c4" />
         <div class="post__footer__comments">
           <div class="post__footer__comments__writeComment">
-            <div class="post__footer__comments__writeComment__pic">
+            <div class="post__profilPicture">
               <img :src="post.user.profilPicture" alt="Photo de profil" />
             </div>
             <textarea
@@ -80,7 +80,16 @@
             accept="image/png, image/jpg, image/jpeg"
           />
           <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
-          <div class="post__footer__comments__allComments"></div>
+          <div class="post__footer__comments__allComments">
+            <div
+              class="post__footer__comments__allComments__myComments"
+              v-if="post.myComment.length !== 0"
+            ></div>
+            <div class="post__profilPicture">
+              <img :src="post.user.profilPicture" alt="Photo de profil" />
+              <p></p>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
@@ -103,7 +112,6 @@ import {
   usePostStore,
   useCommentStore,
   useLikeStore,
-  useGiphyStore,
 } from "../../stores/index.js";
 import PostModal from "./PostModalComponent.vue";
 import dayjs from "dayjs";
@@ -118,7 +126,6 @@ const imageDroped = ref({});
 const postStore = usePostStore();
 const commentStore = useCommentStore();
 const likeStore = useLikeStore();
-const gifStore = useGiphyStore();
 const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
 const token = locStr.token;
 const userId = locStr.userId;
@@ -197,6 +204,7 @@ const sendComment = async (e, postId) => {
 /* Au chargement de la page */
 onMounted(() => {
   postStore.getAll();
+  commentStore.getAll();
 });
 </script>
 
@@ -223,6 +231,18 @@ onMounted(() => {
   min-width: 260px;
   border-radius: 10px;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
+  &__profilPicture {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 25px;
+    & img {
+      width: 100%;
+      height: 100%;
+      border-radius: 25px;
+      object-fit: cover;
+    }
+  }
   &__header {
     background-color: rgb(248, 248, 248);
     display: flex;
@@ -333,18 +353,6 @@ onMounted(() => {
         align-items: center;
         gap: 5px;
         margin-bottom: 15px;
-        &__pic {
-          width: 40px;
-          min-width: 40px;
-          height: 40px;
-          border-radius: 25px;
-          & img {
-            width: 100%;
-            height: 100%;
-            border-radius: 25px;
-            object-fit: cover;
-          }
-        }
         & > textarea {
           resize: none;
           width: 100%;

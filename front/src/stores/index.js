@@ -68,11 +68,6 @@ export const useCommentStore = defineStore("comment", {
   state: () => ({
     comments: [],
   }),
-  getters: {
-    getPosts: (state) => {
-      return state.comments;
-    },
-  },
   actions: {
     async getAll(postId) {
       const response = await fetch(
@@ -179,20 +174,27 @@ export const useGiphyStore = defineStore("gif", {
   state: () => ({
     gifs: [],
     GIPHY_KEY: "lcUOyzUQjkn8d8MZbdFTekgbf0kD25vt",
-    start_index: 2,
-    limit: 5,
+    offset: 0,
   }),
   actions: {
     resetGifs() {
       this.gifs = [];
-      this.start_index = 2;
+      this.offset = 0;
     },
     async getTrendsGif(start) {
+      start = start ? start : this.offset;
       const response = await axios(
-        `https://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_KEY}&offset=${start}&limit=${this.limit}`
+        `https://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_KEY}&offset=${start}`
       );
       this.gifs.push(...response.data.data);
-      this.start_index = start + this.limit; // Permet d'afficher les prochains gifs plutôt que de réafficher les mêmes
+      this.offset = start + this.limit; // Permet d'afficher les prochains gifs plutôt que de réafficher les mêmes
+    },
+    async searchGif(start, q) {
+      const response = await axios(
+        `https://api.giphy.com/v1/gifs/search?api_key=${this.GIPHY_KEY}&offset=${start}&q=${q}`
+      );
+      this.gifs.push(...response.data.data);
+      this.offset = start + this.limit;
     },
   },
 });

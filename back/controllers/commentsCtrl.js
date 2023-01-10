@@ -1,4 +1,4 @@
-import { comment } from "../db/sequelize.js";
+import { comment, user } from "../db/sequelize.js";
 import fs from "fs";
 
 /* COMMENT Controller */
@@ -10,6 +10,7 @@ const commentController = {
       try {
         const Comment = await comment.create({
           author: req.auth.userId,
+          postId: parseInt(req.params.postId),
           content: req.body.content ? req.body.content : null,
           imageUrl: req.file?.filename
             ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
@@ -22,7 +23,7 @@ const commentController = {
     }
   },
   updateOne: async (req, res) => {
-    const Comment = await comment.findbyPk(req.params.id);
+    const Comment = await comment.findByPk(req.params.commentId);
     if (
       !Comment ||
       (req.auth.userId !== Comment.author && req.auth.role === false)
@@ -35,7 +36,6 @@ const commentController = {
       await Comment.update({
         content: req.body.content || null,
       });
-
       // send the updated comment as the response
       res.status(200).send(Comment);
     } catch (err) {
@@ -43,21 +43,8 @@ const commentController = {
       res.status(400).send(err);
     }
   },
-  getAll: async (_, res) => {
-    try {
-      let allComments = [];
-      allComments = await comment.findAll({
-        order: [
-          ["createdAt", "DESC"], // Du plus récent au moins récent
-        ],
-      });
-      res.status(200).send(allComments);
-    } catch {
-      res.status(400);
-    }
-  },
   deleteOne: async (req, res) => {
-    const Comment = await comment.findByPk(req.params.id);
+    const Comment = await comment.findByPk(req.params.commentId);
     if (
       !Comment ||
       (req.auth.userId !== Comment.author && req.auth.role === false)

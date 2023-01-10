@@ -8,8 +8,13 @@
     <div class="icon" @click="openGifPanel">
       <fa icon="fa-solid fa-image" />
     </div>
-    <div :class="downOrUp" v-show="showGifPanel === true">
-      <input class="researchBar" placeholder="Rechercher" />
+    <div :class="tooltipClass" v-show="isGifPanelOpen === true">
+      <input
+        class="researchBar"
+        placeholder="Rechercher"
+        v-model="searchedTerm"
+        @input="showSearchedGifs"
+      />
       <div class="displayGifs" ref="gifPanel" @scroll="displayNextGifs()">
         <img
           v-for="gif of gifStore.gifs"
@@ -27,65 +32,83 @@ import { useGiphyStore } from "../../stores";
 
 const gifStore = useGiphyStore();
 const gifPanel = ref(null);
-const showGifPanel = ref(false);
 const btn = ref(null);
 const spaceUp = ref(null);
+const isGifPanelOpen = ref(false);
+const searchedTerm = ref("");
 
-const openGifPanel = () => {
-  gifStore.resetGifs();
-  gifStore.getTrendsGif(gifStore.start_index);
-  showGifPanel.value = !showGifPanel.value;
-  gifPanel.value.scrollTop = 0;
-};
-
-const downOrUp = computed(() => {
+const tooltipClass = computed(() => {
   return {
     "tooltip-up": spaceUp.value === true,
     "tooltip-down": spaceUp.value === false,
     tooltip: true, // default class
   };
 });
-/* Ferme le gif panel, reset l'index de début (pour l'affichage des gifs), vide le tableau des gifs
-rq : la directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
-const closeGifPanel = () => {
-  if (showGifPanel.value === true) {
-    gifPanel.value.scrollTop = 0;
-    showGifPanel.value = false;
+
+const calculateAvailableSpace = () => {
+  const clientHeight = document.documentElement.clientHeight;
+  const bottomToCenterBtn =
+    clientHeight -
+    btn.value.getBoundingClientRect().top -
+    btn.value.style.width / 2;
+  if (bottomToCenterBtn > clientHeight / 2) {
+    spaceUp.value = false; // More space down
+  } else {
+    spaceUp.value = true; // More space up
   }
 };
 
-/* Appelle l'api GIPHY à chaque fois qu'on arrive à la fin du scroll de la tooltip */
+const openGifPanel = () => {
+  gifStore.resetGifs();
+  gifStore.getTrendsGif();
+  searchedTerm.value = "";
+  isGifPanelOpen.value = !isGifPanelOpen.value;
+  gifPanel.value.scrollTop = 0;
+};
+
+/* La directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
+const closeGifPanel = () => {
+  if (isGifPanelOpen.value === true) {
+    gifPanel.value.scrollTop = 0;
+    isGifPanelOpen.value = false;
+    searchedTerm.value = "";
+  }
+};
+
+const showSearchedGifs = async () => {
+  if (searchedTerm.value === "") {
+    await gifStore.resetGifs();
+    await gifStore.getTrendsGif();
+  } else {
+    // If user clears the input
+    await gifStore.resetGifs();
+    await gifStore.searchGif(gifStore.offset, searchedTerm.value);
+  }
+};
+
+/* Infinite scroll */
 const displayNextGifs = () => {
-  let start = useGiphyStore().start_index;
   if (
     gifPanel.value.scrollTop + gifPanel.value.clientHeight >=
       gifPanel.value.scrollHeight &&
-    showGifPanel.value === true
+    isGifPanelOpen.value === true
   ) {
-    console.log(start);
-    console.log("test");
-    gifStore.getTrendsGif(start);
-    start = start + 2;
+    if (searchedTerm.value !== "") {
+      let start = gifStore.offset;
+      gifStore.searchGif(start, searchedTerm.value);
+      start = start + 2;
+      console.log(searchedTerm.value);
+    } else {
+      let start = gifStore.offset;
+      gifStore.getTrendsGif(start);
+      start = start + 2;
+    }
   }
 };
 
 const showUrl = (e) => {
   console.log(e.target.src);
 };
-
-function calculateAvailableSpace() {
-  const clientHeight = document.documentElement.clientHeight;
-  const bottomToCenterBtn =
-    clientHeight -
-    btn.value.getBoundingClientRect().top -
-    btn.value.style.width / 2;
-  console.log(bottomToCenterBtn);
-  if (bottomToCenterBtn > clientHeight / 2) {
-    spaceUp.value = false; // + de place en bas
-  } else {
-    spaceUp.value = true; // + de place en haut
-  }
-}
 
 /* Ne surtout pas faire le onMounted pour appeler l'api GIPHY au niveau de composant car il se fera autant de fois que le composant est appelé (= nombre de posts sur la page) */
 onMounted(() => {
@@ -115,7 +138,6 @@ onMounted(() => {
   z-index: 999;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   background: rgb(39, 39, 39);
   min-width: 250px;

@@ -1,5 +1,6 @@
-import { post, react, user } from "../db/sequelize.js"; // sans les { } il ne reconnait pas posts car il n'a pas été exporté avec export default
+import { post, react, user, comment } from "../db/sequelize.js"; // sans les { } il ne reconnait pas posts car il n'a pas été exporté avec export default
 import fs from "fs";
+import { Op } from "sequelize";
 
 /* Controller POST */
 const postController = {
@@ -15,7 +16,7 @@ const postController = {
           imageUrl: req.file?.filename
             ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
             : null,
-          autor: req.auth.userId,
+          author: req.auth.userId,
         });
         res.status(200).send(Post);
       } catch (err) {
@@ -25,12 +26,40 @@ const postController = {
   },
   getOne: async (req, res) => {
     try {
+      const myComment = await comment.findAll({
+        where: {
+          author: req.auth.userId,
+        },
+        order: [["createdAt", "DESC"]],
+        attributes: ["content", "imageUrl"],
+      });
+      const otherComments = await comment.findAll({
+        where: {
+          postId: req.params.id,
+          author: {
+            [Op.ne]: req.auth.userId, // Ne mets pas les commentaires de l'utilisateurs
+          },
+        },
+        order: [["createdAt", "DESC"]],
+      });
       const Post = await post.findOne({
         where: {
           id: req.params.id,
         },
-        include: [react, user],
+        include: [
+          react,
+          {
+            model: user,
+            attributes: ["firstName", "lastName", "profilPicture"],
+          },
+        ],
       });
+      if (myComment.length !== 0) {
+        Post.setDataValue("myComment", myComment);
+      }
+      if (otherComments.length !== 0) {
+        Post.setDataValue("otherComments", otherComments);
+      }
       res.status(200).send(Post);
     } catch {
       res.status(400);
@@ -49,6 +78,7 @@ const postController = {
             model: user,
             attributes: ["firstName", "lastName", "profilPicture"],
           },
+          comment,
         ],
       });
       res.status(200).send(allPosts);
