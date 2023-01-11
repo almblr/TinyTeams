@@ -24,8 +24,12 @@ export const usePostStore = defineStore("post", {
       const data = await response.json();
       return data;
     },
-    async getAll() {
-      const response = await fetch("http://localhost:3000/api/posts/getAll");
+    async getAll(token) {
+      const response = await fetch("http://localhost:3000/api/posts/getAll", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       this.posts = data;
     },

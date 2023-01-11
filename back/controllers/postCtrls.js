@@ -50,7 +50,7 @@ const postController = {
           react,
           {
             model: user,
-            attributes: ["firstName", "lastName", "profilPicture"],
+            attributes: ["id", "firstName", "lastName", "profilPicture"],
           },
         ],
       });
@@ -67,8 +67,7 @@ const postController = {
   },
   getAll: async (req, res) => {
     try {
-      let allPosts = [];
-      allPosts = await post.findAll({
+      let allPosts = await post.findAll({
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
@@ -78,14 +77,36 @@ const postController = {
             model: user,
             attributes: ["firstName", "lastName", "profilPicture"],
           },
-          comment,
         ],
       });
+
+      for (const post of allPosts) {
+        const myComment = await comment.findAll({
+          where: {
+            author: req.auth.userId,
+            postId: post.id,
+          },
+          order: [["createdAt", "DESC"]],
+          attributes: ["content", "imageUrl"],
+        });
+        const otherComments = await comment.findAll({
+          where: {
+            postId: post.id,
+            author: {
+              [Op.ne]: req.auth.userId, // Ne mets pas les commentaires de l'utilisateurs
+            },
+          },
+          order: [["createdAt", "DESC"]],
+        });
+        post.setDataValue("myComment", myComment);
+        post.setDataValue("otherComments", otherComments);
+      }
       res.status(200).send(allPosts);
     } catch {
       res.status(400);
     }
   },
+
   updateOne: async (req, res) => {
     const Post = await post.findByPk(req.params.id);
     if (!Post || (req.auth.userId !== Post.author && req.auth.role === false)) {

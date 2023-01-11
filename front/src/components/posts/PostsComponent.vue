@@ -39,7 +39,12 @@
           >
             ❤
           </span>
-          <span class="nbrCom">1 commentaire</span>
+          <span class="nbrCom"
+            >{{
+              post.myComment.length + post.otherComments.length
+            }}
+            commentaire</span
+          >
         </div>
         <div class="post__footer__button" @click="updateLike(post.id)">
           <fa
@@ -55,14 +60,19 @@
         <div class="post__footer__comments">
           <div class="post__footer__comments__writeComment">
             <div class="post__profilPicture">
-              <img :src="post.user.profilPicture" alt="Photo de profil" />
+              <ProfilPicture
+                :url="post.user.profilPicture"
+                alt="Photo de profil"
+              />
             </div>
             <textarea
+              ref="textarea"
               placeholder="Ecrivez quelque chose..."
               @keydown.enter="sendComment($event, post.id)"
               @dragover.prevent="makeItRed($event)"
               @drop.prevent="dropTest($event, post.id)"
               @dragleave.prevent="makeItInit($event)"
+              @input="autoResizing(textarea)"
             ></textarea>
             <div class="post__footer__comments__writeComment__buttons">
               <div title="Insérez une image" @click="!showing">
@@ -81,14 +91,7 @@
           />
           <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
           <div class="post__footer__comments__allComments">
-            <div
-              class="post__footer__comments__allComments__myComments"
-              v-if="post.myComment.length !== 0"
-            ></div>
-            <div class="post__profilPicture">
-              <img :src="post.user.profilPicture" alt="Photo de profil" />
-              <p></p>
-            </div>
+            <CommentSection :postDataComments="post" />
           </div>
         </div>
       </footer>
@@ -119,9 +122,12 @@ import "dayjs/locale/fr";
 import relativeTime from "dayjs/plugin/relativeTime";
 import DividerComponent from "../layout/DividerComponent.vue";
 import GifTooltipComponent from "./GifTooltipComponent.vue";
+import CommentSection from "./CommentSection.vue";
+import ProfilPicture from "./ProfilPicture.vue";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
+const textarea = ref("");
 const imageDroped = ref({});
 const postStore = usePostStore();
 const commentStore = useCommentStore();
@@ -135,6 +141,12 @@ const inputImageComment = ref(null);
 const postToModify = ref(null);
 let showModifyModal = ref(false);
 let showing = ref(false);
+
+const autoResizing = (el) => {
+  console.log(el.value);
+  // el.style.height = "50px";
+  // el.style.height = `${el.scrollHeight}px`;
+};
 
 const makeItRed = (e) => {
   e.target.style.backgroundColor = "red";
@@ -153,16 +165,16 @@ const dropTest = (e, postId) => {
   e.target.style.transition = "0ms";
 };
 
-const modifyPost = async (id) => {
-  postToModify.value = postStore.posts.find((post) => post.id === id);
-  showModifyModal.value = true;
-  await nextTick();
-};
+// const modifyPost = async (id) => {
+//   postToModify.value = postStore.posts.find((post) => post.id === id);
+//   showModifyModal.value = true;
+//   await nextTick();
+// };
 
-const deletePost = async (postId, token) => {
-  await postStore.deleteOne(postId, token);
-  await postStore.getAll();
-};
+// const deletePost = async (postId, token) => {
+//   await postStore.deleteOne(postId, token);
+//   await postStore.getAll();
+// };
 
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
 const checkLikeState = (postId) => {
@@ -183,11 +195,11 @@ const updateLike = async (postId) => {
   const doesUserLike = postReactions.find((react) => react.userId === userId);
   if (doesUserLike === undefined) {
     await likeStore.likePost(token, postId);
-    await postStore.getAll();
+    await postStore.getAll(token);
     return true;
   } else {
     await likeStore.likePost(token, postId);
-    await postStore.getAll();
+    await postStore.getAll(token);
     return false;
   }
 };
@@ -197,14 +209,13 @@ const sendComment = async (e, postId) => {
   formData.append("content", e.target.value);
   formData.append("imageUrl", inputImageComment.value);
   await commentStore.createOne(postId, formData, token);
-  console.log("commentaire envoyé");
+  await postStore.getAll(token);
   e.target.value = null;
 };
 
 /* Au chargement de la page */
 onMounted(() => {
-  postStore.getAll();
-  commentStore.getAll();
+  postStore.getAll(token);
 });
 </script>
 
@@ -359,8 +370,7 @@ onMounted(() => {
           border: 1px solid #c0c2c4;
           border-radius: 20px;
           height: 35px;
-          padding-left: 15px;
-          padding-top: 5px;
+          padding: 5px 70px 5px 15px;
           &:focus {
             outline: none;
           }

@@ -1,11 +1,11 @@
 <template>
-  <button :type="buttonType">
-    <span>{{ text }}</span>
+  <button :type="props.buttonType">
+    <span>{{ props.text }}</span>
   </button>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   buttonType: {
     type: String,
     required: true,
