@@ -1,101 +1,81 @@
 <template>
-  <div class="posts">
-    <div
-      class="post"
-      v-for="post of postStore.posts"
-      :key="post.id"
-      :id="post.id"
-    >
-      <header class="post__header">
-        <div class="post__header__user">
-          <div class="post__header__user__pic">
-            <img :src="post.user.profilPicture" alt="Photo de profil" />
-          </div>
-          <div class="post__header__user__name">
-            <h2>{{ post.user.firstName }} {{ post.user.lastName }}</h2>
-            <span>Posté {{ dayjs().to(dayjs(post.createdAt)) }}</span>
-          </div>
-        </div>
-      </header>
-      <p class="post__text" v-show="post.content !== null">
-        {{ post.content }}
-      </p>
-      <div class="post__image">
-        <img
-          :src="post.imageUrl"
-          v-if="post.imageUrl !== null"
-          ref="postImage"
-        />
-      </div>
-      <footer class="post__footer">
-        <div class="post__footer__stats">
-          <span class="nbrLike">{{ post.reactions.length }}</span>
-          <span
-            ref="likeBtn"
-            :class="{
-              emptyHeart: checkLikeState(post.id) === true,
-              coloredHeart: checkLikeState(post.id) === false,
-            }"
-          >
-            ❤
-          </span>
-          <span class="nbrCom"
-            >{{
-              post.myComment.length + post.otherComments.length
-            }}
-            commentaire</span
-          >
-        </div>
-        <div class="post__footer__button" @click="updateLike(post.id)">
-          <fa
-            icon="fa-solid fa-thumbs-up"
-            :class="{
-              emptylikeBtn: checkLikeState(post.id) === true,
-              coloredLikeBtn: checkLikeState(post.id) === false,
-            }"
-          />
-          <span>J'aime</span>
-        </div>
-        <DividerComponent width="99%" height="1px" backgroundColor="#c0c2c4" />
-        <div class="post__footer__comments">
-          <div class="post__footer__comments__writeComment">
-            <div class="post__profilPicture">
-              <ProfilPicture
-                :url="post.user.profilPicture"
-                alt="Photo de profil"
-              />
-            </div>
-            <textarea
-              ref="textarea"
-              placeholder="Ecrivez quelque chose..."
-              @keydown.enter="sendComment($event, post.id)"
-              @dragover.prevent="makeItRed($event)"
-              @drop.prevent="dropTest($event, post.id)"
-              @dragleave.prevent="makeItInit($event)"
-              @input="autoResizing(textarea)"
-            ></textarea>
-            <div class="post__footer__comments__writeComment__buttons">
-              <div title="Insérez une image" @click="!showing">
-                <fa icon="fa-solid fa-camera" class="addImage" />
-              </div>
-              <div title="Insérer un gif">
-                <GifTooltipComponent />
-              </div>
-            </div>
-          </div>
-          <input
-            class="inputImageComment"
-            type="file"
-            ref="imgComment"
-            accept="image/png, image/jpg, image/jpeg"
-          />
-          <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
-          <div class="post__footer__comments__allComments">
-            <CommentSection :postDataComments="post" />
-          </div>
-        </div>
-      </footer>
+  <div
+    class="post"
+    v-for="post of postStore.posts"
+    :key="post.id"
+    :id="post.id"
+  >
+    <PostHeaderComponent
+      :imageUrl="post.user.profilPicture"
+      :firstName="post.user.firstName"
+      :lastName="post.user.lastName"
+      :createdAt="post.createdAt"
+    />
+    <p class="post__text" v-show="post.content !== null">
+      {{ post.content }}
+    </p>
+    <div class="post__image">
+      <img :src="post.imageUrl" v-if="post.imageUrl !== null" ref="postImage" />
     </div>
+    <footer class="post__footer">
+      <div class="post__footer__stats">
+        <span class="nbrLike">{{ post.reactions.length }}</span>
+        <span
+          ref="likeBtn"
+          :class="{
+            emptyHeart: checkLikeState(post.id) === true,
+            coloredHeart: checkLikeState(post.id) === false,
+          }"
+        >
+          ❤
+        </span>
+        <span class="nbrCom">{{ totalComments(post) }} commentaire</span>
+      </div>
+      <div class="post__footer__button" @click="updateLike(post.id)">
+        <fa
+          icon="fa-solid fa-thumbs-up"
+          :class="{
+            emptylikeBtn: checkLikeState(post.id) === true,
+            coloredLikeBtn: checkLikeState(post.id) === false,
+          }"
+        />
+        <span>J'aime</span>
+      </div>
+      <DividerComponent width="99%" height="1px" backgroundColor="#c0c2c4" />
+      <div class="post__footer__comments">
+        <div class="post__footer__comments__writeComment">
+          <div class="post__profilPicture">
+            <ProfilPicture
+              :url="post.user.profilPicture"
+              alt="Photo de profil"
+            />
+          </div>
+          <textarea
+            placeholder="Ecrivez quelque chose..."
+            @keydown.enter="sendComment($event, post.id)"
+            @input="autoResizing($event)"
+          ></textarea>
+          <div class="post__footer__comments__writeComment__buttons">
+            <div title="Insérez une image" @click="!showing">
+              <fa icon="fa-solid fa-camera" class="addImage" />
+            </div>
+            <div title="Insérer un gif">
+              <GifTooltipComponent />
+            </div>
+          </div>
+        </div>
+        <input
+          class="inputImageComment"
+          type="file"
+          ref="imgComment"
+          accept="image/png, image/jpg, image/jpeg"
+        />
+        <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
+        <div class="post__footer__comments__allComments">
+          <CommentSection :postDataComments="post" />
+        </div>
+      </div>
+    </footer>
   </div>
   <Teleport to="body">
     <post-modal
@@ -110,25 +90,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted } from "vue";
 import {
   usePostStore,
   useCommentStore,
   useLikeStore,
 } from "../../stores/index.js";
 import PostModal from "./PostModalComponent.vue";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
-import relativeTime from "dayjs/plugin/relativeTime";
 import DividerComponent from "../layout/DividerComponent.vue";
 import GifTooltipComponent from "./GifTooltipComponent.vue";
-import CommentSection from "./CommentSection.vue";
-import ProfilPicture from "./ProfilPicture.vue";
-dayjs.locale("fr");
-dayjs.extend(relativeTime);
+import CommentSection from "./CommentSectionComponent.vue";
+import ProfilPicture from "./ProfilPictureComponent.vue";
+import PostHeaderComponent from "./PostHeaderComponent.vue";
 
-const textarea = ref("");
-const imageDroped = ref({});
 const postStore = usePostStore();
 const commentStore = useCommentStore();
 const likeStore = useLikeStore();
@@ -139,30 +113,17 @@ const likeBtn = ref(null);
 const postImage = ref(null);
 const inputImageComment = ref(null);
 const postToModify = ref(null);
+const imageDroped = ref({});
 let showModifyModal = ref(false);
 let showing = ref(false);
 
+const totalComments = (post) => {
+  return post.myComment.length + post.otherComments.length;
+};
+
 const autoResizing = (el) => {
-  console.log(el.value);
-  // el.style.height = "50px";
-  // el.style.height = `${el.scrollHeight}px`;
-};
-
-const makeItRed = (e) => {
-  e.target.style.backgroundColor = "red";
-  e.target.style.transition = "600ms";
-};
-
-const makeItInit = (e) => {
-  e.target.style.backgroundColor = "initial";
-};
-
-const dropTest = (e, postId) => {
-  console.log(e.dataTransfer.files[0]);
-  imageDroped.value[postId] = URL.createObjectURL(e.dataTransfer.files[0]);
-  inputImageComment.value = e.dataTransfer.files[0];
-  e.target.style.backgroundColor = "initial";
-  e.target.style.transition = "0ms";
+  el.target.style.height = "35px";
+  el.target.style.height = `${el.target.scrollHeight}px`;
 };
 
 // const modifyPost = async (id) => {
@@ -220,21 +181,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.posts {
-  @include fdCol-aaCt;
-  width: 100%;
-  gap: 30px;
-  padding-bottom: 20px;
-
-  & p {
-    color: black;
-  }
-  & img {
-    width: 200px;
-    height: 200px;
-  }
-}
-
 .post {
   @include fdCol-aaCt;
   width: 95%;
@@ -252,47 +198,6 @@ onMounted(() => {
       height: 100%;
       border-radius: 25px;
       object-fit: cover;
-    }
-  }
-  &__header {
-    background-color: rgb(248, 248, 248);
-    display: flex;
-    justify-content: space-between;
-    padding: 1% 3%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    width: 100%;
-    & * {
-      overflow: hidden !important;
-      white-space: nowrap !important;
-      text-overflow: ellipsis !important;
-    }
-    &__user {
-      display: flex;
-      max-width: 100%;
-      gap: 10px;
-      &__pic {
-        width: 50px;
-        min-width: 50px;
-        height: 50px;
-        border-radius: 25px;
-        & img {
-          width: 100%;
-          height: 100%;
-          border-radius: 25px;
-          object-fit: cover;
-        }
-      }
-      &__name {
-        display: flex;
-        flex-direction: column;
-        & h2 {
-          font-size: 1em;
-        }
-        & span {
-          font-size: 1em;
-        }
-      }
     }
   }
   &__date {
@@ -368,6 +273,7 @@ onMounted(() => {
           resize: none;
           width: 100%;
           border: 1px solid #c0c2c4;
+          max-height: 250px;
           border-radius: 20px;
           height: 35px;
           padding: 5px 70px 5px 15px;

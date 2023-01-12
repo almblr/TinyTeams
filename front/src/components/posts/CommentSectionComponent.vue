@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import ProfilPicture from "./ProfilPicture.vue";
+import ProfilPicture from "./ProfilPictureComponent.vue";
 
 const props = defineProps({
   postDataComments: Object,
@@ -51,7 +51,7 @@ const data = props.postDataComments;
       min-width: 100px;
       height: min-content;
       border-radius: 25px;
-      background-color: rgb(218, 218, 218);
+      background-color: rgb(219, 219, 219);
       padding: 5px 15px;
       & h3 {
         font-size: 15px;

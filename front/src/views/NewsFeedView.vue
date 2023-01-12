@@ -1,7 +1,9 @@
 <template>
   <the-header />
   <main>
-    <PostsComponent />
+    <div class="posts">
+      <PostComponent />
+    </div>
   </main>
   <button class="createPost" @click="showCreateModal = true">
     <fa icon="fa-solid fa-feather" class="show-modal test" />
@@ -21,7 +23,7 @@
 import { ref, nextTick } from "vue";
 import PostModal from "@/components/posts/PostModalComponent.vue";
 import TheHeader from "@/components/layout/TheHeaderComponent.vue";
-import PostsComponent from "@/components/posts/PostsComponent.vue";
+import PostComponent from "@/components/posts/PostComponent.vue";
 import { usePostStore } from "@/stores/index.js";
 const postStore = usePostStore();
 
@@ -44,6 +46,20 @@ main {
   padding-top: 6em;
   &__header {
     height: 50px;
+  }
+}
+.posts {
+  @include fdCol-aaCt;
+  width: 100%;
+  gap: 30px;
+  padding-bottom: 20px;
+
+  & p {
+    color: black;
+  }
+  & img {
+    width: 200px;
+    height: 200px;
   }
 }
 /* SCROLLBAR */
