@@ -38,7 +38,7 @@ const closeCreateModal = async () => {
 
 <style lang="scss" scoped>
 main {
-  @include fdCol-aaCt;
+  @include fdCol-aiCt;
   @include width-height_max;
   row-gap: 30px;
   background-color: rgb(240, 240, 240);
@@ -49,7 +49,7 @@ main {
   }
 }
 .posts {
-  @include fdCol-aaCt;
+  @include fdCol-aiCt;
   width: 100%;
   gap: 30px;
   padding-bottom: 20px;

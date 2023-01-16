@@ -178,27 +178,28 @@ export const useGiphyStore = defineStore("gif", {
   state: () => ({
     gifs: [],
     GIPHY_KEY: "lcUOyzUQjkn8d8MZbdFTekgbf0kD25vt",
-    offset: 0,
+    offset_trends: 0,
+    offset_search: 0,
   }),
   actions: {
     resetGifs() {
       this.gifs = [];
-      this.offset = 0;
+      this.offset_trends = 0;
+      this.offset_search = 0;
     },
-    async getTrendsGif(start) {
-      start = start ? start : this.offset;
+    async getTrendsGif() {
       const response = await axios(
-        `https://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_KEY}&offset=${start}`
+        `https://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_KEY}&offset=${this.offset_trends}&limit=5`
       );
+      this.offset_trends += 5;
       this.gifs.push(...response.data.data);
-      this.offset = start + this.limit; // Permet d'afficher les prochains gifs plutôt que de réafficher les mêmes
     },
-    async searchGif(start, q) {
+    async searchGif(q) {
       const response = await axios(
-        `https://api.giphy.com/v1/gifs/search?api_key=${this.GIPHY_KEY}&offset=${start}&q=${q}`
+        `https://api.giphy.com/v1/gifs/search?api_key=${this.GIPHY_KEY}&offset=${this.offset_search}&q=${q}&limit=5`
       );
+      this.offset_search += 5;
       this.gifs.push(...response.data.data);
-      this.offset = start + this.limit;
     },
   },
 });

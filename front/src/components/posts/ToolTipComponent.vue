@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tooltipBtn"
+    class="btn"
     ref="btn"
     v-click-outside-element="closeTooltip"
     @click="calculateAvailableSpace"
@@ -9,26 +9,20 @@
       <fa icon="fa-solid fa-ellipsis" />
     </div>
     <div class="tooltip" v-show="isTooltipOpen === true">
-      <div>Modifier</div>
-      <div>Supprimer</div>
+      <span>Modifier</span>
+      <span>Supprimer</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, inject } from "vue";
 
 const btn = ref(null);
 const spaceUp = ref(null);
 const isTooltipOpen = ref(false);
-
-const tooltipClass = computed(() => {
-  return {
-    "tooltip-up": spaceUp.value === true,
-    "tooltip-down": spaceUp.value === false,
-    tooltip: true, // default class
-  };
-});
+const trucPourLaConsole = inject("post");
+console.log(trucPourLaConsole);
 
 const calculateAvailableSpace = () => {
   const clientHeight = document.documentElement.clientHeight;
@@ -53,13 +47,22 @@ const closeTooltip = () => {
     isTooltipOpen.value = false;
   }
 };
+
+const modifyPost = async (id) => {
+  postToModify.value = postStore.posts.find((post) => post.id === id);
+  showModifyModal.value = true;
+  await nextTick();
+};
+
+const deletePost = async (postId, token) => {
+  await postStore.deleteOne(postId, token);
+  await postStore.getAll();
+};
 </script>
 
 <style lang="scss" scoped>
-.tooltipBtn {
-  position: absolute;
-  right: 10px;
-  color: #424242;
+.btn {
+  position: relative;
   top: 5px;
   &:hover {
     cursor: pointer;
@@ -71,18 +74,23 @@ const closeTooltip = () => {
 }
 
 .tooltip {
-  position: relative;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgb(39, 39, 39);
-  min-width: 50px;
-  color: #f1f1f1;
-  font-size: 16px;
+  @include fdCol-aiCt;
+  position: absolute;
   right: 0px;
-  & > div {
-    min-width: 50px;
+  z-index: 999;
+  background: rgb(0, 0, 0);
+  opacity: 0.8;
+  border-radius: 5px !important;
+  overflow: hidden; // Permet de ne pas ignorer les bordures au hover
+  & > span {
+    min-width: 100px;
+    color: white;
+    text-align: center;
+    transition: 200ms;
+    padding: 5px 0px;
+    &:hover {
+      background: rgb(14, 14, 14);
+    }
   }
 }
 </style>

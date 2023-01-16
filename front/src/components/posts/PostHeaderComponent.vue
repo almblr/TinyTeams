@@ -9,7 +9,7 @@
         <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
       </div>
     </div>
-    <ToolTipComponent></ToolTipComponent>
+    <ToolTipComponent />
   </header>
 </template>
 
@@ -39,15 +39,15 @@ const props = defineProps({
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   width: 100%;
-  & * {
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-  }
   &__user {
     display: flex;
     max-width: 100%;
     gap: 10px;
+    & * {
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
     &__pic {
       width: 50px;
       min-width: 50px;

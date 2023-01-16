@@ -170,7 +170,7 @@ onMounted(() => {
 }
 
 .main {
-  @include fdCol-aaCt;
+  @include fdCol-aiCt;
   @include width-height_max;
   justify-content: center;
   flex-wrap: nowrap;

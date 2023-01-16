@@ -94,14 +94,10 @@ const displayNextGifs = () => {
     isGifPanelOpen.value === true
   ) {
     if (searchedTerm.value !== "") {
-      let start = gifStore.offset;
-      gifStore.searchGif(start, searchedTerm.value);
-      start = start + 2;
+      gifStore.searchGif(searchedTerm.value);
       console.log(searchedTerm.value);
     } else {
-      let start = gifStore.offset;
-      gifStore.getTrendsGif(start);
-      start = start + 2;
+      gifStore.getTrendsGif();
     }
   }
 };
@@ -134,17 +130,13 @@ onMounted(() => {
   top: -300px;
 }
 .tooltip {
+  @include fdCol-aiCt;
   position: absolute;
+  right: 0px;
   z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   background: rgb(39, 39, 39);
   min-width: 250px;
   height: 290px;
-  color: #f1f1f1;
-  font-size: 16px;
-  right: 0px;
   & > .researchBar {
     margin: 5px 0;
     background-color: #e0e0e0;

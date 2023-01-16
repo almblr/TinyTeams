@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, provide } from "vue";
 import {
   usePostStore,
   useCommentStore,
@@ -117,6 +117,8 @@ const imageDroped = ref({});
 let showModifyModal = ref(false);
 let showing = ref(false);
 
+provide("post", postToModify);
+
 const totalComments = (post) => {
   return post.myComment.length + post.otherComments.length;
 };
@@ -125,17 +127,6 @@ const autoResizing = (el) => {
   el.target.style.height = "35px";
   el.target.style.height = `${el.target.scrollHeight}px`;
 };
-
-// const modifyPost = async (id) => {
-//   postToModify.value = postStore.posts.find((post) => post.id === id);
-//   showModifyModal.value = true;
-//   await nextTick();
-// };
-
-// const deletePost = async (postId, token) => {
-//   await postStore.deleteOne(postId, token);
-//   await postStore.getAll();
-// };
 
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
 const checkLikeState = (postId) => {
@@ -182,7 +173,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .post {
-  @include fdCol-aaCt;
+  @include fdCol-aiCt;
   width: 95%;
   max-width: 700px;
   min-width: 260px;
