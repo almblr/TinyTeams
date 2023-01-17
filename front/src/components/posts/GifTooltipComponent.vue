@@ -136,7 +136,7 @@ onMounted(() => {
   z-index: 999;
   background: rgb(39, 39, 39);
   min-width: 250px;
-  height: 290px;
+  height: 310px;
   & > .researchBar {
     margin: 5px 0;
     background-color: #e0e0e0;
@@ -152,7 +152,7 @@ onMounted(() => {
   & > .displayGifs {
     display: flex;
     flex-flow: row wrap;
-    max-height: 250px;
+    max-height: 270px;
     overflow: scroll;
   }
   & > .displayGifs > img {

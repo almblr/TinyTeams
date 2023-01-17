@@ -9,20 +9,38 @@
       <fa icon="fa-solid fa-ellipsis" />
     </div>
     <div class="tooltip" v-show="isTooltipOpen === true">
-      <span>Modifier</span>
-      <span>Supprimer</span>
+      <span @click="modifyPost(props.postId)">Modifier</span>
+      <span @click="deletePost(props.postId, token)">Supprimer</span>
     </div>
+    <Teleport to="body">
+      <post-modal
+        :show="showModifyModal"
+        @close="closeModifyModal"
+        :modalType="'Modify'"
+        :post="postToModify"
+      >
+      </post-modal>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { ref, nextTick } from "vue";
+import { usePostStore } from "../../stores";
+import PostModal from "./PostModalComponent.vue";
 
+const postStore = usePostStore();
 const btn = ref(null);
 const spaceUp = ref(null);
 const isTooltipOpen = ref(false);
-const trucPourLaConsole = inject("post");
-console.log(trucPourLaConsole);
+const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
+const token = locStr.token;
+const postToModify = ref({});
+let showModifyModal = ref(false);
+
+const props = defineProps({
+  postId: { type: Number, required: true },
+});
 
 const calculateAvailableSpace = () => {
   const clientHeight = document.documentElement.clientHeight;
@@ -48,15 +66,20 @@ const closeTooltip = () => {
   }
 };
 
+const closeModifyModal = async () => {
+  showModifyModal.value = false;
+  await postStore.getAll(token);
+};
+
 const modifyPost = async (id) => {
   postToModify.value = postStore.posts.find((post) => post.id === id);
   showModifyModal.value = true;
   await nextTick();
 };
 
-const deletePost = async (postId, token) => {
-  await postStore.deleteOne(postId, token);
-  await postStore.getAll();
+const deletePost = async (id, token) => {
+  await postStore.deleteOne(id, token);
+  await postStore.getAll(token);
 };
 </script>
 

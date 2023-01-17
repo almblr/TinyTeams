@@ -6,6 +6,7 @@
     :id="post.id"
   >
     <PostHeaderComponent
+      :postId="post.id"
       :imageUrl="post.user.profilPicture"
       :firstName="post.user.firstName"
       :lastName="post.user.lastName"
@@ -77,26 +78,16 @@
       </div>
     </footer>
   </div>
-  <Teleport to="body">
-    <post-modal
-      :show="showModifyModal"
-      @close="showModifyModal = false"
-      :modalType="'Modify'"
-      :post="postToModify"
-    >
-    </post-modal>
-  </Teleport>
   <!-- :show sert à basculer la propriété display d'un élément -->
 </template>
 
 <script setup>
-import { ref, onMounted, provide } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import {
   usePostStore,
   useCommentStore,
   useLikeStore,
 } from "../../stores/index.js";
-import PostModal from "./PostModalComponent.vue";
 import DividerComponent from "../layout/DividerComponent.vue";
 import GifTooltipComponent from "./GifTooltipComponent.vue";
 import CommentSection from "./CommentSectionComponent.vue";
@@ -112,12 +103,8 @@ const userId = locStr.userId;
 const likeBtn = ref(null);
 const postImage = ref(null);
 const inputImageComment = ref(null);
-const postToModify = ref(null);
 const imageDroped = ref({});
-let showModifyModal = ref(false);
 let showing = ref(false);
-
-provide("post", postToModify);
 
 const totalComments = (post) => {
   return post.myComment.length + post.otherComments.length;
@@ -160,9 +147,11 @@ const sendComment = async (e, postId) => {
   const formData = new FormData();
   formData.append("content", e.target.value);
   formData.append("imageUrl", inputImageComment.value);
+  e.target.value = null;
+  e.target.style.height = "35px";
   await commentStore.createOne(postId, formData, token);
   await postStore.getAll(token);
-  e.target.value = null;
+  nextTick();
 };
 
 /* Au chargement de la page */

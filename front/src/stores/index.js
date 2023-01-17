@@ -5,6 +5,7 @@ export const usePostStore = defineStore("post", {
   id: "Post",
   state: () => ({
     posts: [],
+    postToModify: null,
   }),
   getters: {
     getPosts: (state) => {
@@ -42,7 +43,6 @@ export const usePostStore = defineStore("post", {
           Authorization: `Bearer ${token}`,
         },
       });
-      await this.getAll();
     },
     async updateOne(id, data, token) {
       await fetch(`http://localhost:3000/api/posts/updateOne/${id}`, {
@@ -53,7 +53,6 @@ export const usePostStore = defineStore("post", {
           Authorization: `Bearer ${token}`,
         },
       });
-      await this.getAll();
     },
     async deleteOne(id, token) {
       await fetch(`http://localhost:3000/api/posts/deleteOne/${id}`, {
@@ -73,13 +72,6 @@ export const useCommentStore = defineStore("comment", {
     comments: [],
   }),
   actions: {
-    async getAll(postId) {
-      const response = await fetch(
-        `http://localhost:3000/api/posts/${postId}/getAll`
-      );
-      const data = await response.json();
-      this.comments = data;
-    },
     async createOne(postId, data, token) {
       await fetch(`http://localhost:3000/api/posts/${postId}/postComment`, {
         method: "POST",
@@ -89,7 +81,6 @@ export const useCommentStore = defineStore("comment", {
           Authorization: `Bearer ${token}`,
         },
       });
-      await this.getAll();
     },
     async updateOne(id, data, token) {
       await fetch(
@@ -103,7 +94,6 @@ export const useCommentStore = defineStore("comment", {
           },
         }
       );
-      await this.getAll();
     },
     async deleteOne(id, token) {
       await fetch(

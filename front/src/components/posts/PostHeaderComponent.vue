@@ -1,5 +1,5 @@
 <template>
-  <header class="post__header">
+  <header class="post__header" :id="props.postId">
     <div class="post__header__user">
       <div class="post__header__user__pic">
         <img :src="props.imageUrl" alt="Photo de profil" />
@@ -9,7 +9,7 @@
         <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
       </div>
     </div>
-    <ToolTipComponent />
+    <ToolTipComponent :postId="props.postId" />
   </header>
 </template>
 
@@ -22,6 +22,7 @@ dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
 const props = defineProps({
+  postId: { type: Number, required: true },
   imageUrl: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
