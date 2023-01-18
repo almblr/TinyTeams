@@ -73,7 +73,7 @@
         />
         <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
         <div class="post__footer__comments__allComments">
-          <CommentSection :postDataComments="post" />
+          <CommentSection :postDataComments="post" :commentId="post.id" />
         </div>
       </div>
     </footer>
@@ -143,15 +143,15 @@ const updateLike = async (postId) => {
   }
 };
 
-const sendComment = async (e, postId) => {
+const sendComment = async (el, postId) => {
   const formData = new FormData();
-  formData.append("content", e.target.value);
+  formData.append("content", el.target.value);
   formData.append("imageUrl", inputImageComment.value);
-  e.target.value = null;
-  e.target.style.height = "35px";
   await commentStore.createOne(postId, formData, token);
-  await postStore.getAll(token);
-  nextTick();
+  el.target.value = null;
+  el.target.style.height = "35px";
+  await postStore.getOne(postId, token);
+  postStore.posts;
 };
 
 /* Au chargement de la page */

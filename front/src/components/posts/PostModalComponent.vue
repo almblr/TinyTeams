@@ -111,6 +111,7 @@ const sendPost = async () => {
         formData.append("imageUrl", input.value.files[0]);
       }
       await postStore.createOne(formData, token);
+      image.value = null;
       emit("close");
       emptyPost.value === true ? (emptyPost.value = false) : null;
     } else {

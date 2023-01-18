@@ -5,7 +5,6 @@ export const usePostStore = defineStore("post", {
   id: "Post",
   state: () => ({
     posts: [],
-    postToModify: null,
   }),
   getters: {
     getPosts: (state) => {
@@ -22,8 +21,11 @@ export const usePostStore = defineStore("post", {
           },
         }
       );
-      const data = await response.json();
-      return data;
+      const post = await response.json();
+      const postId = post.id;
+      const findPost = this.posts.find((post) => post.id === postId);
+      const index = this.posts.indexOf(findPost);
+      this.posts[index] = post;
     },
     async getAll(token) {
       const response = await fetch("http://localhost:3000/api/posts/getAll", {
