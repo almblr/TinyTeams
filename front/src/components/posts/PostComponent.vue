@@ -151,7 +151,7 @@ const sendComment = async (el, postId) => {
   el.target.value = null;
   el.target.style.height = "35px";
   await postStore.getOne(postId, token);
-  postStore.posts;
+  await postStore.getAll(token);
 };
 
 /* Au chargement de la page */

@@ -6,11 +6,6 @@ export const usePostStore = defineStore("post", {
   state: () => ({
     posts: [],
   }),
-  getters: {
-    getPosts: (state) => {
-      return state.posts;
-    },
-  },
   actions: {
     async getOne(id, token) {
       const response = await fetch(
@@ -25,6 +20,7 @@ export const usePostStore = defineStore("post", {
       const postId = post.id;
       const findPost = this.posts.find((post) => post.id === postId);
       const index = this.posts.indexOf(findPost);
+      console.log(this.posts);
       this.posts[index] = post;
     },
     async getAll(token) {
@@ -122,11 +118,6 @@ export const useUserStore = defineStore("user", {
       password: "",
     },
   }),
-  getters: {
-    getUser(state) {
-      state.user;
-    },
-  },
   actions: {
     async login() {
       const data = {
