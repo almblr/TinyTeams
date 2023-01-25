@@ -7,7 +7,7 @@ export const usePostStore = defineStore("post", {
     posts: [],
   }),
   actions: {
-    async getOne(id, token) {
+    async getOne(token, id) {
       const response = await fetch(
         `http://localhost:3000/api/posts/getOne/${id}`,
         {

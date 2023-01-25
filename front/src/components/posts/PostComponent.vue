@@ -134,11 +134,11 @@ const updateLike = async (postId) => {
   const doesUserLike = postReactions.find((react) => react.userId === userId);
   if (doesUserLike === undefined) {
     await likeStore.likePost(token, postId);
-    await postStore.getAll(token);
+    await postStore.getOne(token, postId);
     return true;
   } else {
     await likeStore.likePost(token, postId);
-    await postStore.getAll(token);
+    await postStore.getOne(token, postId);
     return false;
   }
 };
