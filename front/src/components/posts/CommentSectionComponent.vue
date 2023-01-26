@@ -4,7 +4,7 @@
       class="commentsSection__myComment"
       v-if="data.myComment"
       v-for="comment in data.myComment"
-      :key="comment.id"
+      :key="props.key"
       :id="comment.id"
     >
       <ProfilPicture :url="data.user.profilPicture" :width="40" :height="40" />
@@ -33,6 +33,7 @@ import ProfilPicture from "./ProfilPictureComponent.vue";
 
 const props = defineProps({
   postDataComments: Object,
+  key: Number,
 });
 
 const data = props.postDataComments;

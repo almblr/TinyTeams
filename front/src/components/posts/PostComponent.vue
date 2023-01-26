@@ -73,7 +73,7 @@
         />
         <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
         <div class="post__footer__comments__allComments">
-          <CommentSection :postDataComments="post" :commentId="post.id" />
+          <CommentSection :postDataComments="post" :key="key" />
         </div>
       </div>
     </footer>
@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted } from "vue";
 import {
   usePostStore,
   useCommentStore,
@@ -104,7 +104,8 @@ const likeBtn = ref(null);
 const postImage = ref(null);
 const inputImageComment = ref(null);
 const imageDroped = ref({});
-let showing = ref(false);
+const showing = ref(false);
+const key = ref(0);
 
 const totalComments = (post) => {
   return post.myComment.length + post.otherComments.length;
@@ -150,8 +151,8 @@ const sendComment = async (el, postId) => {
   await commentStore.createOne(postId, formData, token);
   el.target.value = null;
   el.target.style.height = "35px";
-  await postStore.getOne(postId, token);
-  await postStore.getAll(token);
+  await postStore.getOne(token, postId);
+  key.value += 1;
 };
 
 /* Au chargement de la page */
