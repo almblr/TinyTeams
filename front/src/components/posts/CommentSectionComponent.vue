@@ -2,16 +2,14 @@
   <section class="commentsSection">
     <div
       class="commentsSection__myComment"
-      v-if="data.myComment"
-      v-for="comment in data.myComment"
-      :key="props.key"
+      v-if="comments"
+      v-for="comment in comments"
+      :key="comment.id"
       :id="comment.id"
     >
-      <ProfilPicture :url="data.user.profilPicture" :width="40" :height="40" />
+      <ProfilPicture :url="user.profilPicture" :width="40" :height="40" />
       <div>
-        <h3 class="username">
-          {{ data.user.firstName }} {{ data.user.lastName }}
-        </h3>
+        <h3 class="username">{{ user.firstName }} {{ user.lastName }}</h3>
         <p>{{ comment.content }}</p>
       </div>
     </div>
@@ -32,10 +30,11 @@
 import ProfilPicture from "./ProfilPictureComponent.vue";
 
 const props = defineProps({
-  postDataComments: Object,
-  key: Number,
+  comments: Array,
+  user: Object,
 });
 
+console.log(props.comments);
 const data = props.postDataComments;
 </script>
 

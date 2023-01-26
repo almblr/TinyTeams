@@ -73,7 +73,10 @@
         />
         <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
         <div class="post__footer__comments__allComments">
-          <CommentSection :postDataComments="post" :key="key" />
+          <CommentSection
+            :comments="[...post.myComment, ...post.otherComments]"
+            :user="post.user"
+          />
         </div>
       </div>
     </footer>
@@ -105,7 +108,6 @@ const postImage = ref(null);
 const inputImageComment = ref(null);
 const imageDroped = ref({});
 const showing = ref(false);
-const key = ref(0);
 
 const totalComments = (post) => {
   return post.myComment.length + post.otherComments.length;
@@ -152,7 +154,6 @@ const sendComment = async (el, postId) => {
   el.target.value = null;
   el.target.style.height = "35px";
   await postStore.getOne(token, postId);
-  key.value += 1;
 };
 
 /* Au chargement de la page */

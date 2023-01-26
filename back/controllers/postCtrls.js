@@ -54,12 +54,8 @@ const postController = {
           },
         ],
       });
-      if (myComment.length !== 0) {
-        Post.setDataValue("myComment", myComment);
-      }
-      if (otherComments.length !== 0) {
-        Post.setDataValue("otherComments", otherComments);
-      }
+      Post.setDataValue("myComment", myComment);
+      Post.setDataValue("otherComments", otherComments);
       res.status(200).send(Post);
     } catch {
       res.status(400);
