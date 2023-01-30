@@ -2,40 +2,50 @@
   <section class="commentsSection">
     <div
       class="commentsSection__myComment"
-      v-if="comments"
-      v-for="comment in comments"
+      v-if="userComments"
+      v-for="comment in userComments"
       :key="comment.id"
       :id="comment.id"
     >
-      <ProfilPicture :url="user.profilPicture" :width="40" :height="40" />
+      <ProfilPicture :url="userProfilpicture" :width="40" :height="40" />
       <div>
-        <h3 class="username">{{ user.firstName }} {{ user.lastName }}</h3>
+        <h3 class="username">{{ userName }}</h3>
         <p>{{ comment.content }}</p>
+        <img :src="comment.imageUrl" />
       </div>
     </div>
-    <!-- <div
+    <div
       class="commentsSection__othersComments"
-      v-if="props.otherUsersComment"
-      v-for="comment in props.otherComments"
+      v-if="othersComments"
+      v-for="comment in othersComments"
     >
-      <div class="post__profilPicture">
-        <img :src="props.otherImages" alt="Photo de profil" />
+      <ProfilPicture
+        :url="comment.user.profilPicture"
+        :width="40"
+        :height="40"
+      />
+      <div>
+        <h3 class="username">
+          {{ comment.user.firstName }} {{ comment.user.lastName }}
+        </h3>
+        <p>{{ comment.content }}</p>
+        <img :src="comment.imageUrl" />
       </div>
-      <p>{{ props.otherContents }}</p>
-    </div> -->
+    </div>
   </section>
 </template>
 
 <script setup>
 import ProfilPicture from "./ProfilPictureComponent.vue";
 
-const props = defineProps({
-  comments: Array,
-  user: Object,
-});
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const userName = locStr.userName;
+const userProfilpicture = locStr.profilPicture;
 
-console.log(props.comments);
-const data = props.postDataComments;
+const props = defineProps({
+  userComments: Array,
+  othersComments: Array,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -43,7 +53,8 @@ const data = props.postDataComments;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  &__myComment {
+  &__myComment,
+  &__othersComments {
     display: flex;
     align-items: center;
     gap: 10px;

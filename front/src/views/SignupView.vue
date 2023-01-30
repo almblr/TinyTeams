@@ -41,12 +41,13 @@
         caractères min.)
       </span>
     </div>
-    <button-form type="submit" text="S'inscrire"></button-form>
+    <button-form buttonType="submit" text="S'inscrire"></button-form>
   </FormComponent>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import router from "../router/index.js";
 import { useUserStore } from "../stores/index.js";
 import FormComponent from "@/components/layout/FormComponent.vue";
 import EyeComponent from "../components/buttons/EyeComponent.vue";
@@ -74,12 +75,13 @@ const signup = async () => {
   // const result = await userStore.login(user.email, user.password);
   const result = await userStore.login();
   localStorage.setItem(
-    "TokenUser",
+    "userInfo",
     JSON.stringify({
-      token: result.token,
       userId: result.userId,
       isAdmin: result.isAdmin,
       userName: result.userName,
+      profilPicture: result.profilPicture,
+      token: result.token,
     })
   );
   router.push("/news");

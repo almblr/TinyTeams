@@ -31,7 +31,7 @@ const routes = [
       },
     ],
     beforeEnter: (_, _2, next) => {
-      window.localStorage.getItem("TokenUser") ? next() : next("/login");
+      window.localStorage.getItem("userInfo") ? next() : next("/login");
     },
   },
 ];

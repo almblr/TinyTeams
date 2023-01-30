@@ -26,7 +26,7 @@ import TheHeader from "@/components/layout/TheHeaderComponent.vue";
 import PostComponent from "@/components/posts/PostComponent.vue";
 import { usePostStore } from "@/stores/index.js";
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 
 let showCreateModal = ref(false);

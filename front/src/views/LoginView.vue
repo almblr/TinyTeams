@@ -23,7 +23,7 @@
       />
       <eye-component :type="inputType" :click="showPassword"></eye-component>
     </div>
-    <button-form type="submit" text="Se connecter"></button-form>
+    <button-form buttonType="submit" text="Se connecter"></button-form>
   </FormComponent>
 </template>
 
@@ -60,12 +60,13 @@ const login = async () => {
       localStorage.clear();
     }
     localStorage.setItem(
-      "TokenUser",
+      "userInfo",
       JSON.stringify({
-        token: result.token,
         userId: result.userId,
         isAdmin: result.isAdmin,
         userName: result.userName,
+        profilPicture: result.profilPicture,
+        token: result.token,
       })
     );
     router.push("/news");

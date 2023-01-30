@@ -9,7 +9,9 @@
       <fa icon="fa-solid fa-ellipsis" />
     </div>
     <div class="tooltip" v-show="isTooltipOpen === true">
-      <span @click="modifyPost(props.postId)">Modifier</span>
+      <span v-if="props.author === userId" @click="modifyPost(props.postId)"
+        >Modifier</span
+      >
       <span @click="deletePost(props.postId, token)">Supprimer</span>
     </div>
     <Teleport to="body">
@@ -33,13 +35,15 @@ const postStore = usePostStore();
 const btn = ref(null);
 const spaceUp = ref(null);
 const isTooltipOpen = ref(false);
-const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
+const userId = locStr.userId;
 const postToModify = ref({});
 let showModifyModal = ref(false);
 
 const props = defineProps({
   postId: { type: Number, required: true },
+  author: { type: Number, required: true },
 });
 
 const calculateAvailableSpace = () => {
@@ -74,6 +78,7 @@ const closeModifyModal = async () => {
 const modifyPost = async (id) => {
   postToModify.value = postStore.posts.find((post) => post.id === id);
   showModifyModal.value = true;
+  closeTooltip();
   await nextTick();
 };
 

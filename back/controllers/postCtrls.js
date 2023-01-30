@@ -26,20 +26,26 @@ const postController = {
   },
   getOne: async (req, res) => {
     try {
-      const myComment = await comment.findAll({
+      const userComments = await comment.findAll({
         where: {
           author: req.auth.userId,
         },
         order: [["createdAt", "DESC"]],
-        attributes: ["content", "imageUrl"],
+        attributes: ["id", "content", "imageUrl"],
       });
-      const otherComments = await comment.findAll({
+      const othersComments = await comment.findAll({
         where: {
           postId: req.params.id,
           author: {
             [Op.ne]: req.auth.userId, // Ne mets pas les commentaires de l'utilisateurs
           },
         },
+        include: [
+          {
+            model: user,
+            attributes: ["id", "firstName", "lastName", "profilPicture"],
+          },
+        ],
         order: [["createdAt", "DESC"]],
       });
       const Post = await post.findOne({
@@ -54,8 +60,8 @@ const postController = {
           },
         ],
       });
-      Post.setDataValue("myComment", myComment);
-      Post.setDataValue("otherComments", otherComments);
+      Post.setDataValue("userComments", userComments);
+      Post.setDataValue("othersComments", othersComments);
       res.status(200).send(Post);
     } catch {
       res.status(400);
@@ -75,17 +81,16 @@ const postController = {
           },
         ],
       });
-
       for (const post of allPosts) {
-        const myComment = await comment.findAll({
+        const userComments = await comment.findAll({
           where: {
             author: req.auth.userId,
             postId: post.id,
           },
           order: [["createdAt", "DESC"]],
-          attributes: ["content", "imageUrl"],
+          attributes: ["author", "content", "imageUrl"],
         });
-        const otherComments = await comment.findAll({
+        const othersComments = await comment.findAll({
           where: {
             postId: post.id,
             author: {
@@ -93,9 +98,15 @@ const postController = {
             },
           },
           order: [["createdAt", "DESC"]],
+          include: [
+            {
+              model: user,
+              attributes: ["firstName", "lastName", "profilPicture"],
+            },
+          ],
         });
-        post.setDataValue("myComment", myComment);
-        post.setDataValue("otherComments", otherComments);
+        post.setDataValue("userComments", userComments);
+        post.setDataValue("othersComments", othersComments);
       }
       res.status(200).send(allPosts);
     } catch {
@@ -105,7 +116,7 @@ const postController = {
 
   updateOne: async (req, res) => {
     const Post = await post.findByPk(req.params.id);
-    if (!Post || (req.auth.userId !== Post.author && req.auth.role === false)) {
+    if (!Post || req.auth.userId !== Post.author) {
       res.status(401).json({ message: "You cannot update this post." });
       return;
     }
@@ -123,7 +134,7 @@ const postController = {
   },
   deleteOne: async (req, res) => {
     const Post = await post.findByPk(req.params.id);
-    if (!Post || (req.auth.userId !== Post.author && req.auth.role === false)) {
+    if (!Post || req.auth.userId !== Post.author || req.auth.role === false) {
       res.status(401).json({ message: "You cannot delete this post." });
       return;
     }

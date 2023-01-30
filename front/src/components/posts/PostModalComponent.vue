@@ -61,7 +61,7 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const postData = ref({});
 const input = ref(null);

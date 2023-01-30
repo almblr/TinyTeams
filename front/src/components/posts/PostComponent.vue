@@ -6,6 +6,7 @@
     :id="post.id"
   >
     <PostHeaderComponent
+      :author="post.author"
       :postId="post.id"
       :imageUrl="post.user.profilPicture"
       :firstName="post.user.firstName"
@@ -74,7 +75,8 @@
         <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
         <div class="post__footer__comments__allComments">
           <CommentSection
-            :comments="[...post.myComment, ...post.otherComments]"
+            :userComments="[...post.userComments]"
+            :othersComments="[...post.othersComments]"
             :user="post.user"
           />
         </div>
@@ -100,7 +102,7 @@ import PostHeaderComponent from "./PostHeaderComponent.vue";
 const postStore = usePostStore();
 const commentStore = useCommentStore();
 const likeStore = useLikeStore();
-const locStr = JSON.parse(localStorage.getItem(`TokenUser`));
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const userId = locStr.userId;
 const likeBtn = ref(null);
@@ -110,7 +112,7 @@ const imageDroped = ref({});
 const showing = ref(false);
 
 const totalComments = (post) => {
-  return post.myComment.length + post.otherComments.length;
+  return post.userComments.length + post.othersComments.length;
 };
 
 const autoResizing = (el) => {

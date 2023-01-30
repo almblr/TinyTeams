@@ -9,7 +9,11 @@
         <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
       </div>
     </div>
-    <ToolTipComponent :postId="props.postId" />
+    <ToolTipComponent
+      :postId="props.postId"
+      :author="props.author"
+      v-if="props.author === userId || userIsAdmin"
+    />
   </header>
 </template>
 
@@ -21,7 +25,12 @@ import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const userId = locStr.userId;
+const userIsAdmin = locStr.isAdmin;
+
 const props = defineProps({
+  author: { type: Number, required: true },
   postId: { type: Number, required: true },
   imageUrl: { type: String, required: true },
   firstName: { type: String, required: true },
