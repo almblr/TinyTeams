@@ -13,6 +13,7 @@ import {
   faEllipsis,
   faThumbsUp,
   faCamera,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -22,7 +23,8 @@ library.add(
   faImage,
   faEllipsis,
   faThumbsUp,
-  faCamera
+  faCamera,
+  faXmark
 );
 
 const app = createApp(App);

@@ -9,26 +9,15 @@
           ref="textarea"
           @input="autoResizing(textarea)"
         ></textarea>
-        <div class="main__imgPreview" v-if="image !== null">
+        <!-- <div class="main__imgPreview" v-if="image !== null">
           <img :src="image" />
           <button @click="deleteImg()" class="delete-img">
             <fa icon="fa-solid fa-xmark" />
           </button>
-        </div>
+        </div> -->
         <footer>
           <div class="file" v-if="props.modalType === 'New'">
-            <div class="file__label">
-              <label for="image-input" id="custom-label" ref="label"
-                ><fa icon="fa-solid fa-image" />
-              </label>
-            </div>
-            <input
-              ref="input"
-              id="image-input"
-              type="file"
-              accept="image/png, image/jpg, image/jpeg"
-              @change="showUploadedImg"
-            />
+            <AddMediaButton :styles="propsStyle"></AddMediaButton>
           </div>
           <button @click="sendPost">
             {{ textButton }}
@@ -44,6 +33,7 @@
 
 <script setup>
 import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
+import AddMediaButton from "@/components/layout/AddMediaButton.vue";
 import { ref, onMounted, watch, computed } from "vue";
 import { usePostStore } from "../../stores/index.js";
 
@@ -64,13 +54,18 @@ const postStore = usePostStore();
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const postData = ref({});
-const input = ref(null);
-const label = ref(null);
-const image = ref(null);
 const emptyPost = ref(null);
 const userName = locStr.userName;
 const firstName = userName.split(" ")[0];
 const textarea = ref("");
+
+const propsStyle = {
+  color: "rgba(218, 39, 39, 0.918)",
+  width: "35px",
+  height: "35px",
+  backgroundColor: "rgba(248, 183, 183, 0.281)",
+  backgroundColorHover: "rgba(248, 183, 183, 0.767)",
+};
 
 const placeHolder = computed(() => {
   if (props.modalType === "New") {
@@ -87,11 +82,6 @@ const textButton = computed(() => {
     return "Modifier";
   }
 });
-
-/* Affiche la preview du fichier (l'image) uploadé  */
-const showUploadedImg = (event) => {
-  image.value = URL.createObjectURL(event.target.files[0]);
-};
 
 /* Supprime le fichier uploadé de l'input et du label qui sert de preview */
 const deleteImg = () => {
@@ -226,35 +216,6 @@ footer {
   flex-wrap: wrap;
   width: 100%;
   gap: 5px;
-  input[type="file"] {
-    display: none;
-  }
-  & .file__label {
-    @include jcCt-aaCt;
-    width: 35px;
-    height: 35px;
-    border-radius: 5px;
-    transition: 0.2s;
-    background-color: rgba(248, 183, 183, 0.281);
-    &:hover {
-      opacity: 1;
-      cursor: pointer;
-      transition: 0.2s;
-      background-color: rgba(248, 183, 183, 0.767);
-    }
-    label {
-      @include jcCt-aaCt;
-      transition: 0.1s;
-      color: rgba(218, 39, 39, 0.918);
-      font-size: 24px;
-      background-color: rgba(248, 183, 183, 0.281);
-      &:hover {
-        opacity: 1;
-        cursor: pointer;
-        transition: 0.1s;
-      }
-    }
-  }
   & button {
     flex: 1;
     background: #ff2a00d8;

@@ -66,7 +66,7 @@ const resetForm = () => {
   box-shadow: 5px 5px 20px #0000003d;
   padding: 3% 2%;
   gap: 20px;
-  border-radius: 0;
+  border-radius: 5px;
 }
 
 .form {
