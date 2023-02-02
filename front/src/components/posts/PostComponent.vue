@@ -5,6 +5,7 @@
     :key="post.id"
     :id="post.id"
   >
+    {{ post.id }}
     <PostHeaderComponent
       :author="post.author"
       :postId="post.id"

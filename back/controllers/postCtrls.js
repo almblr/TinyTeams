@@ -29,6 +29,7 @@ const postController = {
       const userComments = await comment.findAll({
         where: {
           author: req.auth.userId,
+          postId: req.params.id,
         },
         order: [["createdAt", "DESC"]],
         attributes: ["id", "content", "imageUrl"],
