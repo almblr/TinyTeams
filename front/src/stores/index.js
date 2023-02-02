@@ -19,7 +19,9 @@ export const usePostStore = defineStore("post", {
       const post = await response.json();
       const postId = post.id;
       const findPost = this.posts.find((post) => post.id === postId);
+      console.log(findPost);
       const index = this.posts.indexOf(findPost);
+      console.log(index);
       this.posts[index] = post;
     },
     async getAll(token) {

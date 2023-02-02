@@ -9,15 +9,23 @@
           ref="textarea"
           @input="autoResizing(textarea)"
         ></textarea>
-        <!-- <div class="main__imgPreview" v-if="image !== null">
+        <div class="main__imgPreview" v-if="image !== null">
           <img :src="image" />
           <button @click="deleteImg()" class="delete-img">
             <fa icon="fa-solid fa-xmark" />
           </button>
-        </div> -->
+        </div>
         <footer>
           <div class="file" v-if="props.modalType === 'New'">
-            <AddMediaButton :styles="propsStyle"></AddMediaButton>
+            <AddMediaButton
+              color="rgba(218, 39, 39, 0.918)"
+              width="35px"
+              height="35px"
+              backgroundColor="rgba(248, 183, 183, 0.281)"
+              backgroundColorHover="rgba(248, 183, 183, 0.767)"
+              @showUploadedImg="test"
+              ><template v-slot:icon><fa icon="fa-solid fa-image" /></template
+            ></AddMediaButton>
           </div>
           <button @click="sendPost">
             {{ textButton }}
@@ -58,13 +66,12 @@ const emptyPost = ref(null);
 const userName = locStr.userName;
 const firstName = userName.split(" ")[0];
 const textarea = ref("");
+const image = ref(null);
+const imageFile = ref(null);
 
-const propsStyle = {
-  color: "rgba(218, 39, 39, 0.918)",
-  width: "35px",
-  height: "35px",
-  backgroundColor: "rgba(248, 183, 183, 0.281)",
-  backgroundColorHover: "rgba(248, 183, 183, 0.767)",
+const test = (blop, file) => {
+  image.value = blop;
+  imageFile.value = file;
 };
 
 const placeHolder = computed(() => {
@@ -86,22 +93,21 @@ const textButton = computed(() => {
 /* Supprime le fichier uploadé de l'input et du label qui sert de preview */
 const deleteImg = () => {
   image.value = null;
-  input.value.value = null;
 };
 
 /* Fonction qui permet de modifier ou de supprimer un post (selon la modal ouverte) */
 const sendPost = async () => {
   const formData = new FormData();
   if (props.modalType === "New") {
-    if (postData.value.content || input.value.value !== "") {
+    if (postData.value.content || imageFile.value !== "") {
       if (postData.value.content) {
         formData.append("content", postData.value.content);
       }
-      if (input.value.value) {
-        formData.append("imageUrl", input.value.files[0]);
+      if (imageFile.value) {
+        formData.append("imageUrl", imageFile.value);
       }
       await postStore.createOne(formData, token);
-      image.value = null;
+      // image.value = null;
       emit("close");
       emptyPost.value === true ? (emptyPost.value = false) : null;
     } else {

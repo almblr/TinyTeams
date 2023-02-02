@@ -244,15 +244,17 @@ onMounted(() => {
       }
     }
     &__comments {
+      display: flex;
+      flex-direction: column;
       width: 100%;
       margin-top: 10px;
+      gap: 10px;
       &__writeComment {
         position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 5px;
-        margin-bottom: 15px;
         & > textarea {
           resize: none;
           width: 100%;

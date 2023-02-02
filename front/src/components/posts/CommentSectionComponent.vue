@@ -53,6 +53,7 @@ const props = defineProps({
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-bottom: 15px;
   &__myComment,
   &__othersComments {
     display: flex;
