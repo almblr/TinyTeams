@@ -21,6 +21,7 @@ const props = defineProps({
   color: String,
   backgroundColor: String,
   backgroundColorHover: String,
+  iconSize: String,
 });
 const emit = defineEmits(["showUploadedImg"]);
 
@@ -55,9 +56,8 @@ input[type="file"] {
   label {
     @include jcCt-aaCt;
     transition: 0.1s;
-    font-size: 24px;
+    font-size: v-bind("props.iconSize");
     color: v-bind("props.color");
-
     &:hover {
       opacity: 1;
       cursor: pointer;

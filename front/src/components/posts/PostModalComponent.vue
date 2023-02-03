@@ -23,6 +23,7 @@
               height="35px"
               backgroundColor="rgba(248, 183, 183, 0.281)"
               backgroundColorHover="rgba(248, 183, 183, 0.767)"
+              iconSize="24px"
               @showUploadedImg="test"
               ><template v-slot:icon><fa icon="fa-solid fa-image" /></template
             ></AddMediaButton>

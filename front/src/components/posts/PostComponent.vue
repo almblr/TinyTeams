@@ -5,7 +5,6 @@
     :key="post.id"
     :id="post.id"
   >
-    {{ post.id }}
     <PostHeaderComponent
       :author="post.author"
       :postId="post.id"
@@ -50,7 +49,7 @@
           <div class="post__profilPicture">
             <ProfilPicture
               :url="post.user.profilPicture"
-              alt="Photo de profil"
+              alt="Profil picture"
             />
           </div>
           <textarea
@@ -60,7 +59,15 @@
           ></textarea>
           <div class="post__footer__comments__writeComment__buttons">
             <div title="Insérez une image" @click="!showing">
-              <fa icon="fa-solid fa-camera" class="addImage" />
+              <AddMediaButton
+                color="#575656"
+                width="30px"
+                height="25px"
+                iconSize="19px"
+                @showUploadedImg="test"
+                ><template v-slot:icon
+                  ><fa icon="fa-solid fa-camera" /></template
+              ></AddMediaButton>
             </div>
             <div title="Insérer un gif">
               <GifTooltipComponent />
@@ -99,6 +106,7 @@ import GifTooltipComponent from "./GifTooltipComponent.vue";
 import CommentSection from "./CommentSectionComponent.vue";
 import ProfilPicture from "./ProfilPictureComponent.vue";
 import PostHeaderComponent from "./PostHeaderComponent.vue";
+import AddMediaButton from "../layout/AddMediaButton.vue";
 
 const postStore = usePostStore();
 const commentStore = useCommentStore();
