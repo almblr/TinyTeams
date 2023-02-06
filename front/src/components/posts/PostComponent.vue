@@ -17,7 +17,7 @@
       {{ post.content }}
     </p>
     <div class="post__image">
-      <img :src="post.imageUrl" v-if="post.imageUrl !== null" ref="postImage" />
+      <img :src="post.imageUrl" v-if="post.imageUrl !== null" />
     </div>
     <footer class="post__footer">
       <div class="post__footer__stats">
@@ -31,7 +31,12 @@
         >
           ❤
         </span>
-        <span class="nbrCom">{{ totalComments(post) }} commentaire</span>
+        <span class="nbrCom"
+          >{{
+            post.userComments.length + post.othersComments.length
+          }}
+          commentaire</span
+        >
       </div>
       <div class="post__footer__button" @click="updateLike(post.id)">
         <fa
@@ -64,7 +69,7 @@
                 width="30px"
                 height="25px"
                 iconSize="19px"
-                @showUploadedImg="test"
+                @showUploadedImg="showUrl"
                 ><template v-slot:icon
                   ><fa icon="fa-solid fa-camera" /></template
               ></AddMediaButton>
@@ -74,13 +79,9 @@
             </div>
           </div>
         </div>
-        <input
-          class="inputImageComment"
-          type="file"
-          ref="imgComment"
-          accept="image/png, image/jpg, image/jpeg"
-        />
-        <img v-if="imageDroped[post.id]" :src="imageDroped[post.id]" />
+        <div v-if="chosenMedia !== null">
+          <img :src="chosenMedia" />
+        </div>
         <div class="post__footer__comments__allComments">
           <CommentSection
             :userComments="[...post.userComments]"
@@ -115,15 +116,14 @@ const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const userId = locStr.userId;
 const likeBtn = ref(null);
-const postImage = ref(null);
-const inputImageComment = ref(null);
-const imageDroped = ref({});
 const showing = ref(false);
+const chosenMedia = ref(null);
 
-const totalComments = (post) => {
-  return post.userComments.length + post.othersComments.length;
+const showUrl = (n, n2) => {
+  console.log(n);
+  console.log(n2);
+  chosenMedia.value = n;
 };
-
 const autoResizing = (el) => {
   el.target.style.height = "35px";
   el.target.style.height = `${el.target.scrollHeight}px`;
@@ -160,7 +160,7 @@ const updateLike = async (postId) => {
 const sendComment = async (el, postId) => {
   const formData = new FormData();
   formData.append("content", el.target.value);
-  formData.append("imageUrl", inputImageComment.value);
+  formData.append("imageUrl", chosenMedia.value);
   await commentStore.createOne(postId, formData, token);
   el.target.value = null;
   el.target.style.height = "35px";

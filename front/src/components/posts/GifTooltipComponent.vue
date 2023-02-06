@@ -19,7 +19,7 @@
         <img
           v-for="gif of gifStore.gifs"
           :src="gif.images.original.url"
-          @click="showUrl($event)"
+          @click="GetUploadedGif($event)"
         />
       </div>
     </div>
@@ -102,8 +102,12 @@ const displayNextGifs = () => {
   }
 };
 
-const showUrl = (e) => {
-  console.log(e.target.src);
+/* Affiche la preview du fichier (l'image) uploadé  */
+const GetUploadedGif = async (event) => {
+  const url = event.target.src;
+  const response = await fetch(url);
+  const blop = await response.blop();
+  console.log(blop);
 };
 
 /* Ne surtout pas faire le onMounted pour appeler l'api GIPHY au niveau de composant car il se fera autant de fois que le composant est appelé (= nombre de posts sur la page) */
