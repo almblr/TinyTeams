@@ -75,7 +75,7 @@
               ></AddMediaButton>
             </div>
             <div title="Insérer un gif">
-              <GifTooltipComponent />
+              <GifTooltipComponent @showUploadedGif="showUrl" />
             </div>
           </div>
         </div>

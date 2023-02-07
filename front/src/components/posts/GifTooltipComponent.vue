@@ -37,6 +37,8 @@ const spaceUp = ref(null);
 const isGifPanelOpen = ref(false);
 const searchedTerm = ref("");
 
+const emit = defineEmits(["showUploadedGif"]);
+
 const tooltipClass = computed(() => {
   return {
     "tooltip-up": spaceUp.value === true,
@@ -104,10 +106,8 @@ const displayNextGifs = () => {
 
 /* Affiche la preview du fichier (l'image) uploadé  */
 const GetUploadedGif = async (event) => {
-  const url = event.target.src;
-  const response = await fetch(url);
-  const blop = await response.blop();
-  console.log(blop);
+  const gif = event.target.src;
+  emit("showUploadedGif", gif);
 };
 
 /* Ne surtout pas faire le onMounted pour appeler l'api GIPHY au niveau de composant car il se fera autant de fois que le composant est appelé (= nombre de posts sur la page) */

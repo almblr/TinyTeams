@@ -4,7 +4,7 @@ import fs from "fs";
 /* COMMENT Controller */
 const commentController = {
   createOne: async (req, res) => {
-    if (!req.body.content && !req.file) {
+    if (!req.body.content && !req.file && !req.body.imageUrl) {
       res.status(400).json({ message: "Commentaire vide." });
     } else {
       try {
@@ -14,7 +14,7 @@ const commentController = {
           content: req.body.content ? req.body.content : null,
           imageUrl: req.file?.filename
             ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-            : null,
+            : req.body.imageUrl || null,
         });
         res.status(200).send(Comment);
       } catch (err) {
@@ -56,7 +56,8 @@ const commentController = {
       // Si le Comment contenait une image
       if (Comment.imageUrl) {
         const filename = Comment.imageUrl.split("/images/")[1];
-        await fs.promises.unlink(`images/${filename}`);
+        // On vérifie que filename existe car imageUrl peut-être un gif donc un lien
+        filename ? await fs.promises.unlink(`images/${filename}`) : null;
       }
       await Comment.destroy();
       res.status(200).json({ message: "Comment deleted." });
