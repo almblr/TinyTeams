@@ -57,30 +57,38 @@
               alt="Profil picture"
             />
           </div>
-          <textarea
-            placeholder="Ecrivez quelque chose..."
-            @keydown.enter="sendComment($event, post.id)"
-            @input="autoResizing($event)"
-          ></textarea>
-          <div class="post__footer__comments__writeComment__buttons">
-            <div title="Insérez une image" @click="!showing">
-              <AddMediaButton
-                color="#575656"
-                width="30px"
-                height="25px"
-                iconSize="19px"
-                @showUploadedImg="showUrl"
-                ><template v-slot:icon
-                  ><fa icon="fa-solid fa-camera" /></template
-              ></AddMediaButton>
-            </div>
-            <div title="Insérer un gif">
-              <GifTooltipComponent @showUploadedGif="showUrl" />
+          <div
+            class="post__footer__comments__writeComment__container"
+            ref="texteareaContainer"
+          >
+            <textarea
+              placeholder="Ecrivez quelque chose..."
+              @keydown.enter="sendComment($event, post.id)"
+              @input="autoResizing()"
+            ></textarea>
+            <div>
+              <div title="Insérez une image" @click="!showing">
+                <AddMediaButton
+                  color="#575656"
+                  width="30px"
+                  height="25px"
+                  iconSize="19px"
+                  @showUploadedImg="showUrl"
+                  ><template v-slot:icon
+                    ><fa icon="fa-solid fa-camera" /></template
+                ></AddMediaButton>
+              </div>
+              <div title="Insérer un gif">
+                <GifTooltipComponent @showUploadedGif="showUrl" />
+              </div>
             </div>
           </div>
         </div>
-        <div v-if="chosenMedia !== null">
-          <img :src="chosenMedia" />
+        <div
+          class="post__footer__comments__preview"
+          v-if="mediaPreview !== null"
+        >
+          <img :src="mediaPreview" />
         </div>
         <div class="post__footer__comments__allComments">
           <CommentSection
@@ -115,18 +123,20 @@ const likeStore = useLikeStore();
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const userId = locStr.userId;
+const texteareaContainer = ref("");
 const likeBtn = ref(null);
 const showing = ref(false);
-const chosenMedia = ref(null);
+const mediaPreview = ref(null);
+const mediaToSend = ref(null);
 
 const showUrl = (n, n2) => {
-  console.log(n);
-  console.log(n2);
-  chosenMedia.value = n;
+  mediaPreview.value = n;
+  n2 ? (mediaToSend.value = n2) : (mediaToSend.value = n);
 };
-const autoResizing = (el) => {
-  el.target.style.height = "35px";
-  el.target.style.height = `${el.target.scrollHeight}px`;
+const autoResizing = (postid) => {
+  // const container = texteareaContainer.value[0];
+  // el.target.style.height = `${el.target.scrollHeight}px`;
+  // container.style.height = `${el.target.scrollHeight + 15}px`;
 };
 
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
@@ -160,11 +170,13 @@ const updateLike = async (postId) => {
 const sendComment = async (el, postId) => {
   const formData = new FormData();
   formData.append("content", el.target.value);
-  formData.append("imageUrl", chosenMedia.value);
+  formData.append("imageUrl", mediaToSend.value);
   await commentStore.createOne(postId, formData, token);
   el.target.value = null;
   el.target.style.height = "35px";
   await postStore.getOne(token, postId);
+  mediaPreview.value = null;
+  mediaToSend.value = null;
 };
 
 /* Au chargement de la page */
@@ -259,46 +271,63 @@ onMounted(() => {
       margin-top: 10px;
       gap: 10px;
       &__writeComment {
-        position: relative;
         display: flex;
-        justify-content: center;
         align-items: center;
         gap: 5px;
-        & > textarea {
-          resize: none;
-          width: 100%;
-          border: 1px solid #c0c2c4;
-          max-height: 250px;
-          border-radius: 20px;
-          height: 35px;
-          padding: 5px 70px 5px 15px;
-          &:focus {
-            outline: none;
-          }
-        }
-        &__buttons {
+        &__container {
+          position: relative;
           display: flex;
-          justify-content: center;
-          align-items: center;
-          position: absolute;
-          right: 10px;
+          flex: 1;
+          background-color: white;
+          border: 1px solid #c0c2c4;
+          border-radius: 20px;
+          padding: 5px 10px;
           height: 35px;
-          & > * {
+          max-height: 300px;
+          gap: 5px;
+          & > textarea {
+            background-color: rgb(182, 192, 209);
+            resize: none;
+            height: 20px;
+            max-height: 250px;
+            border: none;
+            &:focus {
+              outline: none;
+            }
+          }
+          & > div {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 30px;
-            height: 25px;
-            border-radius: 5px;
-            &:hover {
-              background-color: #dfdfdf;
-              cursor: pointer;
-            }
-            & > .addImage {
-              color: #575656;
-              font-size: 19px;
+            position: absolute;
+            right: 10px;
+            & > * {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 30px;
+              height: 25px;
+              border-radius: 5px;
+              &:hover {
+                background-color: #dfdfdf;
+                cursor: pointer;
+              }
+              & > .addImage {
+                color: #575656;
+                font-size: 19px;
+              }
             }
           }
+        }
+      }
+      &__preview {
+        width: 60%;
+        max-width: 400px;
+        margin-left: 50px;
+        max-height: 225px;
+        & img {
+          max-width: 100%;
+          height: 100%;
         }
       }
     }

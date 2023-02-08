@@ -32,7 +32,6 @@ const postController = {
           postId: req.params.id,
         },
         order: [["createdAt", "DESC"]],
-        attributes: ["id", "content", "imageUrl"],
       });
       const othersComments = await comment.findAll({
         where: {
@@ -41,12 +40,7 @@ const postController = {
             [Op.ne]: req.auth.userId, // Ne mets pas les commentaires de l'utilisateurs
           },
         },
-        include: [
-          {
-            model: user,
-            attributes: ["id", "firstName", "lastName", "profilPicture"],
-          },
-        ],
+        include: [user],
         order: [["createdAt", "DESC"]],
       });
       const Post = await post.findOne({
@@ -57,7 +51,13 @@ const postController = {
           react,
           {
             model: user,
-            attributes: ["id", "firstName", "lastName", "profilPicture"],
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "profilPicture",
+              "isAdmin",
+            ],
           },
         ],
       });
@@ -89,7 +89,6 @@ const postController = {
             postId: post.id,
           },
           order: [["createdAt", "DESC"]],
-          attributes: ["author", "content", "imageUrl"],
         });
         const othersComments = await comment.findAll({
           where: {

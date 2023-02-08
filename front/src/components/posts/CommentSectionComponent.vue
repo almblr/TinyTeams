@@ -37,6 +37,11 @@
 
 <script setup>
 import ProfilPicture from "./ProfilPictureComponent.vue";
+import relativeTime from "dayjs/plugin/relativeTime";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+dayjs.locale("fr");
+dayjs.extend(relativeTime);
 
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const userName = locStr.userName;
@@ -57,16 +62,17 @@ const props = defineProps({
   &__myComment,
   &__othersComments {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     & div {
       display: flex;
       flex-direction: column;
       min-width: 100px;
       height: min-content;
-      border-radius: 25px;
+      border-radius: 10px;
       background-color: rgb(219, 219, 219);
-      padding: 5px 15px;
+      padding: 5px 15px 15px;
+      gap: 5px;
       & h3 {
         font-size: 15px;
         color: rgba(0, 0, 0, 0.904);
