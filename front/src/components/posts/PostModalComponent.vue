@@ -153,7 +153,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .container {
   @include jcCt;
   align-items: center;

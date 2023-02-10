@@ -1,6 +1,6 @@
 <template>
   <the-header />
-  <main>
+  <main id="main">
     <div class="posts">
       <PostComponent />
     </div>
@@ -39,7 +39,7 @@ const closeCreateModal = async () => {
 </script>
 
 <style lang="scss" scoped>
-main {
+#main {
   @include fdCol-aiCt;
   @include width-height_max;
   row-gap: 30px;

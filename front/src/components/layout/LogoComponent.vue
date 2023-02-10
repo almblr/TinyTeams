@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .logo {
   max-width: fit-content;
   max-height: fit-content;
