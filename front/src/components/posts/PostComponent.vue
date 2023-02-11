@@ -52,19 +52,21 @@
     <DividerComponent width="98%" height="1px" backgroundColor="#c0c2c4" />
     <footer class="footer">
       <div class="footer__writeComment">
-        <div class="footer__writeComment__pp">
-          <ProfilPicture
-            :url="post.user.profilPicture"
-            alt="Profil picture"
-            width="100%"
-            height="40px"
-          />
-        </div>
-        <TextareaComponent @get-medias="showUrls"></TextareaComponent>
+        <ProfilPicture
+          :url="post.user.profilPicture"
+          alt="Profil picture"
+          width="35px"
+          height="35px"
+        />
+        <TextareaComponent
+          @get-media-preview="showUrls"
+          :postId="post.id"
+        ></TextareaComponent>
       </div>
-      <div class="footer__mediaPreview" v-if="mediaPreview !== null">
-        <img :src="mediaPreview" />
-      </div>
+      <ImagePreviewComponent
+        :src="mediaPreview"
+        @remove-image="deleteImagePreview"
+      />
       <div class="footer__comments">
         <CommentSection
           :userComments="[...post.userComments]"
@@ -79,32 +81,29 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import {
-  usePostStore,
-  useCommentStore,
-  useLikeStore,
-} from "../../stores/index.js";
+import { usePostStore, useLikeStore } from "../../stores/index.js";
 import DividerComponent from "../layout/DividerComponent.vue";
 import CommentSection from "./CommentSectionComponent.vue";
 import ProfilPicture from "./ProfilPictureComponent.vue";
 import PostHeaderComponent from "./PostHeaderComponent.vue";
 import TextareaComponent from "./TextareaComponent.vue";
+import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
 
 const postStore = usePostStore();
-const commentStore = useCommentStore();
 const likeStore = useLikeStore();
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const userId = locStr.userId;
 const likeBtn = ref(null);
 const mediaPreview = ref(null);
-const mediaToSend = ref(null);
 
-const showUrls = (n, n2) => {
-  mediaPreview.value = n;
-  n2 ? (mediaToSend.value = n2) : (mediaToSend.value = n);
+const showUrls = (path) => {
+  mediaPreview.value = path;
 };
 
+const deleteImagePreview = () => {
+  mediaPreview.value = null;
+};
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
 const checkLikeState = (postId) => {
   const thisPost = postStore.posts.find((post) => post.id === postId);
@@ -132,18 +131,6 @@ const updateLike = async (postId) => {
     return false;
   }
 };
-
-// const sendComment = async (el, postId) => {
-//   const formData = new FormData();
-//   formData.append("content", el.target.value);
-//   formData.append("imageUrl", mediaToSend.value);
-//   await commentStore.createOne(postId, formData, token);
-//   el.target.value = null;
-//   el.target.style.height = "35px";
-//   await postStore.getOne(token, postId);
-//   mediaPreview.value = null;
-//   mediaToSend.value = null;
-// };
 
 /* Au chargement de la page */
 onMounted(() => {
@@ -220,17 +207,11 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 15px 0 0 10px;
+    padding: 15px 10px 10px 10px;
+    gap: 10px;
     &__writeComment {
       display: flex;
       gap: 5px;
-      &__pp {
-        background-color: black;
-        max-width: 40px;
-        max-height: 40px;
-        border-radius: 25px;
-        border: none;
-      }
     }
     &__mediaPreview {
       width: 60%;

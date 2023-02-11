@@ -6,7 +6,6 @@ import { Op } from "sequelize";
 const postController = {
   createOne: async (req, res) => {
     if (!req.body.content && !req.file) {
-      console.log(req.body);
       res.status(400).json({ message: "Post vide." });
     } else {
       try {
@@ -116,7 +115,7 @@ const postController = {
 
   updateOne: async (req, res) => {
     const Post = await post.findByPk(req.params.id);
-    if (!Post || req.auth.userId !== Post.author) {
+    if (req.auth.userId !== Post.author) {
       res.status(401).json({ message: "You cannot update this post." });
       return;
     }
@@ -134,7 +133,7 @@ const postController = {
   },
   deleteOne: async (req, res) => {
     const Post = await post.findByPk(req.params.id);
-    if (!Post || req.auth.userId !== Post.author || req.auth.role === false) {
+    if (req.auth.userId !== Post.author && req.auth.role === false) {
       res.status(401).json({ message: "You cannot delete this post." });
       return;
     }

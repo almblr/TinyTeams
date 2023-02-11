@@ -7,11 +7,11 @@
       :key="comment.id"
       :id="comment.id"
     >
-      <ProfilPicture :url="userProfilpicture" :width="40" :height="40" />
+      <ProfilPicture :url="userProfilpicture" width="40px" height="40px" />
       <div>
         <h3 class="username">{{ userName }}</h3>
         <p>{{ comment.content }}</p>
-        <img :src="comment.imageUrl" />
+        <img :src="comment.imageUrl" v-if="comment.imageUrl" />
       </div>
     </div>
     <div
@@ -21,15 +21,15 @@
     >
       <ProfilPicture
         :url="comment.user.profilPicture"
-        :width="40"
-        :height="40"
+        width="40px"
+        height="40px"
       />
       <div>
         <h3 class="username">
           {{ comment.user.firstName }} {{ comment.user.lastName }}
         </h3>
         <p>{{ comment.content }}</p>
-        <img :src="comment.imageUrl" />
+        <img :src="comment.imageUrl" v-if="comment.imageUrl" />
       </div>
     </div>
   </section>
@@ -58,7 +58,6 @@ const props = defineProps({
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 15px;
   &__myComment,
   &__othersComments {
     display: flex;
@@ -71,16 +70,22 @@ const props = defineProps({
       height: min-content;
       border-radius: 10px;
       background-color: rgb(219, 219, 219);
-      padding: 5px 15px 15px;
-      gap: 5px;
+      padding: 5px 10px 5px 10px;
       & h3 {
         font-size: 15px;
         color: rgba(0, 0, 0, 0.904);
+        &:hover {
+          cursor: pointer;
+        }
       }
       & p {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+      }
+      & img {
+        margin: 5px 0;
+        max-width: 500px;
       }
     }
   }

@@ -49,7 +49,7 @@ const resetForm = () => {
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   background: url("@/assets/entreprise.jpg");
   background-size: cover;
@@ -163,7 +163,6 @@ footer {
 
 @media all and (min-width: 1440px) {
   .container {
-    border-radius: 5px;
     margin: 0 10% 0 0;
   }
 }

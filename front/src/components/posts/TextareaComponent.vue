@@ -1,8 +1,9 @@
 <template>
   <div class="container" ref="container">
     <textarea
+      :id="props.postId"
       placeholder="Ecrivez quelque chose..."
-      @keydown.enter="sendComment($event, post.id)"
+      @keydown.enter="sendComment($event, props.postId)"
       @input="getTextWidth($event)"
       ref="textarea"
       v-model="textareaContent"
@@ -27,20 +28,39 @@
 
 <script setup>
 import { ref } from "vue";
+import { useCommentStore, usePostStore } from "../../stores/index.js";
 import AddMediaButton from "../layout/AddMediaButton.vue";
 import GifTooltipComponent from "./GifTooltipComponent.vue";
 
-const emit = defineEmits(["getMedias"]);
+const props = defineProps({
+  postId: Number,
+});
+const emit = defineEmits(["getMediaPreview"]);
 
+const commentStore = useCommentStore();
+const postStore = usePostStore();
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const token = locStr.token;
 const showing = ref(false);
 const textareaContent = ref(null);
 const container = ref(null);
 const textarea = ref(null);
+const mediaToSend = ref("");
 
-const getUrls = (n, n2) => {
-  console.log(n);
-  console.log(n2);
-  emit("getMedias", n, n2);
+const getUrls = (path, file) => {
+  file ? (mediaToSend.value = file) : (mediaToSend.value = path);
+  emit("getMediaPreview", path);
+};
+
+const sendComment = async (el, postId) => {
+  const formData = new FormData();
+  formData.append("content", el.target.value);
+  formData.append("imageUrl", mediaToSend.value);
+  await commentStore.createOne(postId, formData, token);
+  el.target.value = null;
+  await postStore.getOne(token, postId);
+  emit("getMediaPreview", null);
+  mediaToSend.value = null;
 };
 
 const getTextWidth = (el) => {
@@ -55,8 +75,7 @@ const getTextWidth = (el) => {
     container.value.style.height = `${el.target.scrollHeight + 35}px`;
     el.target.style.height = `${el.target.scrollHeight}px`;
   } else {
-    el.target.style.maxWidth = containerWidth - 60;
-    el.target.style.width = containerWidth - 60;
+    el.target.style.minWidth = "initial";
     container.value.style.height = `35px`;
     el.target.style.height = `30px`;
   }
@@ -76,11 +95,10 @@ const getTextWidth = (el) => {
   height: 35px;
   max-height: 300px;
   & > textarea {
-    background-color: blanchedalmond;
-    min-width: calc(100% - 60px);
+    width: calc(100% - 60px);
     resize: none;
     height: 30px;
-    padding-top: 5px;
+    padding-top: 7px;
     max-height: 250px;
     font-size: 15px;
     border: none;

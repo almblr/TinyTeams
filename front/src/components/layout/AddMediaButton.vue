@@ -1,16 +1,15 @@
 <template>
   <div class="file__label">
-    <label for="image-input" id="custom-label" ref="label"
-      ><slot name="icon"></slot>
+    <label id="custom-label" ref="label"
+      ><slot name="icon"> </slot>
+      <input
+        ref="input"
+        type="file"
+        accept="image/png, image/jpg, image/jpeg"
+        @change="GetUploadedImg($event)"
+      />
     </label>
   </div>
-  <input
-    ref="input"
-    id="image-input"
-    type="file"
-    accept="image/png, image/jpg, image/jpeg"
-    @change="GetUploadedImg($event)"
-  />
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-  <ModalLayer v-if="show" @click.self="emit('close')">
+  <ModalLayer v-if="show" @click.self="emit('close', (image = null))">
     <div class="container">
       <main class="main">
         <textarea
@@ -9,12 +9,10 @@
           ref="textarea"
           @input="autoResizing(textarea)"
         ></textarea>
-        <div class="main__imgPreview" v-if="image !== null">
-          <img :src="image" />
-          <button @click="deleteImg()" class="delete-img">
-            <fa icon="fa-solid fa-xmark" />
-          </button>
-        </div>
+        <ImagePreviewComponent
+          :src="imageBlop"
+          @remove-image="deleteImagePreview"
+        />
         <footer>
           <div class="file" v-if="props.modalType === 'New'">
             <AddMediaButton
@@ -41,10 +39,11 @@
 </template>
 
 <script setup>
-import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
-import AddMediaButton from "@/components/layout/AddMediaButton.vue";
 import { ref, onMounted, watch, computed } from "vue";
 import { usePostStore } from "../../stores/index.js";
+import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
+import AddMediaButton from "@/components/layout/AddMediaButton.vue";
+import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
 
 const props = defineProps({
   show: {
@@ -67,11 +66,11 @@ const emptyPost = ref(null);
 const userName = locStr.userName;
 const firstName = userName.split(" ")[0];
 const textarea = ref("");
-const image = ref(null);
+const imageBlop = ref(null);
 const imageFile = ref(null);
 
 const test = (blop, file) => {
-  image.value = blop;
+  imageBlop.value = blop;
   imageFile.value = file;
 };
 
@@ -91,9 +90,8 @@ const textButton = computed(() => {
   }
 });
 
-/* Supprime le fichier uploadé de l'input et du label qui sert de preview */
-const deleteImg = () => {
-  image.value = null;
+const deleteImagePreview = () => {
+  imageBlop.value = null;
 };
 
 /* Fonction qui permet de modifier ou de supprimer un post (selon la modal ouverte) */
@@ -108,8 +106,8 @@ const sendPost = async () => {
         formData.append("imageUrl", imageFile.value);
       }
       await postStore.createOne(formData, token);
-      // image.value = null;
       emit("close");
+      image.value = null;
       emptyPost.value === true ? (emptyPost.value = false) : null;
     } else {
       emptyPost.value = true;
@@ -125,6 +123,7 @@ const sendPost = async () => {
       formData.append("content", postData.value.content);
       await postStore.updateOne(postData.value.id, formData, token);
       emit("close");
+      image.value = null;
       emptyPost.value === true ? (emptyPost.value = false) : null;
     }
   }
@@ -192,28 +191,6 @@ onMounted(() => {
     }
     &:focus {
       outline: none;
-    }
-  }
-  &__imgPreview {
-    position: relative;
-    img {
-      width: 100%;
-    }
-    button {
-      @include jcCt-aaCt;
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 25px;
-      height: 25px;
-      background-color: rgba(255, 0, 0, 0.411);
-      font-size: 18px;
-      border: none;
-      color: rgba(255, 255, 255, 0.815);
-      border-radius: 3px;
-      &:hover {
-        cursor: pointer;
-      }
     }
   }
 }

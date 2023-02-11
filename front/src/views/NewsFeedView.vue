@@ -6,7 +6,7 @@
     </div>
   </main>
   <button class="createPost" @click="showCreateModal = true">
-    <fa icon="fa-solid fa-feather" class="show-modal test" />
+    <fa icon="fa-solid fa-feather" class="show-modal icon" />
   </button>
   <Teleport to="body">
     <post-modal
@@ -103,7 +103,7 @@ const closeCreateModal = async () => {
     cursor: pointer;
     box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.562);
   }
-  & .test {
+  & .icon {
     font-size: 30px;
     color: white;
   }
@@ -114,7 +114,7 @@ const closeCreateModal = async () => {
     right: 20px;
     width: 50px;
     height: 50px;
-    & .test {
+    & .icon {
       font-size: 25px;
     }
   }
