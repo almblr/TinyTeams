@@ -107,6 +107,7 @@ const displayNextGifs = () => {
 /* Affiche la preview du fichier (l'image) uploadé  */
 const GetUploadedGif = async (event) => {
   const gif = event.target.src;
+  isGifPanelOpen.value = false;
   emit("showUploadedGif", gif);
 };
 

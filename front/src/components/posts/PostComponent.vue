@@ -58,15 +58,8 @@
           width="35px"
           height="35px"
         />
-        <TextareaComponent
-          @get-media-preview="showUrls"
-          :postId="post.id"
-        ></TextareaComponent>
+        <TextareaComponent :postId="post.id"></TextareaComponent>
       </div>
-      <ImagePreviewComponent
-        :src="mediaPreview"
-        @remove-image="deleteImagePreview"
-      />
       <div class="footer__comments">
         <CommentSection
           :userComments="[...post.userComments]"
@@ -87,7 +80,6 @@ import CommentSection from "./CommentSectionComponent.vue";
 import ProfilPicture from "./ProfilPictureComponent.vue";
 import PostHeaderComponent from "./PostHeaderComponent.vue";
 import TextareaComponent from "./TextareaComponent.vue";
-import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
 
 const postStore = usePostStore();
 const likeStore = useLikeStore();
@@ -95,15 +87,7 @@ const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const userId = locStr.userId;
 const likeBtn = ref(null);
-const mediaPreview = ref(null);
 
-const showUrls = (path) => {
-  mediaPreview.value = path;
-};
-
-const deleteImagePreview = () => {
-  mediaPreview.value = null;
-};
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
 const checkLikeState = (postId) => {
   const thisPost = postStore.posts.find((post) => post.id === postId);

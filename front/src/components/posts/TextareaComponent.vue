@@ -1,28 +1,34 @@
 <template>
-  <div class="container" ref="container">
-    <textarea
-      :id="props.postId"
-      placeholder="Ecrivez quelque chose..."
-      @keydown.enter="sendComment($event, props.postId)"
-      @input="getTextWidth($event)"
-      ref="textarea"
-      v-model="textareaContent"
-    ></textarea>
-    <div class="container__buttons">
-      <div title="Insérez une image" @click="!showing">
-        <AddMediaButton
-          color="#575656"
-          width="30px"
-          height="25px"
-          iconSize="19px"
-          @showUploadedImg="getUrls"
-          ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
-        ></AddMediaButton>
-      </div>
-      <div title="Insérer un gif">
-        <GifTooltipComponent @showUploadedGif="getUrls" />
+  <div class="container">
+    <div class="container__textarea" ref="containerTextarea">
+      <textarea
+        :id="props.postId"
+        placeholder="Ecrivez quelque chose..."
+        @keydown.enter="sendComment(props.postId)"
+        @input="autoResize($event)"
+        ref="textarea"
+        v-model="textareaContent"
+      ></textarea>
+      <div class="container__buttons">
+        <div title="Insérez une image" @click="!showing">
+          <AddMediaButton
+            color="#575656"
+            width="30px"
+            height="25px"
+            iconSize="19px"
+            @showUploadedImg="getUrls"
+            ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
+          ></AddMediaButton>
+        </div>
+        <div title="Insérer un gif">
+          <GifTooltipComponent @showUploadedGif="getUrls" />
+        </div>
       </div>
     </div>
+    <ImagePreviewComponent
+      :src="mediaPreview"
+      @remove-image="deleteImagePreview"
+    />
   </div>
 </template>
 
@@ -31,11 +37,11 @@ import { ref } from "vue";
 import { useCommentStore, usePostStore } from "../../stores/index.js";
 import AddMediaButton from "../layout/AddMediaButton.vue";
 import GifTooltipComponent from "./GifTooltipComponent.vue";
+import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
 
 const props = defineProps({
   postId: Number,
 });
-const emit = defineEmits(["getMediaPreview"]);
 
 const commentStore = useCommentStore();
 const postStore = usePostStore();
@@ -43,40 +49,55 @@ const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const showing = ref(false);
 const textareaContent = ref(null);
-const container = ref(null);
+const containerTextarea = ref(null);
 const textarea = ref(null);
 const mediaToSend = ref("");
+const mediaPreview = ref(null);
 
-const getUrls = (path, file) => {
-  file ? (mediaToSend.value = file) : (mediaToSend.value = path);
-  emit("getMediaPreview", path);
-};
-
-const sendComment = async (el, postId) => {
-  const formData = new FormData();
-  formData.append("content", el.target.value);
-  formData.append("imageUrl", mediaToSend.value);
-  await commentStore.createOne(postId, formData, token);
-  el.target.value = null;
-  await postStore.getOne(token, postId);
-  emit("getMediaPreview", null);
+const deleteImagePreview = () => {
+  mediaPreview.value = null;
   mediaToSend.value = null;
 };
 
-const getTextWidth = (el) => {
+const getUrls = (path, file) => {
+  if (file) {
+    mediaToSend.value = file;
+  } else {
+    mediaToSend.value = path;
+  }
+  mediaPreview.value = path;
+};
+
+const sendComment = async (postId) => {
+  const formData = new FormData();
+  formData.append("content", textareaContent.value);
+  formData.append("imageUrl", mediaToSend.value);
+  await commentStore.createOne(postId, formData, token);
+  textareaContent.value = "";
+  mediaPreview.value = "";
+  mediaToSend.value = "";
+  await postStore.getOne(token, postId);
+};
+
+const autoResize = (el) => {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
   context.font = "15px Lato";
   const strWidth = Math.ceil(context.measureText(textareaContent.value).width);
-  const containerWidth = container.value.offsetWidth;
+  const containerWidth = containerTextarea.value.offsetWidth;
   // 100 étant la width des boutons + qlq pixels
-  if (containerWidth - strWidth < 100) {
+  if (containerWidth - strWidth < 100 && el.target.style.minWidth !== "100%") {
     el.target.style.minWidth = "100%";
-    container.value.style.height = `${el.target.scrollHeight + 35}px`;
+    containerTextarea.value.style.height = `${el.target.scrollHeight + 35}px`;
     el.target.style.height = `${el.target.scrollHeight}px`;
-  } else {
+  }
+  if (containerWidth - strWidth < 100 && el.target.style.minWidth === "100%") {
+    containerTextarea.value.style.height = `${el.target.scrollHeight + 35}px`;
+    el.target.style.height = `${el.target.scrollHeight}px`;
+  }
+  if (containerWidth - strWidth > 100 && el.target.style.height !== `30px`) {
     el.target.style.minWidth = "initial";
-    container.value.style.height = `35px`;
+    containerTextarea.value.style.height = `35px`;
     el.target.style.height = `30px`;
   }
 };
@@ -85,46 +106,52 @@ const getTextWidth = (el) => {
 <style lang="scss" scoped>
 .container {
   display: flex;
-  flex-wrap: wrap;
-  flex: 1;
-  max-width: 630px;
-  background-color: white;
-  border: 1px solid #c0c2c4;
-  border-radius: 20px;
-  padding: 0 15px;
-  height: 35px;
-  max-height: 300px;
-  & > textarea {
-    width: calc(100% - 60px);
-    resize: none;
-    height: 30px;
-    padding-top: 7px;
-    max-height: 250px;
-    font-size: 15px;
-    border: none;
-    &:focus {
-      outline: none;
-    }
-  }
-  & > div {
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  &__textarea {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-    & > * {
+    flex-wrap: wrap;
+    flex: 1;
+    max-width: 630px;
+    background-color: white;
+    border: 1px solid #c0c2c4;
+    border-radius: 20px;
+    padding: 0 15px;
+    height: 35px;
+    max-height: 300px;
+    & > textarea {
+      width: calc(100% - 60px);
+      resize: none;
+      height: 30px;
+      padding-top: 7px;
+      max-height: 250px;
+      font-size: 15px;
+      border: none;
+      &:focus {
+        outline: none;
+      }
+    }
+    & > div {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 30px;
-      height: 25px;
-      border-radius: 5px;
-      &:hover {
-        background-color: #dfdfdf;
-        cursor: pointer;
-      }
-      & > .addImage {
-        color: #575656;
-        font-size: 19px;
+      margin-left: auto;
+      & > * {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 25px;
+        border-radius: 5px;
+        &:hover {
+          background-color: #dfdfdf;
+          cursor: pointer;
+        }
+        & > .addImage {
+          color: #575656;
+          font-size: 19px;
+        }
       }
     }
   }

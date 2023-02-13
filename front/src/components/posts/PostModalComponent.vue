@@ -98,7 +98,12 @@ const deleteImagePreview = () => {
 const sendPost = async () => {
   const formData = new FormData();
   if (props.modalType === "New") {
-    if (postData.value.content || imageFile.value !== "") {
+    if (!postData.value.content && !imageFile.value !== "") {
+      emptyPost.value = true;
+      setTimeout(() => {
+        emptyPost.value = false;
+      }, 5000);
+    } else {
       if (postData.value.content) {
         formData.append("content", postData.value.content);
       }
@@ -107,10 +112,8 @@ const sendPost = async () => {
       }
       await postStore.createOne(formData, token);
       emit("close");
-      image.value = null;
+      imageBlop.value = null;
       emptyPost.value === true ? (emptyPost.value = false) : null;
-    } else {
-      emptyPost.value = true;
     }
   }
   if (props.modalType === "Modify") {
@@ -118,12 +121,12 @@ const sendPost = async () => {
       emptyPost.value = true;
       setTimeout(() => {
         emptyPost.value = false;
-      }, 7000);
+      }, 5000);
     } else {
       formData.append("content", postData.value.content);
       await postStore.updateOne(postData.value.id, formData, token);
       emit("close");
-      image.value = null;
+      imageBlop.value = null;
       emptyPost.value === true ? (emptyPost.value = false) : null;
     }
   }
@@ -221,11 +224,11 @@ footer {
   width: 300px;
   height: 40px;
   background-color: #fd1e01d5;
-  border-radius: 10px;
+  border-radius: 5px;
   bottom: 3%;
   left: 50%;
   transform: translate(-50%, 0);
-  animation: showError 7s 1;
+  animation: showError 5s 1;
   box-shadow: 5px 5px 20px #0000003d;
   opacity: 0;
   & > span {
@@ -240,7 +243,7 @@ footer {
   0% {
     opacity: 0;
   }
-  10% {
+  5% {
     opacity: 0.9;
   }
   90% {
