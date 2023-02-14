@@ -3,8 +3,9 @@
     <header @click="modify()">
       <h3>{{ username }}</h3>
     </header>
-    <p v-show="!editingMode">{{ props.content }}</p>
+    <p v-if="!editingMode">{{ props.content }}</p>
     <TextareaEditingComponent
+      v-else
       :commentId="props.commentId"
       :content="props.content"
       :show="editingMode"
@@ -15,31 +16,32 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import TextareaEditingComponent from "./TextareaEditingComponent.vue";
 
+const emit = defineEmits(["update:selectedCommentId"]);
 const props = defineProps({
   commentId: Number,
   content: String,
   imageUrl: String,
+  selectedCommentId: Number,
 });
 
-const test = () => {
-  if (editingMode.value) {
-    console.log("test");
-    editingMode.value = false;
-  }
-};
 const locStr = JSON.parse(localStorage.getItem("userInfo"));
 const username = locStr.userName;
 const editingMode = ref(false);
-const selectedCommentId = ref(null);
 
 const modify = () => {
-  editingMode.value = false;
-  selectedCommentId.value = props.commentId;
+  emit("update:selectedCommentId", props.commentId);
   editingMode.value = true;
 };
+
+watch(
+  () => props.selectedCommentId,
+  (newValue) => {
+    editingMode.value = newValue === props.commentId;
+  }
+);
 </script>
 
 <style lang="scss" scoped>

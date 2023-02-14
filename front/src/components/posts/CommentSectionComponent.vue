@@ -10,8 +10,9 @@
       <ProfilPicture :url="userProfilpicture" width="40px" height="40px" />
       <CommentComponent
         :commentId="comment.id"
-        :content="comment.content"
         :imageUrl="comment.imageUrl"
+        :content="comment.content"
+        v-model:selectedCommentId="selectedCommentId"
       />
     </div>
     <div
@@ -38,6 +39,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import ProfilPicture from "./ProfilPictureComponent.vue";
 import CommentComponent from "./CommentComponent.vue";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -53,6 +55,7 @@ const props = defineProps({
   othersComments: Array,
 });
 
+const selectedCommentId = ref(null);
 const userProfilpicture = locStr.profilPicture;
 </script>
 
