@@ -12,6 +12,7 @@
     <ToolTipComponent
       :postId="props.postId"
       :author="props.author"
+      type="post"
       v-if="props.author === userId || userIsAdmin"
     />
   </header>

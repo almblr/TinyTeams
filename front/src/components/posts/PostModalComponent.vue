@@ -1,5 +1,5 @@
 <template>
-  <ModalLayer v-if="show" @click.self="emit('close', (image = null))">
+  <ModalLayer v-if="show" @click.self="emit('close', (imageBlop = null))">
     <div class="container">
       <main class="main">
         <textarea
@@ -22,7 +22,7 @@
               backgroundColor="rgba(248, 183, 183, 0.281)"
               backgroundColorHover="rgba(248, 183, 183, 0.767)"
               iconSize="24px"
-              @showUploadedImg="test"
+              @showUploadedImg="displayImagePreview"
               ><template v-slot:icon><fa icon="fa-solid fa-image" /></template
             ></AddMediaButton>
           </div>
@@ -69,7 +69,7 @@ const textarea = ref("");
 const imageBlop = ref(null);
 const imageFile = ref(null);
 
-const test = (blop, file) => {
+const displayImagePreview = (blop, file) => {
   imageBlop.value = blop;
   imageFile.value = file;
 };

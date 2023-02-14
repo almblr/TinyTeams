@@ -1,0 +1,82 @@
+<template>
+  <div>
+    <header @click="modify()">
+      <h3>{{ username }}</h3>
+    </header>
+    <p v-show="!editingMode">{{ props.content }}</p>
+    <TextareaEditingComponent
+      :commentId="props.commentId"
+      :content="props.content"
+      :show="editingMode"
+    />
+    <span v-if="editingMode" @click="editingMode = false">Cancel</span>
+    <img :src="props.imageUrl" v-if="props.imageUrl" />
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import TextareaEditingComponent from "./TextareaEditingComponent.vue";
+
+const props = defineProps({
+  commentId: Number,
+  content: String,
+  imageUrl: String,
+});
+
+const test = () => {
+  if (editingMode.value) {
+    console.log("test");
+    editingMode.value = false;
+  }
+};
+const locStr = JSON.parse(localStorage.getItem("userInfo"));
+const username = locStr.userName;
+const editingMode = ref(false);
+const selectedCommentId = ref(null);
+
+const modify = () => {
+  editingMode.value = false;
+  selectedCommentId.value = props.commentId;
+  editingMode.value = true;
+};
+</script>
+
+<style lang="scss" scoped>
+div {
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+  height: min-content;
+  border-radius: 10px;
+  background-color: rgb(219, 219, 219);
+  padding: 5px 10px 5px 10px;
+  & header {
+    display: flex;
+    & h3 {
+      font-size: 15px;
+      color: rgba(0, 0, 0, 0.904);
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  & p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  & img {
+    margin: 5px 0;
+    max-width: 500px;
+  }
+  & span {
+    font-size: 11px;
+    color: rgb(71, 71, 189);
+    &:hover {
+      cursor: pointer;
+      color: rgb(33, 33, 224);
+    }
+  }
+}
+</style>

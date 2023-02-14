@@ -3,6 +3,19 @@ import fs from "fs";
 
 /* COMMENT Controller */
 const commentController = {
+  getAll: async (req, res) => {
+    try {
+      const allComments = await comment.findAll({
+        where: {
+          postId: req.params.postId,
+        },
+        order: [
+          ["createdAt", "DESC"], // Du plus récent au moins récent
+        ],
+      });
+      res.status(200).send(allComments);
+    } catch {}
+  },
   createOne: async (req, res) => {
     if (!req.body.content && !req.file && !req.body.imageUrl) {
       res.status(400).json({ message: "Commentaire vide." });

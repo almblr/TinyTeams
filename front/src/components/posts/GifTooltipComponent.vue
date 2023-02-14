@@ -2,7 +2,7 @@
   <div
     class="btn"
     ref="btn"
-    v-click-outside-element="closeGifPanel"
+    v-on-click-outside="closeGifPanel"
     @click="calculateAvailableSpace"
   >
     <div class="icon" @click="openGifPanel">
@@ -29,6 +29,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useGiphyStore } from "../../stores";
+import { vOnClickOutside } from "@vueuse/components";
 
 const gifStore = useGiphyStore();
 const gifPanel = ref(null);
@@ -68,7 +69,7 @@ const openGifPanel = () => {
   gifPanel.value.scrollTop = 0;
 };
 
-/* La directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
+/* Mettre un if permet de ne pas spammer ces instructions */
 const closeGifPanel = () => {
   if (isGifPanelOpen.value === true) {
     gifPanel.value.scrollTop = 0;
@@ -82,9 +83,9 @@ const showSearchedGifs = async () => {
     await gifStore.resetGifs();
     await gifStore.getTrendsGif();
   } else {
-    // If user clears the input
+    console.log(searchedTerm.value);
     await gifStore.resetGifs();
-    await gifStore.searchGif(gifStore.offset, searchedTerm.value);
+    await gifStore.searchGif(gifStore.offset_search, searchedTerm.value);
   }
 };
 

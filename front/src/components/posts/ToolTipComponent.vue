@@ -2,17 +2,17 @@
   <div
     class="btn"
     ref="btn"
-    v-click-outside-element="closeTooltip"
+    v-on-click-outside="closeTooltip"
     @click="calculateAvailableSpace"
   >
     <div class="icon" @click="openTooltip">
       <fa icon="fa-solid fa-ellipsis" />
     </div>
     <div class="tooltip" v-show="isTooltipOpen === true">
-      <span v-if="props.author === userId" @click="modifyPost(props.postId)"
+      <span v-if="props.author === userId" @click="modify(props.postId)"
         >Modifier</span
       >
-      <span @click="deletePost(props.postId, token)">Supprimer</span>
+      <span @click="remove(props.postId, token)">Supprimer</span>
     </div>
     <Teleport to="body">
       <post-modal
@@ -28,10 +28,12 @@
 
 <script setup>
 import { ref, nextTick } from "vue";
-import { usePostStore } from "../../stores";
+import { usePostStore, useCommentStore } from "../../stores";
+import { vOnClickOutside } from "@vueuse/components";
 import PostModal from "./PostModalComponent.vue";
 
 const postStore = usePostStore();
+const commentStore = useCommentStore();
 const btn = ref(null);
 const spaceUp = ref(null);
 const isTooltipOpen = ref(false);
@@ -39,11 +41,14 @@ const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const userId = locStr.userId;
 const postToModify = ref({});
-let showModifyModal = ref(false);
+const commentToModify = ref({});
+const showModifyModal = ref(false);
 
 const props = defineProps({
-  postId: { type: Number, required: true },
-  author: { type: Number, required: true },
+  postId: Number,
+  commentId: Number,
+  author: Number,
+  type: String,
 });
 
 const calculateAvailableSpace = () => {
@@ -75,16 +80,33 @@ const closeModifyModal = async () => {
   await postStore.getAll(token);
 };
 
-const modifyPost = async (id) => {
-  postToModify.value = postStore.posts.find((post) => post.id === id);
-  showModifyModal.value = true;
-  closeTooltip();
-  await nextTick();
+const modify = async (id) => {
+  if (props.type === "post") {
+    postToModify.value = postStore.posts.find((post) => post.id === id);
+    console.log(postToModify.value);
+    showModifyModal.value = true;
+    closeTooltip();
+    await nextTick();
+  }
+  if (props.type === "comment") {
+    commentToModify.value = commentStore.comments.find(
+      (comment) => comment.id === id
+    );
+    showModifyModal.value = true;
+    closeTooltip();
+    await nextTick();
+  }
 };
 
-const deletePost = async (id, token) => {
-  await postStore.deleteOne(id, token);
-  await postStore.getAll(token);
+const remove = async (id, token) => {
+  if (props.type === "post") {
+    await postStore.deleteOne(id, token);
+    await postStore.getAll(token);
+  }
+  if (props.type === "comment") {
+    await commentStore.deleteOne(id, token);
+    await postStore.getAll(token);
+  }
 };
 </script>
 

@@ -21,6 +21,7 @@ export const usePostStore = defineStore("post", {
       const findPost = this.posts.find((post) => post.id === postId);
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, post);
+      return post;
     },
     async getAll(token) {
       const response = await fetch("http://localhost:3000/api/posts/getAll", {
@@ -69,6 +70,18 @@ export const useCommentStore = defineStore("comment", {
     comments: [],
   }),
   actions: {
+    async getAll(postId, token) {
+      const response = await fetch(
+        `http://localhost:3000/api/posts/${postId}getAll`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      this.comments = data;
+    },
     async createOne(postId, data, token) {
       await fetch(`http://localhost:3000/api/posts/${postId}/postComment`, {
         method: "POST",
@@ -79,7 +92,7 @@ export const useCommentStore = defineStore("comment", {
         },
       });
     },
-    async updateOne(id, data, token) {
+    async updateOne(postId, data, token) {
       await fetch(
         `http://localhost:3000/api/posts/${postId}/${commentId}/modify`,
         {
@@ -92,7 +105,7 @@ export const useCommentStore = defineStore("comment", {
         }
       );
     },
-    async deleteOne(id, token) {
+    async deleteOne(commentId, token) {
       await fetch(
         `http://localhost:3000/api/posts/${postId}/${commentId}/delete`,
         {

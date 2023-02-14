@@ -127,12 +127,15 @@ footer {
   }
 }
 .error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   bottom: 3%;
   left: 50%;
   width: 300px;
   height: 50px;
-  background-color: #fd0101;
+  background-color: #df2222;
   border-radius: 10px;
   transform: translate(-50%, 0);
   animation: displayError 7s 1;
@@ -150,11 +153,11 @@ footer {
   0% {
     opacity: 0;
   }
-  10% {
-    opacity: 0.8;
+  7% {
+    opacity: 0.9;
   }
   90% {
-    opacity: 0.8;
+    opacity: 0.9;
   }
   95% {
     opacity: 0;

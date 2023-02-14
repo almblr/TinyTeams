@@ -5,7 +5,7 @@ import multerConfig from "../middleware/multer-config.js";
 
 const router = express.Router();
 
-// router.get("/:postId/getAll", commentController.getAll);
+router.get("/:postId/getAll", commentController.getAll);
 router.post(
   "/:postId/postComment",
   auth,
