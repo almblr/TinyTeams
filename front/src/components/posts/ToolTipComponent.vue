@@ -136,9 +136,10 @@ const remove = async (postId, commentId, token) => {
   z-index: 999;
   background: rgb(0, 0, 0);
   opacity: 0.8;
-  border-radius: 5px !important;
+  border-radius: 5px;
   overflow: hidden; // Permet de ne pas ignorer les bordures au hover
   & > span {
+    display: absolute;
     min-width: 100px;
     color: white;
     text-align: center;

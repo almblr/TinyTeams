@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="div">
     <header>
       <h3>{{ props.firstName }} {{ props.lastName }}</h3>
       <ToolTipComponent
@@ -55,7 +55,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-div {
+.div {
   display: flex;
   flex-direction: column;
   min-width: 100px;
@@ -68,7 +68,7 @@ div {
     position: relative;
     min-width: 100%;
     border: 1px solid blue;
-    & h3 {
+    & > h3 {
       font-size: 15px;
       overflow: hidden !important;
       white-space: nowrap !important;

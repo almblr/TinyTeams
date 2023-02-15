@@ -47,7 +47,7 @@ const selectedCommentId = ref(null);
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    & div {
+    & > div {
       display: flex;
       flex-direction: column;
       min-width: 100px;
@@ -55,9 +55,9 @@ const selectedCommentId = ref(null);
       border-radius: 10px;
       background-color: rgb(219, 219, 219);
       padding: 5px 10px 5px 10px;
-      & header {
+      & > header {
         display: flex;
-        & h3 {
+        & > h3 {
           font-size: 15px;
           color: rgba(0, 0, 0, 0.904);
           &:hover {
