@@ -32,10 +32,7 @@
           ❤
         </span>
         <span class="main__stats__coms"
-          >{{
-            post.userComments.length + post.othersComments.length
-          }}
-          commentaire</span
+          >{{ post.comments.length }} commentaire</span
         >
       </div>
       <div class="main__reactBtn" @click="updateLike(post.id)">
@@ -60,13 +57,7 @@
         />
         <TextareaComponent :postId="post.id"></TextareaComponent>
       </div>
-      <div class="footer__comments">
-        <CommentSection
-          :userComments="[...post.userComments]"
-          :othersComments="[...post.othersComments]"
-          :user="post.user"
-        />
-      </div>
+      <CommentSection :comments="[...post.comments]" :user="post.user" />
     </footer>
   </article>
   <!-- :show sert à basculer la propriété display d'un élément -->

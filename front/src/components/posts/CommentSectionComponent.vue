@@ -2,38 +2,24 @@
   <section class="commentsSection">
     <div
       class="commentsSection__myComment"
-      v-if="userComments"
-      v-for="comment in userComments"
+      v-if="comments"
+      v-for="comment in comments"
       :key="comment.id"
       :id="comment.id"
-    >
-      <ProfilPicture :url="userProfilpicture" width="40px" height="40px" />
-      <CommentComponent
-        :commentId="comment.id"
-        :imageUrl="comment.imageUrl"
-        :content="comment.content"
-        v-model:selectedCommentId="selectedCommentId"
-      />
-    </div>
-    <div
-      class="commentsSection__othersComments"
-      v-if="othersComments"
-      v-for="comment in othersComments"
     >
       <ProfilPicture
         :url="comment.user.profilPicture"
         width="40px"
         height="40px"
       />
-      <div>
-        <header>
-          <h3 class="username">
-            {{ comment.user.firstName }} {{ comment.user.lastName }}
-          </h3>
-        </header>
-        <p>{{ comment.content }}</p>
-        <img :src="comment.imageUrl" v-if="comment.imageUrl" />
-      </div>
+      <CommentComponent
+        :commentId="comment.id"
+        :imageUrl="comment.imageUrl"
+        :content="comment.content"
+        v-model:selectedCommentId="selectedCommentId"
+        :firstName="comment.user.firstName"
+        :lastName="comment.user.lastName"
+      />
     </div>
   </section>
 </template>
@@ -42,17 +28,11 @@
 import { ref } from "vue";
 import ProfilPicture from "./ProfilPictureComponent.vue";
 import CommentComponent from "./CommentComponent.vue";
-import relativeTime from "dayjs/plugin/relativeTime";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
-dayjs.locale("fr");
-dayjs.extend(relativeTime);
 
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 
 const props = defineProps({
-  userComments: Array,
-  othersComments: Array,
+  comments: Array,
 });
 
 const selectedCommentId = ref(null);

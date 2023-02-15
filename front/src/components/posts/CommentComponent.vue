@@ -1,7 +1,7 @@
 <template>
   <div>
     <header @click="modify()">
-      <h3>{{ username }}</h3>
+      <h3>{{ props.firstName }} {{ props.lastName }}</h3>
     </header>
     <p v-if="!editingMode">{{ props.content }}</p>
     <TextareaEditingComponent
@@ -10,7 +10,7 @@
       :content="props.content"
       :show="editingMode"
     />
-    <span v-if="editingMode" @click="editingMode = false">Cancel</span>
+    <span v-if="editingMode" @click="editingMode = false">Annuler</span>
     <img :src="props.imageUrl" v-if="props.imageUrl" />
   </div>
 </template>
@@ -25,6 +25,8 @@ const props = defineProps({
   content: String,
   imageUrl: String,
   selectedCommentId: Number,
+  firstName: String,
+  lastName: String,
 });
 
 const locStr = JSON.parse(localStorage.getItem("userInfo"));

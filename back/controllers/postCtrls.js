@@ -1,8 +1,7 @@
-import { post, react, user, comment } from "../db/sequelize.js"; // sans les { } il ne reconnait pas posts car il n'a pas été exporté avec export default
+import { post, react, user, comment } from "../db/sequelize.js";
 import fs from "fs";
 import { Op } from "sequelize";
 
-/* Controller POST */
 const postController = {
   createOne: async (req, res) => {
     if (!req.body.content && !req.file) {
@@ -31,15 +30,26 @@ const postController = {
           postId: req.params.id,
         },
         order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: user,
+            attributes: ["id", "firstName", "lastName", "profilPicture"],
+          },
+        ],
       });
       const othersComments = await comment.findAll({
         where: {
           postId: req.params.id,
           author: {
-            [Op.ne]: req.auth.userId, // Ne mets pas les commentaires de l'utilisateurs
+            [Op.ne]: req.auth.userId, // Remove comments of the connected user
           },
         },
-        include: [user],
+        include: [
+          {
+            model: user,
+            attributes: ["id", "firstName", "lastName", "profilPicture"],
+          },
+        ],
         order: [["createdAt", "DESC"]],
       });
       const Post = await post.findOne({
@@ -50,18 +60,12 @@ const postController = {
           react,
           {
             model: user,
-            attributes: [
-              "id",
-              "firstName",
-              "lastName",
-              "profilPicture",
-              "isAdmin",
-            ],
+            attributes: ["id", "firstName", "lastName", "profilPicture"],
           },
         ],
       });
-      Post.setDataValue("userComments", userComments);
-      Post.setDataValue("othersComments", othersComments);
+      const allComments = userComments.concat(othersComments);
+      Post.setDataValue("comments", allComments);
       res.status(200).send(Post);
     } catch {
       res.status(400);
@@ -69,7 +73,7 @@ const postController = {
   },
   getAll: async (req, res) => {
     try {
-      let allPosts = await post.findAll({
+      const allPosts = await post.findAll({
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
@@ -77,7 +81,7 @@ const postController = {
           react,
           {
             model: user,
-            attributes: ["firstName", "lastName", "profilPicture"],
+            attributes: ["id", "firstName", "lastName", "profilPicture"],
           },
         ],
       });
@@ -88,6 +92,12 @@ const postController = {
             postId: post.id,
           },
           order: [["createdAt", "DESC"]],
+          include: [
+            {
+              model: user,
+              attributes: ["id", "firstName", "lastName", "profilPicture"],
+            },
+          ],
         });
         const othersComments = await comment.findAll({
           where: {
@@ -100,12 +110,12 @@ const postController = {
           include: [
             {
               model: user,
-              attributes: ["firstName", "lastName", "profilPicture"],
+              attributes: ["id", "firstName", "lastName", "profilPicture"],
             },
           ],
         });
-        post.setDataValue("userComments", userComments);
-        post.setDataValue("othersComments", othersComments);
+        const allComments = userComments.concat(othersComments);
+        post.setDataValue("comments", allComments);
       }
       res.status(200).send(allPosts);
     } catch {
