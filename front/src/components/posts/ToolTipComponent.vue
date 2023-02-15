@@ -12,7 +12,9 @@
       <span v-if="props.author === userId" @click="modify(props.postId)"
         >Modifier</span
       >
-      <span @click="remove(props.postId, token)">Supprimer</span>
+      <span @click="remove(props.postId, props.commentId, token)"
+        >Supprimer</span
+      >
     </div>
     <Teleport to="body">
       <post-modal
@@ -44,6 +46,7 @@ const postToModify = ref({});
 const commentToModify = ref({});
 const showModifyModal = ref(false);
 
+const emit = defineEmits(["editComment"]);
 const props = defineProps({
   postId: Number,
   commentId: Number,
@@ -83,7 +86,6 @@ const closeModifyModal = async () => {
 const modify = async (id) => {
   if (props.type === "post") {
     postToModify.value = postStore.posts.find((post) => post.id === id);
-    console.log(postToModify.value);
     showModifyModal.value = true;
     closeTooltip();
     await nextTick();
@@ -92,19 +94,19 @@ const modify = async (id) => {
     commentToModify.value = commentStore.comments.find(
       (comment) => comment.id === id
     );
-    showModifyModal.value = true;
+    emit("editComment");
     closeTooltip();
     await nextTick();
   }
 };
 
-const remove = async (id, token) => {
+const remove = async (postId, commentId, token) => {
   if (props.type === "post") {
     await postStore.deleteOne(id, token);
     await postStore.getAll(token);
   }
   if (props.type === "comment") {
-    await commentStore.deleteOne(id, token);
+    await commentStore.deleteOne(postId, commentId, token);
     await postStore.getAll(token);
   }
 };
@@ -113,7 +115,11 @@ const remove = async (id, token) => {
 <style lang="scss" scoped>
 .btn {
   position: relative;
+  height: min-content;
+  width: min-content;
+  background-color: red;
   top: 5px;
+  right: 5px;
   &:hover {
     cursor: pointer;
   }

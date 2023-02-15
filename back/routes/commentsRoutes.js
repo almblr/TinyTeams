@@ -13,7 +13,7 @@ router.post(
   commentController.createOne
 );
 router.put(
-  "/:postId/modify/:commentId",
+  "/:postId/:commentId/modify",
   auth,
   multerConfig,
   commentController.updateOne

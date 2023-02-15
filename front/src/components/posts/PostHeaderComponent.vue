@@ -42,10 +42,10 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .post__header {
-  position: relative;
-  background-color: rgb(248, 248, 248);
   display: flex;
+  position: relative;
   justify-content: space-between;
+  background-color: rgb(248, 248, 248);
   padding: 1% 3%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;

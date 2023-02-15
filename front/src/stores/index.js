@@ -92,7 +92,7 @@ export const useCommentStore = defineStore("comment", {
         },
       });
     },
-    async updateOne(postId, data, token) {
+    async updateOne(postId, commentId, data, token) {
       await fetch(
         `http://localhost:3000/api/posts/${postId}/${commentId}/modify`,
         {
@@ -105,7 +105,7 @@ export const useCommentStore = defineStore("comment", {
         }
       );
     },
-    async deleteOne(commentId, token) {
+    async deleteOne(postId, commentId, token) {
       await fetch(
         `http://localhost:3000/api/posts/${postId}/${commentId}/delete`,
         {
