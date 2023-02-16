@@ -1,12 +1,19 @@
 <template>
-  <div class="div">
-    <header>
+  <div
+    class="div"
+    @mouseover="showTooltip = true"
+    @mouseleave="showTooltip = false"
+  >
+    <header v-show="!editingMode">
       <h3>{{ props.firstName }} {{ props.lastName }}</h3>
       <ToolTipComponent
         :commentId="props.commentId"
-        type="comment"
         :author="props.author"
+        type="comment"
+        top="3px"
+        dotSize="4px"
         @editComment="modify"
+        v-show="props.author === userId || isAdmin"
       />
     </header>
     <p v-if="!editingMode">{{ props.content }}</p>
@@ -39,6 +46,10 @@ const props = defineProps({
   lastName: String,
 });
 
+const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const userId = locStr.userId;
+const isAdmin = locStr.isAdmin;
+const showTooltip = ref(false);
 const editingMode = ref(false);
 
 const modify = () => {
@@ -64,15 +75,16 @@ watch(
   background-color: rgb(219, 219, 219);
   padding: 5px 10px 5px 10px;
   & > header {
+    align-items: center;
     display: flex;
     position: relative;
     min-width: 100%;
-    border: 1px solid blue;
     & > h3 {
       font-size: 15px;
       overflow: hidden !important;
       white-space: nowrap !important;
       text-overflow: ellipsis !important;
+      margin-right: 10px;
       color: rgba(0, 0, 0, 0.904);
       &:hover {
         cursor: pointer;

@@ -12,6 +12,7 @@
       :firstName="post.user.firstName"
       :lastName="post.user.lastName"
       :createdAt="post.createdAt"
+      @editPost="test"
     />
     <main class="main">
       <p class="main__text" v-show="post.content !== null">
@@ -107,6 +108,9 @@ const updateLike = async (postId) => {
   }
 };
 
+const test = () => {
+  console.log("coucou");
+};
 /* Au chargement de la page */
 onMounted(() => {
   postStore.getAll(token);

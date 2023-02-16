@@ -4,7 +4,7 @@
       <div class="post__header__user__pic">
         <img :src="props.imageUrl" alt="Photo de profil" />
       </div>
-      <div class="post__header__user__name">
+      <div class="post__header__user__title">
         <h2>{{ props.firstName }} {{ props.lastName }}</h2>
         <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
       </div>
@@ -13,7 +13,10 @@
       :postId="props.postId"
       :author="props.author"
       type="post"
+      top="7px"
+      dotSize="4px"
       v-if="props.author === userId || userIsAdmin"
+      @editPost="test"
     />
   </header>
 </template>
@@ -30,6 +33,7 @@ const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const userId = locStr.userId;
 const userIsAdmin = locStr.isAdmin;
 
+const emit = defineEmits(["editPost"]);
 const props = defineProps({
   author: { type: Number, required: true },
   postId: { type: Number, required: true },
@@ -38,26 +42,30 @@ const props = defineProps({
   lastName: { type: String, required: true },
   createdAt: { type: String, required: true },
 });
+
+const test = () => {
+  emit("editPost");
+};
 </script>
 
 <style lang="scss" scoped>
 .post__header {
   display: flex;
-  position: relative;
   justify-content: space-between;
-  background-color: rgb(248, 248, 248);
+  width: 100%;
   padding: 1% 3%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  width: 100%;
+  background-color: rgb(248, 248, 248);
   &__user {
     display: flex;
-    max-width: 100%;
+    width: 100%;
     gap: 10px;
+    overflow: hidden;
     & * {
-      overflow: hidden !important;
-      white-space: nowrap !important;
-      text-overflow: ellipsis !important;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     &__pic {
       width: 50px;
@@ -71,11 +79,12 @@ const props = defineProps({
         object-fit: cover;
       }
     }
-    &__name {
+    &__title {
       display: flex;
       flex-direction: column;
       & h2 {
         font-size: 1em;
+        margin-right: 5px;
       }
       & span {
         font-size: 1em;

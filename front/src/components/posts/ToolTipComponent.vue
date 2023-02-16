@@ -5,10 +5,12 @@
     v-on-click-outside="closeTooltip"
     @click="calculateAvailableSpace"
   >
-    <div class="icon" @click="openTooltip">
-      <fa icon="fa-solid fa-ellipsis" />
+    <div class="icon" @click="showTooltip = !showTooltip">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
     </div>
-    <div class="tooltip" v-show="isTooltipOpen === true">
+    <div class="tooltip" v-show="showTooltip === true">
       <span v-if="props.author === userId" @click="modify(props.postId)"
         >Modifier</span
       >
@@ -16,42 +18,34 @@
         >Supprimer</span
       >
     </div>
-    <Teleport to="body">
-      <post-modal
-        :show="showModifyModal"
-        @close="closeModifyModal"
-        :modalType="'Modify'"
-        :post="postToModify"
-      >
-      </post-modal>
-    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 import { usePostStore, useCommentStore } from "../../stores";
 import { vOnClickOutside } from "@vueuse/components";
-import PostModal from "./PostModalComponent.vue";
 
 const postStore = usePostStore();
 const commentStore = useCommentStore();
-const btn = ref(null);
-const spaceUp = ref(null);
-const isTooltipOpen = ref(false);
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const userId = locStr.userId;
+const btn = ref(null);
+const spaceUp = ref(null);
+const showTooltip = ref(null);
 const postToModify = ref({});
 const commentToModify = ref({});
-const showModifyModal = ref(false);
 
-const emit = defineEmits(["editComment"]);
+const emit = defineEmits(["editPost", "editComment"]);
 const props = defineProps({
   postId: Number,
   commentId: Number,
   author: Number,
   type: String,
+  top: String,
+  right: String,
+  dotSize: String,
 });
 
 const calculateAvailableSpace = () => {
@@ -67,36 +61,25 @@ const calculateAvailableSpace = () => {
   }
 };
 
-const openTooltip = () => {
-  isTooltipOpen.value = !isTooltipOpen.value;
-};
-
 /* La directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
 const closeTooltip = () => {
-  if (isTooltipOpen.value === true) {
-    isTooltipOpen.value = false;
+  if (showTooltip.value === true) {
+    showTooltip.value = false;
   }
-};
-
-const closeModifyModal = async () => {
-  showModifyModal.value = false;
-  await postStore.getAll(token);
 };
 
 const modify = async (id) => {
   if (props.type === "post") {
     postToModify.value = postStore.posts.find((post) => post.id === id);
-    showModifyModal.value = true;
+    emit("editPost");
     closeTooltip();
-    await nextTick();
   }
   if (props.type === "comment") {
     commentToModify.value = commentStore.comments.find(
       (comment) => comment.id === id
     );
+    showTooltip.value = false;
     emit("editComment");
-    closeTooltip();
-    await nextTick();
   }
 };
 
@@ -115,38 +98,44 @@ const remove = async (postId, commentId, token) => {
 <style lang="scss" scoped>
 .btn {
   position: relative;
-  height: min-content;
-  width: min-content;
-  background-color: red;
-  top: 5px;
-  right: 5px;
+  min-height: 15px;
+  max-height: 15px;
+  top: v-bind("props.top");
   &:hover {
     cursor: pointer;
   }
   & > .icon {
-    position: relative;
-    font-size: 19px;
+    min-height: 15px;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    & > .dot {
+      width: v-bind("props.dotSize");
+      height: v-bind("props.dotSize");
+      background: rgb(39, 36, 36);
+      border-radius: 5px;
+    }
   }
-}
-
-.tooltip {
-  @include fdCol-aiCt;
-  position: absolute;
-  right: 0px;
-  z-index: 999;
-  background: rgb(0, 0, 0);
-  opacity: 0.8;
-  border-radius: 5px;
-  overflow: hidden; // Permet de ne pas ignorer les bordures au hover
-  & > span {
-    display: absolute;
-    min-width: 100px;
-    color: white;
-    text-align: center;
-    transition: 200ms;
-    padding: 5px 0px;
-    &:hover {
-      background: rgb(14, 14, 14);
+  & .tooltip {
+    @include fdCol-aiCt;
+    position: absolute;
+    right: 0;
+    z-index: 999;
+    background: black;
+    margin-top: 3px;
+    opacity: 0.8;
+    border-radius: 5px;
+    overflow: hidden; // Permet de ne pas ignorer les bordures au hover
+    & > span {
+      display: absolute;
+      min-width: 100px;
+      color: white;
+      text-align: center;
+      transition: 200ms;
+      padding: 5px 0px;
+      &:hover {
+        background: rgb(14, 14, 14);
+      }
     }
   }
 }
