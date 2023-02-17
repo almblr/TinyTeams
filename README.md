@@ -4,6 +4,8 @@
 
 Le refonte n'étant pas achevée, les instructions concernant l'installation du projet ne seront pas communiquées pour le moment.
 
+**Technologies déployées** : Vue 3, Node.js, Sequelize, SQLite
+
 *Dernier mise à jour du readme : 17 Février 2023*
 # Fonctionnalités disponibles
 -   créer un compte
