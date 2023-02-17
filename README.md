@@ -10,7 +10,7 @@ Le refonte n'étant pas achevée, les instructions concernant l'installation du 
 -   se connecter / déconnecter
 -   créer, modifier et supprimer un post (droits admins compris)
 -   consulter les posts d'autres utilisateurs
--   ajouter une réaction "j'aime"
+-   réagir au post par le biais d'un bouton "j'aime"
 -  créer, modifier et supprimer un commentaire (droits admins compris)
 - ajouter un GIF en tant que commentaire
 -   consulter le nombre de likes et de commentaires total
