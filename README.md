@@ -1,6 +1,6 @@
 # [](https://github.com/soonbtf/Groupomania-V2/edit/main/README.md#présentation)Présentation
 
-**Groupomania V2** est une **refonte globale** de mon dernier projet OpenClassrooms dans le cadre de la formation développeur web. Il s'agit d'un réseau social privé d'entreprise.
+**Groupomania V2** est une **refonte globale** de mon dernier projet OpenClassrooms dans le cadre de la formation développeur web. Il s'agit d'un réseau social d'entreprise.
 
 Le refonte n'étant pas achevée, les instructions concernant l'installation du projet ne seront pas communiquées pour le moment.
 
