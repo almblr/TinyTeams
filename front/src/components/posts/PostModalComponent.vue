@@ -3,7 +3,7 @@
     <div class="container">
       <main class="main">
         <textarea
-          :placeholder="placeHolder"
+          :placeholder="`Quoi de neuf, ${firstName} ?`"
           v-model="postData.content"
           maxlength="560"
           ref="textarea"
@@ -26,9 +26,7 @@
               ><template v-slot:icon><fa icon="fa-solid fa-image" /></template
             ></AddMediaButton>
           </div>
-          <button @click="sendPost">
-            {{ textButton }}
-          </button>
+          <button @click="sendPost">Publier</button>
         </footer>
       </main>
     </div>
@@ -48,9 +46,6 @@ import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
 const props = defineProps({
   show: {
     type: Boolean,
-  },
-  modalType: {
-    type: String,
   },
   post: {
     type: Object,
@@ -74,22 +69,6 @@ const displayImagePreview = (blop, file) => {
   imageFile.value = file;
 };
 
-const placeHolder = computed(() => {
-  if (props.modalType === "New") {
-    return `Quoi de neuf, ${firstName} ?`;
-  } else {
-    return "Modifiez-moi";
-  }
-});
-
-const textButton = computed(() => {
-  if (props.modalType === "New") {
-    return "Publier";
-  } else {
-    return "Modifier";
-  }
-});
-
 const deleteImagePreview = () => {
   imageBlop.value = null;
 };
@@ -97,38 +76,22 @@ const deleteImagePreview = () => {
 /* Fonction qui permet de modifier ou de supprimer un post (selon la modal ouverte) */
 const sendPost = async () => {
   const formData = new FormData();
-  if (props.modalType === "New") {
-    if (!postData.value.content && !imageFile.value !== "") {
-      emptyPost.value = true;
-      setTimeout(() => {
-        emptyPost.value = false;
-      }, 5000);
-    } else {
-      if (postData.value.content) {
-        formData.append("content", postData.value.content);
-      }
-      if (imageFile.value) {
-        formData.append("imageUrl", imageFile.value);
-      }
-      await postStore.createOne(formData, token);
-      emit("close");
-      imageBlop.value = null;
-      emptyPost.value === true ? (emptyPost.value = false) : null;
-    }
-  }
-  if (props.modalType === "Modify") {
-    if (postData.value.imageUrl === null && postData.value.content === "") {
-      emptyPost.value = true;
-      setTimeout(() => {
-        emptyPost.value = false;
-      }, 5000);
-    } else {
+  if (!postData.value.content && !imageFile.value !== "") {
+    emptyPost.value = true;
+    setTimeout(() => {
+      emptyPost.value = false;
+    }, 5000);
+  } else {
+    if (postData.value.content) {
       formData.append("content", postData.value.content);
-      await postStore.updateOne(postData.value.id, formData, token);
-      emit("close");
-      imageBlop.value = null;
-      emptyPost.value === true ? (emptyPost.value = false) : null;
     }
+    if (imageFile.value) {
+      formData.append("imageUrl", imageFile.value);
+    }
+    await postStore.createOne(formData, token);
+    emit("close");
+    imageBlop.value = null;
+    emptyPost.value === true ? (emptyPost.value = false) : null;
   }
 };
 

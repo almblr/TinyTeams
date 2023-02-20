@@ -3,8 +3,9 @@
     class="div"
     @mouseover="showTooltip = true"
     @mouseleave="showTooltip = false"
+    ref="comment"
   >
-    <header v-show="!editingMode">
+    <header>
       <h3>{{ props.firstName }} {{ props.lastName }}</h3>
       <ToolTipComponent
         :commentId="props.commentId"
@@ -13,7 +14,7 @@
         top="3px"
         dotSize="4px"
         @editComment="modify"
-        v-show="props.author === userId || isAdmin"
+        v-show="(props.author === userId || isAdmin) && editingMode === false"
       />
     </header>
     <p v-if="!editingMode">{{ props.content }}</p>
@@ -23,6 +24,7 @@
       :commentId="props.commentId"
       :content="props.content"
       v-model:show="editingMode"
+      textareaType="comment"
     />
     <span v-if="editingMode" @click="editingMode = false">Annuler</span>
     <img :src="props.imageUrl" v-if="props.imageUrl" />
@@ -49,18 +51,30 @@ const props = defineProps({
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const userId = locStr.userId;
 const isAdmin = locStr.isAdmin;
+const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);
 
 const modify = () => {
   emit("update:selectedCommentId", props.commentId);
   editingMode.value = true;
+  comment.value.style.flex = 1;
 };
 
 watch(
   () => props.selectedCommentId,
   (newValue) => {
     editingMode.value = newValue === props.commentId;
+  }
+);
+
+watch(
+  () => editingMode.value,
+  (newValue) => {
+    if (newValue === false) {
+      console.log("coucou");
+      comment.value.style.flex = "initial";
+    }
   }
 );
 </script>
@@ -93,8 +107,8 @@ watch(
   }
   & p {
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    height: 100%;
+    word-break: break-all;
   }
   & img {
     margin: 5px 0;

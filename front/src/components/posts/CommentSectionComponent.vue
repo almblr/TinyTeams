@@ -47,35 +47,6 @@ const selectedCommentId = ref(null);
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    & > div {
-      display: flex;
-      flex-direction: column;
-      min-width: 100px;
-      height: min-content;
-      border-radius: 10px;
-      background-color: rgb(219, 219, 219);
-      padding: 5px 10px 5px 10px;
-      & > header {
-        display: flex;
-        & > h3 {
-          font-size: 15px;
-          color: rgba(0, 0, 0, 0.904);
-          &:hover {
-            cursor: pointer;
-          }
-        }
-      }
-
-      & p {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-      & img {
-        margin: 5px 0;
-        max-width: 500px;
-      }
-    }
   }
 }
 </style>

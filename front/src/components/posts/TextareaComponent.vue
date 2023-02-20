@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="container" ref="container">
     <div class="container__textarea" ref="containerTextarea">
       <textarea
         :id="props.postId"
         placeholder="Ecrivez quelque chose..."
         @keydown.enter="sendComment(props.postId)"
-        @input="autoResize($event)"
+        @input="autoResize(textarea)"
         ref="textarea"
         v-model="textareaContent"
       ></textarea>
@@ -48,8 +48,9 @@ const postStore = usePostStore();
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
 const showing = ref(false);
-const textareaContent = ref(null);
+const textareaContent = ref("");
 const containerTextarea = ref(null);
+const container = ref(null);
 const textarea = ref(null);
 const mediaToSend = ref("");
 const mediaPreview = ref(null);
@@ -70,12 +71,17 @@ const getUrls = (path, file) => {
 
 const sendComment = async (postId) => {
   const formData = new FormData();
+  // Check if string contains only spaces
+  if (!textareaContent.value.trim()) {
+    return;
+  }
   formData.append("content", textareaContent.value);
   formData.append("imageUrl", mediaToSend.value);
   await commentStore.createOne(postId, formData, token);
   textareaContent.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
+  autoResize(textarea.value);
   await postStore.getOne(token, postId);
 };
 
@@ -86,19 +92,19 @@ const autoResize = (el) => {
   const strWidth = Math.ceil(context.measureText(textareaContent.value).width);
   const containerWidth = containerTextarea.value.offsetWidth;
   // 100 étant la width des boutons + qlq pixels
-  if (containerWidth - strWidth < 100 && el.target.style.minWidth !== "100%") {
-    el.target.style.minWidth = "100%";
-    containerTextarea.value.style.height = `${el.target.scrollHeight + 35}px`;
-    el.target.style.height = `${el.target.scrollHeight}px`;
+  if (containerWidth - strWidth < 100 && el.style.minWidth !== "100%") {
+    el.style.minWidth = "100%";
+    containerTextarea.value.style.height = `${el.scrollHeight + 35}px`;
+    el.style.height = `${el.scrollHeight}px`;
   }
-  if (containerWidth - strWidth < 100 && el.target.style.minWidth === "100%") {
-    containerTextarea.value.style.height = `${el.target.scrollHeight + 35}px`;
-    el.target.style.height = `${el.target.scrollHeight}px`;
+  if (containerWidth - strWidth < 100 && el.style.minWidth === "100%") {
+    containerTextarea.value.style.height = `${el.scrollHeight + 35}px`;
+    el.style.height = `${el.scrollHeight}px`;
   }
-  if (containerWidth - strWidth > 100 && el.target.style.height !== `30px`) {
-    el.target.style.minWidth = "initial";
+  if (containerWidth - strWidth > 100 && el.style.height !== `30px`) {
+    el.style.minWidth = "initial";
     containerTextarea.value.style.height = `35px`;
-    el.target.style.height = `30px`;
+    el.style.height = `30px`;
   }
 };
 </script>
