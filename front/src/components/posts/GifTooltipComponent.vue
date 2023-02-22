@@ -13,7 +13,6 @@
         class="researchBar"
         placeholder="Rechercher"
         v-model="searchedTerm"
-        @input="showSearchedGifs"
       />
       <div class="displayGifs" ref="gifPanel" @scroll="displayNextGifs()">
         <img
@@ -27,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useGiphyStore } from "../../stores";
 import { vOnClickOutside } from "@vueuse/components";
 
@@ -78,17 +77,6 @@ const closeGifPanel = () => {
   }
 };
 
-const showSearchedGifs = async () => {
-  if (searchedTerm.value === "") {
-    await gifStore.resetGifs();
-    await gifStore.getTrendsGif();
-  } else {
-    console.log(searchedTerm.value);
-    await gifStore.resetGifs();
-    await gifStore.searchGif(gifStore.offset_search, searchedTerm.value);
-  }
-};
-
 /* Infinite scroll */
 const displayNextGifs = () => {
   if (
@@ -98,7 +86,6 @@ const displayNextGifs = () => {
   ) {
     if (searchedTerm.value !== "") {
       gifStore.searchGif(searchedTerm.value);
-      console.log(searchedTerm.value);
     } else {
       gifStore.getTrendsGif();
     }
@@ -112,6 +99,19 @@ const GetUploadedGif = async (event) => {
   emit("showUploadedGif", gif);
 };
 
+watch(
+  () => searchedTerm.value,
+  async (newValue) => {
+    if (newValue === "") {
+      await gifStore.resetGifs();
+      await gifStore.getTrendsGif();
+    } else {
+      console.log(newValue);
+      await gifStore.resetGifs();
+      await gifStore.searchGif(searchedTerm.value);
+    }
+  }
+);
 /* Ne surtout pas faire le onMounted pour appeler l'api GIPHY au niveau de composant car il se fera autant de fois que le composant est appelé (= nombre de posts sur la page) */
 onMounted(() => {
   gifPanel.value.scrollTop = 0;

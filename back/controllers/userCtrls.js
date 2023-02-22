@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const userController = {
-  signup: (req, res) => {
+  create: (req, res) => {
     // Check if password matches the required RegExp
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -22,6 +22,7 @@ const userController = {
           password: hash,
           firstName: req.body.firstName,
           lastName: req.body.lastName,
+          nickname: (req.body.firstName + req.body.lastName).toLowerCase(),
           isAdmin: req.body.isAdmin,
           profilPicture: "http://localhost:3000/images/defaultPicture.png",
         });
@@ -80,6 +81,25 @@ const userController = {
         // Return an error if there was a problem finding the user
         res.status(500).json({ message: "Failed to login: " + error.message });
       });
+  },
+  getOne: async (req, res) => {
+    try {
+      const User = await user.findOne({
+        where: {
+          id: req.params.userId,
+        },
+        attributes: {
+          exclude: ["password"],
+        },
+      });
+      if (User) {
+        res.status(201).send(User);
+      } else {
+        res.status(404).json({ eror: "User not found." });
+      }
+    } catch (err) {
+      res.status(400).send(err);
+    }
   },
   update: async (req, res) => {
     // Check if the new email address is valid (if provided)

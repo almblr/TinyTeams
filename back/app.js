@@ -26,10 +26,11 @@ sequelize
       // Pour éviter de recréer un user admin s'il y en a déjà un
       bcrypt.hash(process.env.ADMINPASSWORD, 10).then((hash) => {
         user.create({
-          email: "admin@admin.com",
+          email: "admin@gmail.com",
           password: hash,
           firstName: "Modérateur",
           lastName: "Groupomania",
+          nickname: "modérateurgroupomania",
           isAdmin: true,
           profilPicture: "http://localhost:3000/images/defaultPicture.png",
         });
@@ -65,7 +66,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/auth/", usersRoutes);
+app.use("/api/users/", usersRoutes);
 app.use("/api/posts/", postsRoutes);
 app.use("/api/posts/", reactionsRoutes);
 app.use("/api/posts/", commentsRoutes);

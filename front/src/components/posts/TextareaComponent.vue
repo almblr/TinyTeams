@@ -77,7 +77,7 @@ const sendComment = async (postId) => {
   }
   formData.append("content", textareaContent.value);
   formData.append("imageUrl", mediaToSend.value);
-  await commentStore.createOne(postId, formData, token);
+  await commentStore.create(postId, formData, token);
   textareaContent.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";

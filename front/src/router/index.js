@@ -3,6 +3,7 @@ import Login from "../views/LoginView.vue";
 import News from "../views/NewsFeedView.vue";
 import Signup from "../views/SignupView.vue";
 import ViewPost from "../views/ViewPost.vue";
+import ProfilPage from "../views/ProfilView.vue";
 
 const routes = [
   {
@@ -33,6 +34,18 @@ const routes = [
     beforeEnter: (_, _2, next) => {
       window.localStorage.getItem("userInfo") ? next() : next("/login");
     },
+  },
+  {
+    path: "/user",
+    name: "User",
+    children: [
+      {
+        path: ":id",
+        name: "UserProfil",
+        component: ProfilPage,
+        props: true,
+      },
+    ],
   },
 ];
 

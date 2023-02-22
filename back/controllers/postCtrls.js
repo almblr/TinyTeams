@@ -3,7 +3,7 @@ import fs from "fs";
 import { Op } from "sequelize";
 
 const postController = {
-  createOne: async (req, res) => {
+  create: async (req, res) => {
     if (!req.body.content && !req.file) {
       res.status(400).json({ message: "Post vide." });
     } else {
@@ -27,7 +27,7 @@ const postController = {
       const userComments = await comment.findAll({
         where: {
           author: req.auth.userId,
-          postId: req.params.id,
+          postId: req.params.postId,
         },
         order: [["createdAt", "DESC"]],
         include: [
@@ -39,7 +39,7 @@ const postController = {
       });
       const othersComments = await comment.findAll({
         where: {
-          postId: req.params.id,
+          postId: req.params.postId,
           author: {
             [Op.ne]: req.auth.userId, // Remove comments of the connected user
           },
@@ -54,7 +54,7 @@ const postController = {
       });
       const Post = await post.findOne({
         where: {
-          id: req.params.id,
+          id: req.params.postId,
         },
         include: [
           react,
@@ -123,8 +123,8 @@ const postController = {
     }
   },
 
-  updateOne: async (req, res) => {
-    const Post = await post.findByPk(req.params.id);
+  update: async (req, res) => {
+    const Post = await post.findByPk(req.params.postId);
     if (req.auth.userId !== Post.author) {
       res.status(401).json({ message: "You cannot update this post." });
       return;
@@ -141,8 +141,8 @@ const postController = {
       res.status(400).send(err);
     }
   },
-  deleteOne: async (req, res) => {
-    const Post = await post.findByPk(req.params.id);
+  delete: async (req, res) => {
+    const Post = await post.findByPk(req.params.postId);
     if (req.auth.userId !== Post.author && req.auth.role === false) {
       res.status(401).json({ message: "You cannot delete this post." });
       return;

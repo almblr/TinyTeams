@@ -1,29 +1,16 @@
-import { comment, user } from "../db/sequelize.js";
+import { comment } from "../db/sequelize.js";
 import fs from "fs";
 
 /* COMMENT Controller */
 const commentController = {
-  getAll: async (req, res) => {
-    try {
-      const allComments = await comment.findAll({
-        where: {
-          postId: req.params.postId,
-        },
-        order: [
-          ["createdAt", "DESC"], // Du plus récent au moins récent
-        ],
-      });
-      res.status(200).send(allComments);
-    } catch {}
-  },
-  createOne: async (req, res) => {
+  create: async (req, res) => {
     if (!req.body.content && !req.file && !req.body.imageUrl) {
       res.status(400).json({ message: "Commentaire vide." });
     } else {
       try {
         const Comment = await comment.create({
           author: req.auth.userId,
-          postId: parseInt(req.params.postId),
+          postId: req.params.postId,
           content: req.body.content ? req.body.content : null,
           imageUrl: req.file?.filename
             ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
@@ -35,7 +22,22 @@ const commentController = {
       }
     }
   },
-  updateOne: async (req, res) => {
+  getAll: async (req, res) => {
+    try {
+      const allComments = await comment.findAll({
+        where: {
+          postId: req.params.postId,
+        },
+        order: [
+          ["createdAt", "DESC"], // Du plus récent au moins récent
+        ],
+      });
+      res.status(200).send(allComments);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+  update: async (req, res) => {
     const Comment = await comment.findByPk(req.params.commentId);
     if (
       !Comment ||
@@ -56,7 +58,7 @@ const commentController = {
       res.status(400).send(err);
     }
   },
-  deleteOne: async (req, res) => {
+  delete: async (req, res) => {
     const Comment = await comment.findByPk(req.params.commentId);
     if (
       !Comment ||

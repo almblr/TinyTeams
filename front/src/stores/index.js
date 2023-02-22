@@ -1,6 +1,63 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+export const useUserStore = defineStore("user", {
+  id: "User",
+  state: () => ({
+    user: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    },
+  }),
+  actions: {
+    async signup() {
+      const data = {
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        email: this.user.email,
+        password: this.user.password,
+      };
+      const response = await axios({
+        url: "http://localhost:3000/api/users/signup",
+        method: "POST",
+        data: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    },
+    async login() {
+      const data = {
+        email: this.user.email,
+        password: this.user.password,
+      };
+      const response = await axios({
+        url: "http://localhost:3000/api/users/login",
+        method: "POST",
+        data: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    },
+    async getOne(token, userId) {
+      const response = await axios({
+        url: `http://localhost:3000/api/users/getOne/${userId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+  },
+});
+
 export const usePostStore = defineStore("post", {
   id: "Post",
   state: () => ({
@@ -32,8 +89,8 @@ export const usePostStore = defineStore("post", {
       const data = await response.json();
       this.posts = data;
     },
-    async createOne(data, token) {
-      await fetch("http://localhost:3000/api/posts/createOne", {
+    async create(data, token) {
+      await fetch("http://localhost:3000/api/posts/create", {
         method: "POST",
         body: data,
         headers: {
@@ -42,8 +99,8 @@ export const usePostStore = defineStore("post", {
         },
       });
     },
-    async updateOne(id, data, token) {
-      await fetch(`http://localhost:3000/api/posts/updateOne/${id}`, {
+    async update(id, data, token) {
+      await fetch(`http://localhost:3000/api/posts/update/${id}`, {
         method: "PUT",
         body: data,
         headers: {
@@ -52,14 +109,34 @@ export const usePostStore = defineStore("post", {
         },
       });
     },
-    async deleteOne(id, token) {
-      await fetch(`http://localhost:3000/api/posts/deleteOne/${id}`, {
+    async delete(id, token) {
+      await fetch(`http://localhost:3000/api/posts/delete/${id}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
+    },
+  },
+});
+
+export const useLikeStore = defineStore("like", {
+  actions: {
+    async likePost(token, postId) {
+      const res = await fetch(
+        `http://localhost:3000/api/posts/${postId}/react`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resData = await res.json();
+      return resData;
     },
   },
 });
@@ -72,7 +149,7 @@ export const useCommentStore = defineStore("comment", {
   actions: {
     async getAll(postId, token) {
       const response = await fetch(
-        `http://localhost:3000/api/posts/${postId}getAll`,
+        `http://localhost:3000/api/posts/${postId}/comments/getAll`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -82,8 +159,8 @@ export const useCommentStore = defineStore("comment", {
       const data = await response.json();
       this.comments = data;
     },
-    async createOne(postId, data, token) {
-      await fetch(`http://localhost:3000/api/posts/${postId}/postComment`, {
+    async create(postId, data, token) {
+      await fetch(`http://localhost:3000/api/posts/${postId}/comments/create`, {
         method: "POST",
         body: data,
         headers: {
@@ -92,9 +169,9 @@ export const useCommentStore = defineStore("comment", {
         },
       });
     },
-    async updateOne(postId, commentId, data, token) {
+    async update(postId, commentId, data, token) {
       await fetch(
-        `http://localhost:3000/api/posts/${postId}/${commentId}/modify`,
+        `http://localhost:3000/api/posts/${postId}/comments/${commentId}/update`,
         {
           method: "PUT",
           body: data,
@@ -105,9 +182,9 @@ export const useCommentStore = defineStore("comment", {
         }
       );
     },
-    async deleteOne(postId, commentId, token) {
+    async delete(postId, commentId, token) {
       await fetch(
-        `http://localhost:3000/api/posts/${postId}/${commentId}/delete`,
+        `http://localhost:3000/api/posts/${postId}/comments/${commentId}/delete`,
         {
           method: "DELETE",
           headers: {
@@ -116,54 +193,6 @@ export const useCommentStore = defineStore("comment", {
           },
         }
       );
-    },
-  },
-});
-
-export const useUserStore = defineStore("user", {
-  id: "User",
-  state: () => ({
-    user: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-    },
-  }),
-  actions: {
-    async login() {
-      const data = {
-        email: this.user.email,
-        password: this.user.password,
-      };
-      const response = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const res = await response.json();
-      return res;
-    },
-    async signup() {
-      const data = {
-        firstName: this.user.firstName,
-        lastName: this.user.lastName,
-        email: this.user.email,
-        password: this.user.password,
-      };
-      const response = await fetch("http://localhost:3000/api/auth/signup", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const res = await response.json();
-      return res;
     },
   },
 });
@@ -195,29 +224,6 @@ export const useGiphyStore = defineStore("gif", {
       );
       this.offset_search += 5;
       this.gifs.push(...response.data.data);
-    },
-  },
-});
-
-export const useLikeStore = defineStore("like", {
-  actions: {
-    async likePost(token, postId) {
-      const res = await fetch(
-        `http://localhost:3000/api/posts/${postId}/reactions`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            postId,
-          }),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const resData = await res.json();
-      return resData;
     },
   },
 });

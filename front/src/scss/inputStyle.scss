@@ -1,7 +1,7 @@
 input {
   width: 100%;
   min-height: 45px;
-  border: 1px solid #00000085;
+  border: 1px solid #00000098;
   border-radius: 5px;
   padding-left: 5px;
   input::placeholder {
@@ -10,7 +10,6 @@ input {
   }
   &:focus {
     outline: none;
-    border: 2px solid #fd2d01;
   }
 }
 

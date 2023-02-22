@@ -14,7 +14,7 @@
           @remove-image="deleteImagePreview"
         />
         <footer>
-          <div class="file" v-if="props.modalType === 'New'">
+          <div class="file">
             <AddMediaButton
               color="rgba(218, 39, 39, 0.918)"
               width="35px"
@@ -88,7 +88,7 @@ const sendPost = async () => {
     if (imageFile.value) {
       formData.append("imageUrl", imageFile.value);
     }
-    await postStore.createOne(formData, token);
+    await postStore.create(formData, token);
     emit("close");
     imageBlop.value = null;
     emptyPost.value === true ? (emptyPost.value = false) : null;

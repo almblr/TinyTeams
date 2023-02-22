@@ -6,7 +6,12 @@
     ref="comment"
   >
     <header>
-      <h3>{{ props.firstName }} {{ props.lastName }}</h3>
+      <router-link
+        :to="`/user/${usernameParam}`"
+        class="title"
+        :userId="props.author"
+        >{{ props.firstName }} {{ props.lastName }}</router-link
+      >
       <ToolTipComponent
         :commentId="props.commentId"
         :author="props.author"
@@ -33,6 +38,8 @@
 
 <script setup>
 import { ref, watch } from "vue";
+
+import { useUserStore } from "../../stores";
 import TextareaEditingComponent from "./TextareaEditingComponent.vue";
 import ToolTipComponent from "./ToolTipComponent.vue";
 
@@ -48,12 +55,16 @@ const props = defineProps({
   lastName: String,
 });
 
+const userStore = useUserStore();
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const userId = locStr.userId;
 const isAdmin = locStr.isAdmin;
+const token = locStr.token;
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);
+const username = props.firstName + props.lastName;
+const usernameParam = username.split(" ").join("").toLowerCase();
 
 const modify = () => {
   emit("update:selectedCommentId", props.commentId);
@@ -72,7 +83,6 @@ watch(
   () => editingMode.value,
   (newValue) => {
     if (newValue === false) {
-      console.log("coucou");
       comment.value.style.flex = "initial";
     }
   }
@@ -93,13 +103,15 @@ watch(
     display: flex;
     position: relative;
     min-width: 100%;
-    & > h3 {
+    & > .title {
       font-size: 15px;
+      font-weight: bold;
       overflow: hidden !important;
       white-space: nowrap !important;
       text-overflow: ellipsis !important;
       margin-right: 10px;
-      color: rgba(0, 0, 0, 0.904);
+      text-decoration: none;
+      color: rgb(0, 0, 0);
       &:hover {
         cursor: pointer;
       }

@@ -6,7 +6,7 @@ const reactionController = {
     const reaction = await react.findOne({
       where: {
         userId: req.auth.userId,
-        postId: req.body.postId,
+        postId: req.params.postId,
       },
     });
     if (!reaction) {
@@ -14,7 +14,7 @@ const reactionController = {
       try {
         const newReaction = await react.create({
           userId: req.auth.userId,
-          postId: req.body.postId,
+          postId: req.params.postId,
         });
         res.status(201).send(newReaction);
       } catch (err) {

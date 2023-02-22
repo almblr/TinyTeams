@@ -1,23 +1,18 @@
 import express from "express";
-import commentController from "../controllers/commentsCtrl.js";
+import commentCtrl from "../controllers/commentsCtrl.js";
 import auth from "../middleware/auth.js";
 import multerConfig from "../middleware/multer-config.js";
 
 const router = express.Router();
 
-router.get("/:postId/getAll", commentController.getAll);
-router.post(
-  "/:postId/postComment",
-  auth,
-  multerConfig,
-  commentController.createOne
-);
+router.post("/:postId/comments/create", auth, multerConfig, commentCtrl.create);
+router.get("/:postId/comments/getAll", auth, commentCtrl.getAll);
 router.put(
-  "/:postId/:commentId/modify",
+  "/:postId/comments/:commentId/update",
   auth,
   multerConfig,
-  commentController.updateOne
+  commentCtrl.update
 );
-router.delete("/:postId/:commentId/delete", auth, commentController.deleteOne);
+router.delete("/:postId/comments/:commentId/delete", auth, commentCtrl.delete);
 
 export default router;

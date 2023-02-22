@@ -4,6 +4,6 @@ import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/:postId/reactions", auth, reactionController.react);
+router.post("/:postId/react/", auth, reactionController.react);
 
 export default router;

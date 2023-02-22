@@ -85,11 +85,11 @@ const modify = async (id) => {
 
 const remove = async (postId, commentId, token) => {
   if (props.type === "post") {
-    await postStore.deleteOne(id, token);
+    await postStore.delete(postId, token);
     await postStore.getAll(token);
   }
   if (props.type === "comment") {
-    await commentStore.deleteOne(postId, commentId, token);
+    await commentStore.delete(postId, commentId, token);
     await postStore.getAll(token);
   }
 };

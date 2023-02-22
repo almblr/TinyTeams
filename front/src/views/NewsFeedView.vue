@@ -28,8 +28,7 @@ import { usePostStore } from "@/stores/index.js";
 const postStore = usePostStore();
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
-
-let showCreateModal = ref(false);
+const showCreateModal = ref(false);
 
 const closeCreateModal = async () => {
   showCreateModal.value = false;

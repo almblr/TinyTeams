@@ -64,11 +64,6 @@ const props = defineProps({
   canEdit: Boolean,
 });
 
-// const test = (n) => {
-//   console.log(n);
-//   editingMode.value = false;
-//   emit("update:canEdit", false);
-// };
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
 const checkLikeState = (postId) => {
   const thisPost = postStore.posts.find((post) => post.id === postId);
@@ -106,7 +101,7 @@ watch(
   }
 );
 
-watch(editingMode, async (newVar) => {
+watch(editingMode, () => {
   emit("update:canEdit", false);
 });
 </script>

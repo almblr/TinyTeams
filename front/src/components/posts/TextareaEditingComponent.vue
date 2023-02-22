@@ -45,15 +45,10 @@ const update = async () => {
   }
   formData.append("content", textareaContent.value);
   if (props.textareaType === "comment") {
-    await commentStore.updateOne(
-      props.postId,
-      props.commentId,
-      formData,
-      token
-    );
+    await commentStore.update(props.postId, props.commentId, formData, token);
     await postStore.getOne(token, props.postId);
   } else if (props.textareaType === "post") {
-    await postStore.updateOne(props.postId, formData, token);
+    await postStore.update(props.postId, formData, token);
     await postStore.getOne(token, props.postId);
   }
   emit("update:show", false);
@@ -79,6 +74,7 @@ onMounted(() => {
 .textareaComment {
   border-radius: 5px;
   background-color: rgb(241, 241, 241);
+  font-size: 1em;
   padding-left: 5px;
   margin-top: 2px;
 }
