@@ -3,7 +3,7 @@
     <div class="container">
       <main class="main">
         <textarea
-          :placeholder="`Quoi de neuf, ${firstName} ?`"
+          :placeholder="`Quoi de neuf, ${firstname} ?`"
           v-model="postData.content"
           maxlength="560"
           ref="textarea"
@@ -59,7 +59,7 @@ const token = locStr.token;
 const postData = ref({});
 const emptyPost = ref(null);
 const userName = locStr.userName;
-const firstName = userName.split(" ")[0];
+const firstname = userName.split(" ")[0];
 const textarea = ref("");
 const imageBlop = ref(null);
 const imageFile = ref(null);

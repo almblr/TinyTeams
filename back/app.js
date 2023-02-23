@@ -28,9 +28,9 @@ sequelize
         user.create({
           email: "admin@gmail.com",
           password: hash,
-          firstName: "Modérateur",
-          lastName: "Groupomania",
-          nickname: "modérateurgroupomania",
+          firstname: "Modérateur",
+          lastname: "Groupomania",
+          username: "modérateur_groupomania",
           isAdmin: true,
           profilPicture: "http://localhost:3000/images/defaultPicture.png",
         });

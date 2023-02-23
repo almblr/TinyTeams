@@ -33,7 +33,7 @@ const postController = {
         include: [
           {
             model: user,
-            attributes: ["id", "firstName", "lastName", "profilPicture"],
+            attributes: ["id", "firstname", "lastname", "profilPicture"],
           },
         ],
       });
@@ -47,7 +47,7 @@ const postController = {
         include: [
           {
             model: user,
-            attributes: ["id", "firstName", "lastName", "profilPicture"],
+            attributes: ["id", "firstname", "lastname", "profilPicture"],
           },
         ],
         order: [["createdAt", "DESC"]],
@@ -60,7 +60,7 @@ const postController = {
           react,
           {
             model: user,
-            attributes: ["id", "firstName", "lastName", "profilPicture"],
+            attributes: ["id", "firstname", "lastname", "profilPicture"],
           },
         ],
       });
@@ -81,7 +81,7 @@ const postController = {
           react,
           {
             model: user,
-            attributes: ["id", "firstName", "lastName", "profilPicture"],
+            attributes: ["id", "firstname", "lastname", "profilPicture"],
           },
         ],
       });
@@ -95,7 +95,7 @@ const postController = {
           include: [
             {
               model: user,
-              attributes: ["id", "firstName", "lastName", "profilPicture"],
+              attributes: ["id", "firstname", "lastname", "profilPicture"],
             },
           ],
         });
@@ -110,7 +110,7 @@ const postController = {
           include: [
             {
               model: user,
-              attributes: ["id", "firstName", "lastName", "profilPicture"],
+              attributes: ["id", "firstname", "lastname", "profilPicture"],
             },
           ],
         });

@@ -5,8 +5,8 @@ export const useUserStore = defineStore("user", {
   id: "User",
   state: () => ({
     user: {
-      firstName: "",
-      lastName: "",
+      firstname: "",
+      lastname: "",
       email: "",
       password: "",
     },
@@ -14,8 +14,8 @@ export const useUserStore = defineStore("user", {
   actions: {
     async signup() {
       const data = {
-        firstName: this.user.firstName,
-        lastName: this.user.lastName,
+        firstname: this.user.firstname,
+        lastname: this.user.lastname,
         email: this.user.email,
         password: this.user.password,
       };
@@ -46,9 +46,9 @@ export const useUserStore = defineStore("user", {
       });
       return response.data;
     },
-    async getOne(token, userId) {
+    async getOne(token, username) {
       const response = await axios({
-        url: `http://localhost:3000/api/users/getOne/${userId}`,
+        url: `http://localhost:3000/api/users/getOne/${username}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },

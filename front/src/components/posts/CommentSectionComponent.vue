@@ -19,8 +19,8 @@
         :imageUrl="comment.imageUrl"
         :content="comment.content"
         v-model:selectedCommentId="selectedCommentId"
-        :firstName="comment.user.firstName"
-        :lastName="comment.user.lastName"
+        :firstname="comment.user.firstname"
+        :lastname="comment.user.lastname"
       />
     </div>
   </section>

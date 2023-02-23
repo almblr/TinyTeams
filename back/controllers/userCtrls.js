@@ -20,9 +20,9 @@ const userController = {
         return user.create({
           email: req.body.email,
           password: hash,
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          nickname: (req.body.firstName + req.body.lastName).toLowerCase(),
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          username: (req.body.firstname + req.body.lastname).toLowerCase(),
           isAdmin: req.body.isAdmin,
           profilPicture: "http://localhost:3000/images/defaultPicture.png",
         });
@@ -65,7 +65,7 @@ const userController = {
             res.status(200).json({
               userId: user.id,
               isAdmin: user.isAdmin,
-              userName: `${user.firstName} ${user.lastName}`,
+              userName: `${user.firstname} ${user.lastname}`,
               profilPicture: user.profilPicture,
               token: token,
             });
@@ -86,7 +86,7 @@ const userController = {
     try {
       const User = await user.findOne({
         where: {
-          id: req.params.userId,
+          username: req.params.username,
         },
         attributes: {
           exclude: ["password"],

@@ -5,7 +5,7 @@
         <img :src="props.imageUrl" alt="Photo de profil" />
       </div>
       <div class="post__header__user__title">
-        <h2>{{ props.firstName }} {{ props.lastName }}</h2>
+        <h2>{{ props.firstname }} {{ props.lastname }}</h2>
         <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
       </div>
     </div>
@@ -38,8 +38,8 @@ const props = defineProps({
   author: { type: Number, required: true },
   postId: { type: Number, required: true },
   imageUrl: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
   createdAt: { type: String, required: true },
 });
 

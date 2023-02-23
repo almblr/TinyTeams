@@ -11,13 +11,13 @@
       <input
         type="text"
         placeholder="Prénom*"
-        v-model="userStore.user.firstName"
+        v-model="userStore.user.firstname"
         required
       />
       <input
         type="text"
         placeholder="Nom*"
-        v-model="userStore.user.lastName"
+        v-model="userStore.user.lastname"
         required
       />
     </div>

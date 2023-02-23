@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/signup", userCtrl.create);
 router.post("/login", userCtrl.login);
-router.get("/getOne/:userId", auth, userCtrl.getOne);
+router.get("/getOne/:username", auth, userCtrl.getOne);
 router.put("/update/:userId", auth, userCtrl.update);
 
 export default router;

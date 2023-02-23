@@ -10,7 +10,7 @@
         :to="`/user/${usernameParam}`"
         class="title"
         :userId="props.author"
-        >{{ props.firstName }} {{ props.lastName }}</router-link
+        >{{ props.firstname }} {{ props.lastname }}</router-link
       >
       <ToolTipComponent
         :commentId="props.commentId"
@@ -51,8 +51,8 @@ const props = defineProps({
   content: String,
   imageUrl: String,
   selectedCommentId: Number,
-  firstName: String,
-  lastName: String,
+  firstname: String,
+  lastname: String,
 });
 
 const userStore = useUserStore();
@@ -63,7 +63,7 @@ const token = locStr.token;
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);
-const username = props.firstName + props.lastName;
+const username = props.firstname + props.lastname;
 const usernameParam = username.split(" ").join("").toLowerCase();
 
 const modify = () => {

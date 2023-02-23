@@ -4,8 +4,8 @@
       :author="post.author"
       :postId="post.id"
       :imageUrl="post.user.profilPicture"
-      :firstName="post.user.firstName"
-      :lastName="post.user.lastName"
+      :firstname="post.user.firstname"
+      :lastname="post.user.lastname"
       :createdAt="post.createdAt"
       @editPost="modifyPost"
     />

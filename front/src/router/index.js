@@ -40,7 +40,7 @@ const routes = [
     name: "User",
     children: [
       {
-        path: ":id",
+        path: ":username",
         name: "UserProfil",
         component: ProfilPage,
         props: true,
