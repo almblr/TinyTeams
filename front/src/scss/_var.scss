@@ -1,3 +1,9 @@
+@mixin jcCt-aaCt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @mixin fdCol-aiCt {
   display: flex;
   flex-direction: column;
@@ -14,16 +20,17 @@
   justify-content: space-between;
 }
 
-@mixin jcCt-aaCt {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 @mixin fdCol-jcSe-aaCt {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  align-items: center;
+}
+
+@mixin fdCol-jcCt-aaCt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 

@@ -45,21 +45,16 @@ const resetForm = () => {
 
 <style lang="scss" scoped>
 #body {
+  @include jcCt-aaCt;
   position: relative;
   width: 100vw;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background: url("@/assets/entreprise.jpg");
   background-size: cover;
 }
 .container {
-  display: flex;
-  flex-direction: column;
+  @include fdCol-jcSe-aaCt;
   width: 100%;
-  justify-content: space-evenly;
-  align-items: center;
   max-width: 600px;
   max-height: min-content;
   background-color: rgb(255, 255, 255);
@@ -70,11 +65,8 @@ const resetForm = () => {
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  @include fdCol-jcCt-aaCt;
   gap: 20px;
-  align-items: center;
   width: 100%;
   flex: 1;
   &__title {
@@ -86,10 +78,7 @@ const resetForm = () => {
     color: rgba(0, 0, 0, 0.75);
   }
   &__body {
-    display: flex;
-    flex-flow: column;
-    justify-content: space-evenly;
-    align-items: center;
+    @include fdCol-jcSe-aaCt;
     width: 100%;
     gap: 50px;
   }
@@ -127,9 +116,7 @@ footer {
   }
 }
 .error {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include jcCt-aaCt;
   position: absolute;
   bottom: 3%;
   left: 50%;
