@@ -1,24 +1,27 @@
 <template>
   <TheHeaderComponent />
   <main>
-    <span class="test">coucou {{ $route.params.username }}</span>
+    <ProfilHeaderComponent
+      :backgroundUrl="userStore.user.backgroundPicture"
+      :profilPictureUrl="userStore.user.profilPicture"
+    />
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
+import { ref, onBeforeMount } from "vue";
 import { useUserStore } from "../stores";
 import { useRoute } from "vue-router";
+import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
+import ProfilHeaderComponent from "../components/user/ProfilHeaderComponent.vue";
 
 const userStore = useUserStore();
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const token = locStr.token;
-const user = ref(null);
+const username = useRoute().params.username;
 
-onMounted(async () => {
-  const username = useRoute().params.username;
-  user.value = await userStore.getOne(token, username);
+onBeforeMount(async () => {
+  await userStore.getOne(token, username);
 });
 </script>
 
@@ -27,6 +30,7 @@ main {
   display: flex;
   position: absolute;
   top: 50px;
+  width: 100%;
   flex-direction: column;
   gap: 20px;
 }

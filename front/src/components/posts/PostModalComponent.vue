@@ -162,7 +162,7 @@ onMounted(() => {
 }
 
 footer {
-  @include jcCt-aaCt;
+  @include jcCt-aiCt;
   flex-wrap: wrap;
   width: 100%;
   gap: 5px;

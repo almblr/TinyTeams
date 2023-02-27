@@ -9,6 +9,7 @@ export const useUserStore = defineStore("user", {
       lastname: "",
       email: "",
       password: "",
+      profilPicture: "",
     },
   }),
   actions: {
@@ -53,7 +54,11 @@ export const useUserStore = defineStore("user", {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+      this.user.firstname = response.data.firstname;
+      this.user.lastname = response.data.lastname;
+      this.user.email = response.data.email;
+      this.user.password = response.data.password;
+      this.user.profilPicture = response.data.profilPicture;
     },
   },
 });

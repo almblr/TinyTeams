@@ -86,7 +86,7 @@ const closeCreateModal = async () => {
 }
 
 .createPost {
-  @include jcCt-aaCt;
+  @include jcCt-aiCt;
   position: absolute;
   border: none;
   bottom: 40px;

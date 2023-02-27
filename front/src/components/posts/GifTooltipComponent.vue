@@ -81,7 +81,7 @@ const closeGifPanel = () => {
 const displayNextGifs = () => {
   if (
     gifPanel.value.scrollTop + gifPanel.value.clientHeight >=
-      gifPanel.value.scrollHeight &&
+      gifPanel.value.scrollHeight - 5 &&
     isGifPanelOpen.value === true
   ) {
     if (searchedTerm.value !== "") {
@@ -133,7 +133,7 @@ onMounted(() => {
 }
 
 .tooltip-up {
-  top: -300px;
+  top: -310px;
 }
 .tooltip {
   @include fdCol-aiCt;
@@ -159,7 +159,7 @@ onMounted(() => {
     display: flex;
     flex-flow: row wrap;
     max-height: 270px;
-    overflow: scroll;
+    overflow-y: overlay;
   }
   & > .displayGifs > img {
     max-width: 250px;
@@ -185,5 +185,27 @@ onMounted(() => {
   border-bottom: 6px solid rgb(39, 39, 39) !important;
   top: initial;
   border-top: initial;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.7);
 }
 </style>

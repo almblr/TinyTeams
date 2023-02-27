@@ -40,7 +40,7 @@ input[type="file"] {
   display: none;
 }
 .file__label {
-  @include jcCt-aaCt;
+  @include jcCt-aiCt;
   border-radius: 5px;
   transition: 0.2s;
   width: v-bind("props.width");
@@ -53,7 +53,7 @@ input[type="file"] {
     background-color: v-bind("props.backgroundColorHover");
   }
   label {
-    @include jcCt-aaCt;
+    @include jcCt-aiCt;
     transition: 0.1s;
     font-size: v-bind("props.iconSize");
     color: v-bind("props.color");

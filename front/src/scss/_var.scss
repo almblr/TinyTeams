@@ -1,4 +1,4 @@
-@mixin jcCt-aaCt {
+@mixin jcCt-aiCt {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,14 +20,14 @@
   justify-content: space-between;
 }
 
-@mixin fdCol-jcSe-aaCt {
+@mixin fdCol-jcSe-aiCt {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
 }
 
-@mixin fdCol-jcCt-aaCt {
+@mixin fdCol-jcCt-aiCt {
   display: flex;
   flex-direction: column;
   justify-content: center;

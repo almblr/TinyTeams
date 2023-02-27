@@ -6,10 +6,7 @@
     ref="comment"
   >
     <header>
-      <router-link
-        :to="`/user/${usernameParam}`"
-        class="title"
-        :userId="props.author"
+      <router-link :to="`/user/${usernameParam}`" class="title"
         >{{ props.firstname }} {{ props.lastname }}</router-link
       >
       <ToolTipComponent

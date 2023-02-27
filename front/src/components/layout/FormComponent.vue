@@ -45,7 +45,7 @@ const resetForm = () => {
 
 <style lang="scss" scoped>
 #body {
-  @include jcCt-aaCt;
+  @include jcCt-aiCt;
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -53,7 +53,7 @@ const resetForm = () => {
   background-size: cover;
 }
 .container {
-  @include fdCol-jcSe-aaCt;
+  @include fdCol-jcSe-aiCt;
   width: 100%;
   max-width: 600px;
   max-height: min-content;
@@ -65,7 +65,7 @@ const resetForm = () => {
 }
 
 .form {
-  @include fdCol-jcCt-aaCt;
+  @include fdCol-jcCt-aiCt;
   gap: 20px;
   width: 100%;
   flex: 1;
@@ -78,7 +78,7 @@ const resetForm = () => {
     color: rgba(0, 0, 0, 0.75);
   }
   &__body {
-    @include fdCol-jcSe-aaCt;
+    @include fdCol-jcSe-aiCt;
     width: 100%;
     gap: 50px;
   }
@@ -116,7 +116,7 @@ footer {
   }
 }
 .error {
-  @include jcCt-aaCt;
+  @include jcCt-aiCt;
   position: absolute;
   bottom: 3%;
   left: 50%;

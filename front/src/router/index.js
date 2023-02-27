@@ -43,7 +43,6 @@ const routes = [
         path: ":username",
         name: "UserProfil",
         component: ProfilPage,
-        props: true,
       },
     ],
   },

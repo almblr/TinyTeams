@@ -20,7 +20,7 @@ const props = defineProps({
     width: 100%;
   }
   button {
-    @include jcCt-aaCt;
+    @include jcCt-aiCt;
     position: absolute;
     top: 5px;
     right: 5px;

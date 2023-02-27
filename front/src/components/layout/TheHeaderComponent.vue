@@ -5,7 +5,9 @@
     </router-link>
     <nav>
       <router-link to="/news" class="button">Accueil</router-link>
-      <router-link :to="userPage" class="button">Profil</router-link>
+      <router-link :to="`/user/${usernameParam}`" class="button"
+        >Profil</router-link
+      >
     </nav>
     <router-link to="/" @click="logout" class="button logout">
       <fa icon="fa-solid fa-power-off" />
@@ -14,14 +16,9 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
 const locStr = JSON.parse(localStorage.getItem(`userInfo`));
 const username = locStr.userName;
 const usernameParam = username.split(" ").join("_").toLowerCase();
-
-const userPage = computed(() => {
-  return `/user/${usernameParam}`;
-});
 
 /* Deconnexion : vide le localstorage */
 const logout = () => {
@@ -31,7 +28,7 @@ const logout = () => {
 
 <style lang="scss" scoped>
 @mixin button {
-  @include jcCt-aaCt;
+  @include jcCt-aiCt;
   min-width: 80px;
   text-align: center;
   font-size: 1.4rem;
