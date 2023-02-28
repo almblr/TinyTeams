@@ -1,8 +1,7 @@
 import { comment } from "../db/sequelize.js";
 import fs from "fs";
 
-/* COMMENT Controller */
-const commentController = {
+const commentCtrl = {
   create: async (req, res) => {
     if (!req.body.content && !req.file && !req.body.imageUrl) {
       res.status(400).json({ message: "Commentaire vide." });
@@ -82,4 +81,4 @@ const commentController = {
   },
 };
 
-export default commentController;
+export default commentCtrl;

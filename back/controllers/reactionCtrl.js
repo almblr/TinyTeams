@@ -1,7 +1,6 @@
 import { react } from "../db/sequelize.js";
 
-/* Controller pour les likes */
-const reactionController = {
+const reactionCtrl = {
   react: async (req, res) => {
     const reaction = await react.findOne({
       where: {
@@ -35,4 +34,4 @@ const reactionController = {
   },
 };
 
-export default reactionController;
+export default reactionCtrl;

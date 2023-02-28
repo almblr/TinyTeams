@@ -76,7 +76,7 @@ const deleteImagePreview = () => {
 /* Fonction qui permet de modifier ou de supprimer un post (selon la modal ouverte) */
 const sendPost = async () => {
   const formData = new FormData();
-  if (!postData.value.content && !imageFile.value !== "") {
+  if (!postData.value.content && !imageFile.value) {
     emptyPost.value = true;
     setTimeout(() => {
       emptyPost.value = false;
@@ -84,6 +84,7 @@ const sendPost = async () => {
   } else {
     if (postData.value.content) {
       formData.append("content", postData.value.content);
+      console.log(formData);
     }
     if (imageFile.value) {
       formData.append("imageUrl", imageFile.value);

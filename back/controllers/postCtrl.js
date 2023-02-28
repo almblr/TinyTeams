@@ -2,7 +2,7 @@ import { post, react, user, comment } from "../db/sequelize.js";
 import fs from "fs";
 import { Op } from "sequelize";
 
-const postController = {
+const postCtrl = {
   create: async (req, res) => {
     if (!req.body.content && !req.file) {
       res.status(400).json({ message: "Post vide." });
@@ -161,4 +161,4 @@ const postController = {
   },
 };
 
-export default postController;
+export default postCtrl;

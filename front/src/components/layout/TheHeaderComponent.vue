@@ -42,14 +42,11 @@ const logout = () => {
 }
 header {
   @include jcSb;
-  z-index: 99;
-  position: fixed;
-  top: 0;
   width: 100%;
   height: 6%;
   max-height: 50px;
   padding-left: 1%;
-  backdrop-filter: blur(10px);
+  // backdrop-filter: blur(10px);
   background-color: rgba(0, 0, 0, 0.849);
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.178);
   & .logo {

@@ -1,7 +1,7 @@
 import express from "express";
-import commentCtrl from "../controllers/commentsCtrl.js";
 import auth from "../middleware/auth.js";
 import multerConfig from "../middleware/multer-config.js";
+import commentCtrl from "../controllers/commentCtrl.js";
 
 const router = express.Router();
 

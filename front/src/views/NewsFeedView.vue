@@ -44,7 +44,7 @@ const closeCreateModal = async () => {
   row-gap: 30px;
   background-color: rgb(240, 240, 240);
   overflow-y: scroll;
-  padding-top: 6em;
+  padding-top: 2em;
   &__header {
     height: 50px;
   }

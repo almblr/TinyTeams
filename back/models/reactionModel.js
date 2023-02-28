@@ -1,4 +1,4 @@
-export const reactionModel = (sequelize, DataTypes) => {
+const reactionModel = (sequelize, DataTypes) => {
   return sequelize.define("reaction", {
     id: {
       type: DataTypes.INTEGER,
@@ -7,3 +7,5 @@ export const reactionModel = (sequelize, DataTypes) => {
     },
   });
 };
+
+export default reactionModel;

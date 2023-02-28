@@ -2,7 +2,7 @@ import { user } from "../db/sequelize.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const userController = {
+const userCtrl = {
   create: (req, res) => {
     // Check if password matches the required RegExp
     const passwordRegex =
@@ -12,11 +12,9 @@ const userController = {
         .status(400)
         .json({ message: "The password is not strong enough." });
     }
-    // Hash the password
     bcrypt
       .hash(req.body.password, 10)
       .then((hash) => {
-        // Create the user
         return user.create({
           email: req.body.email,
           password: hash,
@@ -25,6 +23,7 @@ const userController = {
           username: (req.body.firstname + req.body.lastname).toLowerCase(),
           isAdmin: req.body.isAdmin,
           profilPicture: "http://localhost:3000/images/defaultPicture.png",
+          followers: 0,
         });
       })
       .then(() => {
@@ -140,4 +139,4 @@ const userController = {
   },
 };
 
-export default userController;
+export default userCtrl;

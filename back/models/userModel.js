@@ -1,13 +1,15 @@
-// Attention, c'est juste une fonction avec des paramètres, la création des tables se fait dans dbconfig.js
 import "dotenv/config";
-
-export const userModel = (sequelize, DataTypes) => {
-  // it's paramaters here
+const userModel = (sequelize, DataTypes) => {
   return sequelize.define("user", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     email: {
       type: DataTypes.STRING,
@@ -33,13 +35,13 @@ export const userModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    isAdmin: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
     profilPicture: {
       type: DataTypes.TEXT,
     },
+    followers: {
+      type: DataTypes.INTEGER,
+    },
   });
 };
+
+export default userModel;

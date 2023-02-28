@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import "dotenv/config";
 
-/// Initialisation de la BDD avec l'ORM Sequelize. DB = Database
+// Initialisation de la BDD
 export const sequelize = new Sequelize(
   process.env.DB,
   process.env.USER_NAME,

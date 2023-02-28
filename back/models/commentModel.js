@@ -1,5 +1,4 @@
-// Ce fichier est uniquement la fonction à utiliser pour la création du modèle qui se fait dans sequelize.js
-export const commentModel = (sequelize, DataTypes) => {
+const commentModel = (sequelize, DataTypes) => {
   return sequelize.define("comment", {
     id: {
       type: DataTypes.INTEGER,
@@ -14,3 +13,5 @@ export const commentModel = (sequelize, DataTypes) => {
     },
   });
 };
+
+export default commentModel;

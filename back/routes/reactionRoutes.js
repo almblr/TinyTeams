@@ -1,6 +1,6 @@
 import express from "express";
-import reactionController from "../controllers/reactionCtrls.js";
 import auth from "../middleware/auth.js";
+import reactionController from "../controllers/reactionCtrl.js";
 
 const router = express.Router();
 

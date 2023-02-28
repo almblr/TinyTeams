@@ -1,16 +1,17 @@
 import express from "express";
 import { sequelize } from "./db/db_init.js";
-import postsRoutes from "./routes/postsRoutes.js";
-import usersRoutes from "./routes/usersRoutes.js";
-import reactionsRoutes from "./routes/reactionsRoutes.js";
-import commentsRoutes from "./routes/commentsRoutes.js";
 import helmet from "helmet";
 import cors from "cors";
 import path from "path";
 import url from "url";
-import { user } from "./db/sequelize.js";
 import bcrypt from "bcrypt";
 import "dotenv/config";
+import { user } from "./db/sequelize.js";
+import postRoutes from "./routes/postRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import reactionRoutes from "./routes/reactionRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
+import followRoutes from "./routes/followRoutes.js";
 
 /* Connexion et initialisation de la db avec un user admin génér automatiquement */
 sequelize
@@ -65,10 +66,10 @@ app.use((req, res, next) => {
   );
   next();
 });
-
-app.use("/api/users/", usersRoutes);
-app.use("/api/posts/", postsRoutes);
-app.use("/api/posts/", reactionsRoutes);
-app.use("/api/posts/", commentsRoutes);
+app.use("/api/users/", userRoutes);
+app.use("/api/posts/", postRoutes);
+app.use("/api/posts/", reactionRoutes);
+app.use("/api/posts/", commentRoutes);
+app.use("/api/users/", followRoutes);
 
 app.listen(process.env.PORT || 3000);

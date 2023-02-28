@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { onBeforeMount } from "vue";
 import { useUserStore } from "../stores";
 import { useRoute } from "vue-router";
 import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
@@ -28,11 +28,14 @@ onBeforeMount(async () => {
 <style lang="scss" scoped>
 main {
   display: flex;
+  align-items: center;
   position: absolute;
   top: 50px;
   width: 100%;
+  height: 100%;
   flex-direction: column;
   gap: 20px;
+  background-color: rgb(240, 240, 240);
 }
 .test {
   color: red;

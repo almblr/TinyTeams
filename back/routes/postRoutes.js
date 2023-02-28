@@ -1,7 +1,7 @@
 import express from "express";
-import postCtrl from "../controllers/postCtrls.js";
 import auth from "../middleware/auth.js";
 import multerConfig from "../middleware/multer-config.js";
+import postCtrl from "../controllers/postCtrl.js";
 
 const router = express.Router();
 

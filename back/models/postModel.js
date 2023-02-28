@@ -1,5 +1,4 @@
-// Ce fichier est uniquement la fonction à utiliser pour la création du modèle qui se fait dans sequelize.js
-export const postModel = (sequelize, DataTypes) => {
+const postModel = (sequelize, DataTypes) => {
   return sequelize.define("post", {
     id: {
       type: DataTypes.INTEGER,
@@ -14,3 +13,5 @@ export const postModel = (sequelize, DataTypes) => {
     },
   });
 };
+
+export default postModel;
