@@ -42,6 +42,9 @@ import { usePostStore } from "../../stores/index.js";
 import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
 import AddMediaButton from "@/components/layout/AddMediaButton.vue";
 import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 const props = defineProps({
   show: {
@@ -91,6 +94,7 @@ const sendPost = async () => {
     }
     await postStore.create(formData, token);
     emit("close");
+    socket.emit("newPost", "Un nouveau post a été publié.");
     imageBlop.value = null;
     emptyPost.value === true ? (emptyPost.value = false) : null;
   }

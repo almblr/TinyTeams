@@ -12,6 +12,8 @@ import userRoutes from "./routes/userRoutes.js";
 import reactionRoutes from "./routes/reactionRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import followRoutes from "./routes/followRoutes.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 /* Connexion et initialisation de la db avec un user admin génér automatiquement */
 sequelize
@@ -72,4 +74,23 @@ app.use("/api/posts/", reactionRoutes);
 app.use("/api/posts/", commentRoutes);
 app.use("/api/users/", followRoutes);
 
-app.listen(process.env.PORT || 3000);
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`user ${socket.id} is connected`);
+  socket.on("hello", (arg) => {
+    console.log(arg); // world
+  });
+  socket.on("newPost", (arg) => {
+    console.log(arg);
+  });
+});
+
+httpServer.listen(process.env.PORT || 3000);
+// app.listen(process.env.PORT || 3000);
