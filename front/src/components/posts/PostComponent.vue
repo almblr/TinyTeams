@@ -11,6 +11,7 @@
     />
     <PostMainComponent
       :postId="post.id"
+      :author="post.author"
       :postContent="post.content"
       :postImage="post.imageUrl"
       :postReactions="post.reactions"

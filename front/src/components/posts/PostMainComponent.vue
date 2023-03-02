@@ -28,7 +28,10 @@
         >{{ postComments.length }} commentaire(s)</span
       >
     </div>
-    <div class="main__reactBtn" @click="updateLike(postId)">
+    <div
+      class="main__reactBtn"
+      @click="updateLike(postId, props.author, userId)"
+    >
       <fa
         icon="fa-solid fa-thumbs-up"
         :class="{
@@ -45,6 +48,7 @@
 import { ref, watch } from "vue";
 import { usePostStore, useLikeStore } from "../../stores/index.js";
 import TextareaEditingComponent from "./TextareaEditingComponent.vue";
+import socket from "../../services/socketio.js";
 
 const postStore = usePostStore();
 const likeStore = useLikeStore();
@@ -57,6 +61,7 @@ const editingMode = ref(false);
 const emit = defineEmits(["update:canEdit"]);
 const props = defineProps({
   postId: Number,
+  author: Number,
   postContent: String,
   postImage: String,
   postReactions: Array,
@@ -77,13 +82,22 @@ const checkLikeState = (postId) => {
 };
 
 /* Met à jour le like d'un post et l'affichage des posts */
-const updateLike = async (postId) => {
+const updateLike = async (postId, author, liker) => {
   const thisPost = postStore.posts.find((post) => post.id === postId);
   const postReactions = thisPost.reactions;
   const doesUserLike = postReactions.find((react) => react.userId === userId);
   if (doesUserLike === undefined) {
     await likeStore.likePost(token, postId);
     await postStore.getOne(token, postId);
+    if (liker !== author) {
+      socket.emit("sendLike", {
+        postId: postId,
+        author: author,
+        likerId: userId,
+        likerName: locStr.userName,
+      });
+    }
+
     return true;
   } else {
     await likeStore.likePost(token, postId);
