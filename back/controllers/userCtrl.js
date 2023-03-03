@@ -22,8 +22,6 @@ const userCtrl = {
           lastname: req.body.lastname,
           username: (req.body.firstname + req.body.lastname).toLowerCase(),
           isAdmin: req.body.isAdmin,
-          profilPicture: "http://localhost:3000/images/defaultPicture.png",
-          followers: 0,
         });
       })
       .then(() => {

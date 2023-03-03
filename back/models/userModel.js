@@ -1,8 +1,8 @@
-import "dotenv/config";
 const userModel = (sequelize, DataTypes) => {
   return sequelize.define("user", {
     id: {
       type: DataTypes.INTEGER,
+      unique: true,
       autoIncrement: true,
       primaryKey: true,
     },
@@ -13,8 +13,8 @@ const userModel = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
       unique: true,
+      allowNull: false,
       validate: {
         is: /.+\@.+\..+/,
       },
@@ -33,13 +33,19 @@ const userModel = (sequelize, DataTypes) => {
     },
     username: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false,
+    },
+    job: {
+      type: DataTypes.STRING,
     },
     profilPicture: {
       type: DataTypes.TEXT,
+      defaultValue: "http://localhost:3000/images/defaultPicture.png",
     },
     followers: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   });
 };

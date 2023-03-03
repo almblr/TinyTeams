@@ -4,7 +4,7 @@ import fs from "fs";
 const commentCtrl = {
   create: async (req, res) => {
     if (!req.body.content && !req.file && !req.body.imageUrl) {
-      res.status(400).json({ message: "Commentaire vide." });
+      return res.status(400).json({ message: "Commentaire vide." });
     } else {
       try {
         const Comment = await comment.create({
@@ -13,7 +13,7 @@ const commentCtrl = {
           content: req.body.content ? req.body.content : null,
           imageUrl: req.file?.filename
             ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-            : req.body.imageUrl || null,
+            : req.body.imageUrl,
         });
         res.status(200).send(Comment);
       } catch (err) {
@@ -40,10 +40,11 @@ const commentCtrl = {
     const Comment = await comment.findByPk(req.params.commentId);
     if (
       !Comment ||
-      (req.auth.userId !== Comment.author && req.auth.role === false)
+      (req.auth.userId !== Comment.author && req.auth.isAdmin === false)
     ) {
-      res.status(401).json({ message: "You cannot update this comment." });
-      return;
+      return res
+        .status(401)
+        .json({ message: "You cannot update this comment." });
     }
     try {
       // update the content of the comment
@@ -61,10 +62,11 @@ const commentCtrl = {
     const Comment = await comment.findByPk(req.params.commentId);
     if (
       !Comment ||
-      (req.auth.userId !== Comment.author && req.auth.role === false)
+      (req.auth.userId !== Comment.author && req.auth.isAdmin === false)
     ) {
-      res.status(401).json({ message: "You cannot delete this Comment." });
-      return;
+      return res
+        .status(401)
+        .json({ message: "You cannot delete this Comment." });
     }
     try {
       // Si le Comment contenait une image

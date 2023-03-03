@@ -62,9 +62,8 @@ sequelize
           password: hash,
           firstname: "Modérateur",
           lastname: "Groupomania",
-          username: "modérateur_groupomania",
+          username: "modérateurgroupomania",
           isAdmin: true,
-          profilPicture: "http://localhost:3000/images/defaultPicture.png",
         });
       });
     }
@@ -94,12 +93,14 @@ io.on("connection", (socket) => {
       console.log(sessionsMap);
     }
   });
+  socket.on("newFollow", (arg) => {
+    console.log(arg);
+  });
   socket.on("newPost", (arg) => {
     console.log(arg);
   });
-  socket.on("sendLike", (obj) => {
-    const receiver = obj.author;
-    console.log(sessionsMap[receiver]);
+  socket.on("sendLike", (postInfos) => {
+    const receiver = postInfos.author;
     io.to(sessionsMap[receiver]).emit(
       "message",
       "Quelqu'un a aimé votre post !"

@@ -5,14 +5,26 @@ import userModel from "../models/userModel.js";
 import reactionModel from "../models/reactionModel.js";
 import commentModel from "../models/commentModel.js";
 import followModel from "../models/followModel.js";
+import notificationModel from "../models/notificationModel.js";
 
 export const user = userModel(sequelize, DataTypes);
 export const post = postModel(sequelize, DataTypes);
 export const react = reactionModel(sequelize, DataTypes);
 export const comment = commentModel(sequelize, DataTypes);
 export const follow = followModel(sequelize, DataTypes);
+export const notification = notificationModel(sequelize, DataTypes);
 
 /* Création des associations entre les tables */
+// Créer la foreignKey "author" sur la table notifications
+
+user.hasMany(notification, {
+  foreignKey: "author",
+  onDelete: "CASCADE",
+});
+notification.belongsTo(user, {
+  foreignKey: "author",
+});
+
 // Créer la foreignKey "author" sur la table follows
 user.hasMany(follow, {
   foreignKey: "author",

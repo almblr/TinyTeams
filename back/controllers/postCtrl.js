@@ -5,7 +5,7 @@ import { Op } from "sequelize";
 const postCtrl = {
   create: async (req, res) => {
     if (!req.body.content && !req.file) {
-      res.status(400).json({ message: "Post vide." });
+      return res.status(400).json({ message: "Post vide." });
     } else {
       try {
         const Post = await post.create({
@@ -126,8 +126,7 @@ const postCtrl = {
   update: async (req, res) => {
     const Post = await post.findByPk(req.params.postId);
     if (req.auth.userId !== Post.author) {
-      res.status(401).json({ message: "You cannot update this post." });
-      return;
+      return res.status(401).json({ message: "You cannot update this post." });
     }
     try {
       // update the content of the post
@@ -143,9 +142,8 @@ const postCtrl = {
   },
   delete: async (req, res) => {
     const Post = await post.findByPk(req.params.postId);
-    if (req.auth.userId !== Post.author && req.auth.role === false) {
-      res.status(401).json({ message: "You cannot delete this post." });
-      return;
+    if (req.auth.userId !== Post.author && req.auth.isAdmin === false) {
+      return res.status(401).json({ message: "You cannot delete this post." });
     }
     try {
       // Si le post contenait une image
