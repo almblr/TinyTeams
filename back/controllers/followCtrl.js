@@ -15,8 +15,8 @@ const followCtrl = {
         isFollowing: userToFollow.id,
       });
       res.status(201).send(Follow);
-    } catch (err) {
-      res.status(400).send(err);
+    } catch {
+      res.status(500).send();
     }
   },
 };

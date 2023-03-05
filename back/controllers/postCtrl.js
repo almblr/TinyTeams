@@ -6,20 +6,19 @@ const postCtrl = {
   create: async (req, res) => {
     if (!req.body.content && !req.file) {
       return res.status(400).json({ message: "Post vide." });
-    } else {
-      try {
-        const Post = await post.create({
-          userId: req.auth.userId,
-          content: req.body.content,
-          imageUrl: req.file?.filename
-            ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-            : null,
-          author: req.auth.userId,
-        });
-        res.status(200).send(Post);
-      } catch (err) {
-        res.status(400).send(err);
-      }
+    }
+    try {
+      const Post = await post.create({
+        userId: req.auth.userId,
+        content: req.body.content,
+        imageUrl: req.file?.filename
+          ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+          : null,
+        author: req.auth.userId,
+      });
+      res.status(201).send(Post);
+    } catch {
+      res.status(500).send();
     }
   },
   getOne: async (req, res) => {
@@ -68,7 +67,7 @@ const postCtrl = {
       Post.setDataValue("comments", allComments);
       res.status(200).send(Post);
     } catch {
-      res.status(400);
+      res.status(500).send();
     }
   },
   getAll: async (req, res) => {
@@ -119,7 +118,7 @@ const postCtrl = {
       }
       res.status(200).send(allPosts);
     } catch {
-      res.status(400);
+      res.status(500).send();
     }
   },
 
@@ -129,15 +128,12 @@ const postCtrl = {
       return res.status(401).json({ message: "You cannot update this post." });
     }
     try {
-      // update the content of the post
       await Post.update({
         content: req.body.content || null,
       });
-      // send the updated post as the response
-      res.status(200).send(Post);
-    } catch (err) {
-      // handle any errors
-      res.status(400).send(err);
+      res.status(201).send(Post);
+    } catch {
+      res.status(500).send();
     }
   },
   delete: async (req, res) => {
@@ -146,15 +142,14 @@ const postCtrl = {
       return res.status(401).json({ message: "You cannot delete this post." });
     }
     try {
-      // Si le post contenait une image
       if (Post.imageUrl) {
         const filename = Post.imageUrl.split("/images/")[1];
         await fs.promises.unlink(`images/${filename}`);
       }
       await Post.destroy();
       res.status(200).json({ message: "Post deleted." });
-    } catch (err) {
-      res.status(400).send(err);
+    } catch {
+      res.status(500).send();
     }
   },
 };

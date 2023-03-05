@@ -8,12 +8,12 @@ const auth = async (req, res, next) => {
     const userRole = decodedToken.isAdmin;
     req.auth = { token: token, userId: userId, isAdmin: userRole };
     if (!req.auth.userId) {
-      throw "Invalid user ID";
+      res.status(401).send("User not connected.");
     } else {
       next();
     }
   } catch {
-    res.status(401).json({ error: "User not connected." });
+    res.status(500).send();
   }
 };
 

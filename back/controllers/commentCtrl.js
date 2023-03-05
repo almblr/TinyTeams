@@ -5,20 +5,19 @@ const commentCtrl = {
   create: async (req, res) => {
     if (!req.body.content && !req.file && !req.body.imageUrl) {
       return res.status(400).json({ message: "Commentaire vide." });
-    } else {
-      try {
-        const Comment = await comment.create({
-          author: req.auth.userId,
-          postId: req.params.postId,
-          content: req.body.content ? req.body.content : null,
-          imageUrl: req.file?.filename
-            ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-            : req.body.imageUrl,
-        });
-        res.status(200).send(Comment);
-      } catch (err) {
-        res.status(400).send(err);
-      }
+    }
+    try {
+      const Comment = await comment.create({
+        author: req.auth.userId,
+        postId: req.params.postId,
+        content: req.body.content ? req.body.content : null,
+        imageUrl: req.file?.filename
+          ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+          : req.body.imageUrl,
+      });
+      res.status(201).send(Comment);
+    } catch {
+      res.status(500).send();
     }
   },
   getAll: async (req, res) => {
@@ -32,8 +31,8 @@ const commentCtrl = {
         ],
       });
       res.status(200).send(allComments);
-    } catch (err) {
-      res.status(400).send(err);
+    } catch {
+      res.status(500).send();
     }
   },
   update: async (req, res) => {
@@ -52,10 +51,9 @@ const commentCtrl = {
         content: req.body.content || null,
       });
       // send the updated comment as the response
-      res.status(200).send(Comment);
-    } catch (err) {
-      // handle any errors
-      res.status(400).send(err);
+      res.status(201).send(Comment);
+    } catch {
+      res.status(500).send();
     }
   },
   delete: async (req, res) => {
@@ -77,8 +75,8 @@ const commentCtrl = {
       }
       await Comment.destroy();
       res.status(200).json({ message: "Comment deleted." });
-    } catch (err) {
-      res.status(400).send(err);
+    } catch {
+      res.status(500).send();
     }
   },
 };
