@@ -57,8 +57,7 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
-const token = locStr.token;
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const postData = ref({});
 const emptyPost = ref(null);
 const userName = locStr.userName;
@@ -92,7 +91,7 @@ const sendPost = async () => {
     if (imageFile.value) {
       formData.append("imageUrl", imageFile.value);
     }
-    await postStore.create(formData, token);
+    await postStore.create(formData);
     emit("close");
     socket.emit("newPost", "Un nouveau post a été publié.");
     imageBlop.value = null;

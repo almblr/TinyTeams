@@ -36,7 +36,7 @@ import DividerComponent from "../layout/DividerComponent.vue";
 import PostFooterComponent from "./postFooterComponent.vue";
 
 const postStore = usePostStore();
-const token = JSON.parse(localStorage.getItem(`userInfo`)).token;
+const token = JSON.parse(localStorage.getItem(`user`)).token;
 const allowEditing = ref(false);
 
 const modifyPost = () => {
@@ -44,7 +44,7 @@ const modifyPost = () => {
 };
 /* Au chargement de la page */
 onMounted(() => {
-  postStore.getAll(token);
+  postStore.getAll();
 });
 </script>
 

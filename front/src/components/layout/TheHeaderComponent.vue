@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const username = locStr.userName;
 const usernameParam = username.split(" ").join("_").toLowerCase();
 

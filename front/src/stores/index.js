@@ -4,61 +4,59 @@ import axios from "axios";
 export const useUserStore = defineStore("user", {
   id: "User",
   state: () => ({
-    user: {
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-      profilPicture: "",
-    },
+    token: JSON.parse(localStorage.getItem(`user`))?.token || null,
   }),
   actions: {
-    async signup() {
-      const data = {
-        firstname: this.user.firstname,
-        lastname: this.user.lastname,
-        email: this.user.email,
-        password: this.user.password,
-      };
-      const response = await axios({
+    async signup(data) {
+      await axios({
         url: "http://localhost:3000/api/users/signup",
         method: "POST",
-        data: JSON.stringify(data),
+        data: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          firstname: data.firstname,
+          lastname: data.lastname,
+        }),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
       });
-      return response.data;
     },
-    async login() {
-      const data = {
-        email: this.user.email,
-        password: this.user.password,
-      };
+    async login(data) {
       const response = await axios({
         url: "http://localhost:3000/api/users/login",
         method: "POST",
-        data: JSON.stringify(data),
+        data: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
       });
-      return response.data;
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          userId: response.data.userId,
+          isAdmin: response.data.isAdmin,
+          userName: response.data.userName,
+          profilPicture: response.data.profilPicture,
+          token: response.data.token,
+        })
+      );
+      this.token = response.data.token;
+      return response;
     },
-    async getOne(token, username) {
+    async getOne(username) {
       const response = await axios({
         url: `http://localhost:3000/api/users/getOne/${username}`,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.user.token}`,
         },
       });
-      this.user.firstname = response.data.firstname;
-      this.user.lastname = response.data.lastname;
-      this.user.email = response.data.email;
-      this.user.password = response.data.password;
-      this.user.profilPicture = response.data.profilPicture;
+      return response.data;
     },
   },
 });
@@ -67,59 +65,60 @@ export const usePostStore = defineStore("post", {
   id: "Post",
   state: () => ({
     posts: [],
+    userToken: useUserStore().token,
   }),
   actions: {
-    async getOne(token, id) {
+    async getOne(postId) {
       const response = await fetch(
-        `http://localhost:3000/api/posts/getOne/${id}`,
+        `http://localhost:3000/api/posts/getOne/${postId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${this.userToken}`,
           },
         }
       );
-      const post = await response.json();
-      const postId = post.id;
-      const findPost = this.posts.find((post) => post.id === postId);
+      const Post = await response.json();
+      const findPost = this.posts.find((post) => post.id === Post.id);
       const index = this.posts.indexOf(findPost);
-      this.posts.splice(index, 1, post);
-      return post;
+      this.posts.splice(index, 1, Post);
+      return Post;
     },
-    async getAll(token) {
+    async getAll() {
+      console.log(useUserStore().token);
       const response = await fetch("http://localhost:3000/api/posts/getAll", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.userToken}`,
         },
       });
       const data = await response.json();
       this.posts = data;
     },
-    async create(data, token) {
+    async create(data) {
       await fetch("http://localhost:3000/api/posts/create", {
         method: "POST",
         body: data,
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.userToken}`,
         },
       });
     },
-    async update(id, data, token) {
-      await fetch(`http://localhost:3000/api/posts/update/${id}`, {
+    async update(postId, data) {
+      await fetch(`http://localhost:3000/api/posts/update/${postId}`, {
         method: "PUT",
         body: data,
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.userToken}`,
         },
       });
     },
-    async delete(id, token) {
-      await fetch(`http://localhost:3000/api/posts/delete/${id}`, {
+    async delete(postId) {
+      await fetch(`http://localhost:3000/api/posts/delete/${postId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.userToken}`,
         },
       });
     },
@@ -127,8 +126,11 @@ export const usePostStore = defineStore("post", {
 });
 
 export const useLikeStore = defineStore("like", {
+  getters: {
+    userToken: () => useUserStore().token,
+  },
   actions: {
-    async likePost(token, postId) {
+    async likePost(postId) {
       const res = await fetch(
         `http://localhost:3000/api/posts/${postId}/react`,
         {
@@ -136,7 +138,7 @@ export const useLikeStore = defineStore("like", {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${this.userToken}`,
           },
         }
       );
@@ -151,30 +153,33 @@ export const useCommentStore = defineStore("comment", {
   state: () => ({
     comments: [],
   }),
+  getters: {
+    userToken: () => useUserStore().token,
+  },
   actions: {
-    async getAll(postId, token) {
+    async getAll(postId) {
       const response = await fetch(
         `http://localhost:3000/api/posts/${postId}/comments/getAll`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${this.userToken}`,
           },
         }
       );
       const data = await response.json();
       this.comments = data;
     },
-    async create(postId, data, token) {
+    async create(postId, data) {
       await fetch(`http://localhost:3000/api/posts/${postId}/comments/create`, {
         method: "POST",
         body: data,
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.userToken}`,
         },
       });
     },
-    async update(postId, commentId, data, token) {
+    async update(postId, commentId, data) {
       await fetch(
         `http://localhost:3000/api/posts/${postId}/comments/${commentId}/update`,
         {
@@ -182,19 +187,19 @@ export const useCommentStore = defineStore("comment", {
           body: data,
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${this.userToken}`,
           },
         }
       );
     },
-    async delete(postId, commentId, token) {
+    async delete(postId, commentId) {
       await fetch(
         `http://localhost:3000/api/posts/${postId}/comments/${commentId}/delete`,
         {
           method: "DELETE",
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${this.userToken}`,
           },
         }
       );

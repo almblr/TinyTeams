@@ -14,9 +14,7 @@
       <span v-if="props.author === userId" @click="modify(props.postId)"
         >Modifier</span
       >
-      <span @click="remove(props.postId, props.commentId, token)"
-        >Supprimer</span
-      >
+      <span @click="remove(props.postId, props.commentId)">Supprimer</span>
     </div>
   </div>
 </template>
@@ -28,8 +26,7 @@ import { vOnClickOutside } from "@vueuse/components";
 
 const postStore = usePostStore();
 const commentStore = useCommentStore();
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
-const token = locStr.token;
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const userId = locStr.userId;
 const btn = ref(null);
 const spaceUp = ref(null);
@@ -83,14 +80,14 @@ const modify = async (id) => {
   }
 };
 
-const remove = async (postId, commentId, token) => {
+const remove = async (postId, commentId) => {
   if (props.type === "post") {
-    await postStore.delete(postId, token);
-    await postStore.getAll(token);
+    await postStore.delete(postId);
+    await postStore.getAll();
   }
   if (props.type === "comment") {
-    await commentStore.delete(postId, commentId, token);
-    await postStore.getAll(token);
+    await commentStore.delete(postId, commentId);
+    await postStore.getAll();
   }
 };
 </script>

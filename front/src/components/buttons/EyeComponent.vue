@@ -6,20 +6,24 @@
       'red-first': props.type === 'password',
       'red-snd': props.type === 'text',
     }"
-    @click="props.click"
+    @click="switchInputType"
   />
 </template>
 
 <script setup>
+const emit = defineEmits(["switchInputType"]);
 const props = defineProps({
   type: {
     type: String,
     required: true,
   },
-  click: {
-    type: Function,
-  },
 });
+
+const switchInputType = () => {
+  props.type === "password"
+    ? emit("switchInputType", "text")
+    : emit("switchInputType", "password");
+};
 </script>
 
 <style lang="scss" scoped>

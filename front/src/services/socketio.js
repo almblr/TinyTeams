@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const userId = locStr?.userId || null;
 
 const socket = io("http://localhost:3000");

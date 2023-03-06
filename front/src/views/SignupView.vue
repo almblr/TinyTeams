@@ -11,31 +11,34 @@
       <input
         type="text"
         placeholder="Prénom*"
-        v-model="userStore.user.firstname"
+        v-model="userInfo.firstname"
         required
       />
       <input
         type="text"
         placeholder="Nom*"
-        v-model="userStore.user.lastname"
+        v-model="userInfo.lastname"
         required
       />
     </div>
     <input
       type="email"
       placeholder="Adresse mail*"
-      v-model="userStore.user.email"
+      v-model="userInfo.email"
       required
     />
     <div class="form__body__password">
       <input
         :type="inputType"
         placeholder="Mot de passe*"
-        v-model="userStore.user.password"
+        v-model="userInfo.password"
         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
         required
       />
-      <eye-component :type="inputType" :click="showPassword"></eye-component>
+      <eye-component
+        :type="inputType"
+        @switchInputType="showHidePassword"
+      ></eye-component>
       <span>
         Doit contenir une majuscule, un chiffre et un caractère spécial (8
         caractères min.)
@@ -60,30 +63,16 @@ const props = defineProps({
   },
 });
 const userStore = useUserStore();
+const userInfo = ref({});
 const inputType = ref("password");
 
-/* Permet de switch le type de l'input afin de voir le mdp */
-function showPassword() {
-  inputType.value === "password"
-    ? (inputType.value = "text")
-    : (inputType.value = "password");
-}
+const showHidePassword = (e) => {
+  inputType.value = e;
+};
 
-/* Fonction d'inscription' */
 const signup = async () => {
-  await userStore.signup();
-  // const result = await userStore.login(user.email, user.password);
-  const result = await userStore.login();
-  localStorage.setItem(
-    "userInfo",
-    JSON.stringify({
-      userId: result.userId,
-      isAdmin: result.isAdmin,
-      userName: result.userName,
-      profilPicture: result.profilPicture,
-      token: result.token,
-    })
-  );
+  await userStore.signup(userInfo.value);
+  await userStore.login(userInfo.value);
   router.push("/news");
 };
 </script>

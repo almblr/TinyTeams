@@ -8,20 +8,18 @@
     :popup="showErrorMsg"
     error="Vérifiez vos informations de connexion."
   >
-    <input
-      type="email"
-      placeholder="Email"
-      v-model="userStore.user.email"
-      required
-    />
+    <input type="email" placeholder="Email" v-model="data.email" required />
     <div class="passwordInput">
       <input
         :type="inputType"
         placeholder="Mot de passe"
-        v-model="userStore.user.password"
+        v-model="data.password"
         required
       />
-      <eye-component :type="inputType" :click="showPassword"></eye-component>
+      <eye-component
+        :type="inputType"
+        @switchInputType="showHidePassword"
+      ></eye-component>
     </div>
     <button-form buttonType="submit" text="Se connecter"></button-form>
   </FormComponent>
@@ -38,39 +36,24 @@ import ButtonForm from "../components/buttons/ButtonFormComponent.vue";
 const userStore = useUserStore();
 const inputType = ref("password");
 const showErrorMsg = ref(false);
+const data = ref({});
 
-/* Permet de switch le type de l'input afin de voir le mdp */
-function showPassword() {
-  inputType.value === "password"
-    ? (inputType.value = "text")
-    : (inputType.value = "password");
-}
-
+const showHidePassword = (e) => {
+  inputType.value = e;
+};
 /* Fonction de connexion */
 const login = async () => {
-  const result = await userStore.login();
-  if (Object.values(result).includes("User not found.")) {
-    // Si le resultat du fetch contient "User not found."
+  const user = await userStore.login(data.value);
+  console.log(user);
+  if (Object.values(user).includes("User not found.")) {
+    // Response contains "User not found."
     showErrorMsg.value = true;
     setTimeout(() => {
       showErrorMsg.value = false;
     }, 7000);
-  } else {
-    if (localStorage !== null) {
-      localStorage.clear();
-    }
-    localStorage.setItem(
-      "userInfo",
-      JSON.stringify({
-        userId: result.userId,
-        isAdmin: result.isAdmin,
-        userName: result.userName,
-        profilPicture: result.profilPicture,
-        token: result.token,
-      })
-    );
-    router.push("/news");
+    return;
   }
+  router.push("/news");
 };
 </script>
 

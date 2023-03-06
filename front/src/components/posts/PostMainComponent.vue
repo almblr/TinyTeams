@@ -52,8 +52,8 @@ import socket from "../../services/socketio.js";
 
 const postStore = usePostStore();
 const likeStore = useLikeStore();
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
-const token = locStr.token;
+const locStr = JSON.parse(localStorage.getItem(`user`));
+
 const userId = locStr.userId;
 const likeBtn = ref(null);
 const editingMode = ref(false);
@@ -88,7 +88,7 @@ const updateLike = async (postId, author, liker) => {
   const doesUserLike = postReactions.find((react) => react.userId === userId);
   if (doesUserLike === undefined) {
     await likeStore.likePost(token, postId);
-    await postStore.getOne(token, postId);
+    await postStore.getOne(postId);
     if (liker !== author) {
       socket.emit("sendLike", {
         postId: postId,
@@ -101,7 +101,7 @@ const updateLike = async (postId, author, liker) => {
     return true;
   } else {
     await likeStore.likePost(token, postId);
-    await postStore.getOne(token, postId);
+    await postStore.getOne(postId);
     return false;
   }
 };

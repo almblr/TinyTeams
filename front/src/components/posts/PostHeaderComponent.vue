@@ -29,7 +29,7 @@ import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const userId = locStr.userId;
 const userIsAdmin = locStr.isAdmin;
 

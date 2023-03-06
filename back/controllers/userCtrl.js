@@ -20,7 +20,7 @@ const userCtrl = {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         username: (req.body.firstname + req.body.lastname).toLowerCase(),
-        isAdmin: req.body.isAdmin,
+        isAdmin: false,
       });
       res.status(201).json({ message: "User created successfully!" });
     } catch {

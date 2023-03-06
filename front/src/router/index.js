@@ -32,7 +32,7 @@ const routes = [
       },
     ],
     beforeEnter: (_, _2, next) => {
-      window.localStorage.getItem("userInfo") ? next() : next("/login");
+      window.localStorage.getItem("user") ? next() : next("/login");
     },
   },
   {

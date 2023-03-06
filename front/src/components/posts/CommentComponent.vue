@@ -53,10 +53,10 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const userId = locStr.userId;
 const isAdmin = locStr.isAdmin;
-const token = locStr.token;
+
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);

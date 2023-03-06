@@ -45,8 +45,7 @@ const props = defineProps({
 
 const commentStore = useCommentStore();
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
-const token = locStr.token;
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const showing = ref(false);
 const textareaContent = ref("");
 const containerTextarea = ref(null);
@@ -77,12 +76,12 @@ const sendComment = async (postId) => {
   }
   formData.append("content", textareaContent.value);
   formData.append("imageUrl", mediaToSend.value);
-  await commentStore.create(postId, formData, token);
+  await commentStore.create(postId, formData);
   textareaContent.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
   autoResize(textarea.value);
-  await postStore.getOne(token, postId);
+  await postStore.getOne(postId);
 };
 
 const autoResize = (el) => {

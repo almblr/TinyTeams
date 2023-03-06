@@ -27,8 +27,7 @@ const props = defineProps({
   textareaType: String,
 });
 
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
-const token = locStr.token;
+const locStr = JSON.parse(localStorage.getItem(`user`));
 const postStore = usePostStore();
 const commentStore = useCommentStore();
 const textarea = ref(null);
@@ -45,11 +44,11 @@ const update = async () => {
   }
   formData.append("content", textareaContent.value);
   if (props.textareaType === "comment") {
-    await commentStore.update(props.postId, props.commentId, formData, token);
-    await postStore.getOne(token, props.postId);
+    await commentStore.update(props.postId, props.commentId, formData);
+    await postStore.getOne(props.postId);
   } else if (props.textareaType === "post") {
-    await postStore.update(props.postId, formData, token);
-    await postStore.getOne(token, props.postId);
+    await postStore.update(props.postId, formData);
+    await postStore.getOne(props.postId);
   }
   emit("update:show", false);
 };

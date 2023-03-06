@@ -26,14 +26,14 @@ import TheHeader from "@/components/layout/TheHeaderComponent.vue";
 import PostComponent from "@/components/posts/PostComponent.vue";
 import { usePostStore } from "@/stores/index.js";
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
-const token = locStr.token;
+const locStr = JSON.parse(localStorage.getItem(`user`));
+
 const showCreateModal = ref(false);
 
 const closeCreateModal = async () => {
   showCreateModal.value = false;
   await nextTick(); // Attend le prochain cycle de màj Vue (50 ms environ)
-  await postStore.getAll(token);
+  await postStore.getAll();
 };
 </script>
 

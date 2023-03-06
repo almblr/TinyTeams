@@ -16,8 +16,8 @@ import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
 import ProfilHeaderComponent from "../components/user/ProfilHeaderComponent.vue";
 
 const userStore = useUserStore();
-const locStr = JSON.parse(localStorage.getItem(`userInfo`));
-const token = locStr.token;
+const locStr = JSON.parse(localStorage.getItem(`user`));
+
 const username = useRoute().params.username;
 
 onBeforeMount(async () => {
