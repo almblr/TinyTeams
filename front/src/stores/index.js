@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+let token = JSON.parse(localStorage.getItem(`user`))?.token || null;
+
 export const useUserStore = defineStore("user", {
   id: "User",
-  state: () => ({
-    token: JSON.parse(localStorage.getItem(`user`))?.token || null,
-  }),
+  state: () => ({}),
   actions: {
     async signup(data) {
       await axios({
@@ -46,14 +46,14 @@ export const useUserStore = defineStore("user", {
           token: response.data.token,
         })
       );
-      this.token = response.data.token;
+      token = response.data.token;
       return response;
     },
     async getOne(username) {
       const response = await axios({
         url: `http://localhost:3000/api/users/getOne/${username}`,
         headers: {
-          Authorization: `Bearer ${this.user.token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       return response.data;
@@ -65,7 +65,6 @@ export const usePostStore = defineStore("post", {
   id: "Post",
   state: () => ({
     posts: [],
-    userToken: useUserStore().token,
   }),
   actions: {
     async getOne(postId) {
@@ -73,7 +72,7 @@ export const usePostStore = defineStore("post", {
         `http://localhost:3000/api/posts/getOne/${postId}`,
         {
           headers: {
-            Authorization: `Bearer ${this.userToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -84,10 +83,9 @@ export const usePostStore = defineStore("post", {
       return Post;
     },
     async getAll() {
-      console.log(useUserStore().token);
       const response = await fetch("http://localhost:3000/api/posts/getAll", {
         headers: {
-          Authorization: `Bearer ${this.userToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const data = await response.json();
@@ -99,7 +97,7 @@ export const usePostStore = defineStore("post", {
         body: data,
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${this.userToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
     },
@@ -109,7 +107,7 @@ export const usePostStore = defineStore("post", {
         body: data,
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${this.userToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
     },
@@ -118,7 +116,7 @@ export const usePostStore = defineStore("post", {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${this.userToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
     },
@@ -126,9 +124,6 @@ export const usePostStore = defineStore("post", {
 });
 
 export const useLikeStore = defineStore("like", {
-  getters: {
-    userToken: () => useUserStore().token,
-  },
   actions: {
     async likePost(postId) {
       const res = await fetch(
@@ -138,7 +133,7 @@ export const useLikeStore = defineStore("like", {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${this.userToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -153,16 +148,13 @@ export const useCommentStore = defineStore("comment", {
   state: () => ({
     comments: [],
   }),
-  getters: {
-    userToken: () => useUserStore().token,
-  },
   actions: {
     async getAll(postId) {
       const response = await fetch(
         `http://localhost:3000/api/posts/${postId}/comments/getAll`,
         {
           headers: {
-            Authorization: `Bearer ${this.userToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -175,7 +167,7 @@ export const useCommentStore = defineStore("comment", {
         body: data,
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${this.userToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
     },
@@ -187,7 +179,7 @@ export const useCommentStore = defineStore("comment", {
           body: data,
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${this.userToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -199,7 +191,7 @@ export const useCommentStore = defineStore("comment", {
           method: "DELETE",
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${this.userToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

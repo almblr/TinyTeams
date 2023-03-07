@@ -5,9 +5,7 @@
     </router-link>
     <nav>
       <router-link to="/news" class="button">Accueil</router-link>
-      <router-link :to="`/user/${usernameParam}`" class="button"
-        >Profil</router-link
-      >
+      <router-link :to="`/user/${username}`" class="button">Profil</router-link>
     </nav>
     <router-link to="/" @click="logout" class="button logout">
       <fa icon="fa-solid fa-power-off" />
@@ -17,8 +15,7 @@
 
 <script setup>
 const locStr = JSON.parse(localStorage.getItem(`user`));
-const username = locStr.userName;
-const usernameParam = username.split(" ").join("_").toLowerCase();
+const username = locStr.userName.split(" ").join("").toLowerCase();
 
 /* Deconnexion : vide le localstorage */
 const logout = () => {
@@ -37,18 +34,17 @@ const logout = () => {
   color: #ffffff;
   &:hover {
     cursor: pointer;
-    box-shadow: inset 0px 0px 10px rgb(0, 0, 0);
+    background-color: #ececec15;
+    transition: 200ms;
   }
 }
 header {
   @include jcSb;
   width: 100%;
-  height: 6%;
-  max-height: 50px;
+  height: 50px;
   padding-left: 1%;
-  // backdrop-filter: blur(10px);
-  background-color: rgba(0, 0, 0, 0.849);
-  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.178);
+  background-color: #242526;
+  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
   & .logo {
     display: flex;
     align-items: center;
@@ -63,6 +59,7 @@ header {
     min-height: 100%;
     & a {
       @include button;
+      font-size: 19px;
     }
   }
   & .logout {

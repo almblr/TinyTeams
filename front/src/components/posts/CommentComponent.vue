@@ -6,7 +6,7 @@
     ref="comment"
   >
     <header>
-      <router-link :to="`/user/${usernameParam}`" class="title"
+      <router-link :to="`/user/${username}`" class="title"
         >{{ props.firstname }} {{ props.lastname }}</router-link
       >
       <ToolTipComponent
@@ -36,7 +36,6 @@
 <script setup>
 import { ref, watch } from "vue";
 
-import { useUserStore } from "../../stores";
 import TextareaEditingComponent from "./TextareaEditingComponent.vue";
 import ToolTipComponent from "./ToolTipComponent.vue";
 
@@ -52,7 +51,6 @@ const props = defineProps({
   lastname: String,
 });
 
-const userStore = useUserStore();
 const locStr = JSON.parse(localStorage.getItem(`user`));
 const userId = locStr.userId;
 const isAdmin = locStr.isAdmin;
@@ -60,8 +58,7 @@ const isAdmin = locStr.isAdmin;
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);
-const username = props.firstname + props.lastname;
-const usernameParam = username.split(" ").join("").toLowerCase();
+const username = (props.firstname + props.lastname).toLowerCase();
 
 const modify = () => {
   emit("update:selectedCommentId", props.commentId);

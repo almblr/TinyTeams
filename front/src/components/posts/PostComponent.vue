@@ -36,7 +36,6 @@ import DividerComponent from "../layout/DividerComponent.vue";
 import PostFooterComponent from "./postFooterComponent.vue";
 
 const postStore = usePostStore();
-const token = JSON.parse(localStorage.getItem(`user`)).token;
 const allowEditing = ref(false);
 
 const modifyPost = () => {

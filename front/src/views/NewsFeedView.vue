@@ -45,9 +45,6 @@ const closeCreateModal = async () => {
   background-color: rgb(240, 240, 240);
   overflow-y: scroll;
   padding-top: 2em;
-  &__header {
-    height: 50px;
-  }
 }
 .posts {
   @include fdCol-aiCt;

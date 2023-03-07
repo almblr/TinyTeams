@@ -2,42 +2,43 @@
   <TheHeaderComponent />
   <main>
     <ProfilHeaderComponent
-      :backgroundUrl="userStore.user.backgroundPicture"
-      :profilPictureUrl="userStore.user.profilPicture"
+      :backgroundUrl="userData.backgroundPicture"
+      :profilPictureUrl="userData.profilPicture"
     />
+    <PostComponent />
   </main>
 </template>
 
 <script setup>
-import { onBeforeMount } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { useUserStore } from "../stores";
 import { useRoute } from "vue-router";
 import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
 import ProfilHeaderComponent from "../components/user/ProfilHeaderComponent.vue";
-
+import PostComponent from "../components/posts/PostComponent.vue";
 const userStore = useUserStore();
-const locStr = JSON.parse(localStorage.getItem(`user`));
-
 const username = useRoute().params.username;
+const userData = ref({});
 
 onBeforeMount(async () => {
-  await userStore.getOne(token, username);
+  const user = await userStore.getOne(username);
+  userData.value = user;
+  console.log(userData.value);
 });
 </script>
 
 <style lang="scss" scoped>
 main {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 50px;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  gap: 20px;
+  @include fdCol-aiCt;
+  @include width-height_max;
+  row-gap: 20px;
   background-color: rgb(240, 240, 240);
+  overflow-y: scroll;
 }
-.test {
-  color: red;
-}
+// .posts {
+//   @include fdCol-jcCt-aiCt;
+//   max-width: 1000px;
+//   width: 100%;
+//   overflow: auto;
+// }
 </style>
