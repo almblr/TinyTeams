@@ -47,7 +47,7 @@ export const useUserStore = defineStore("user", {
         })
       );
       token = response.data.token;
-      return response;
+      return response.data;
     },
     async getOne(username) {
       const response = await axios({
@@ -68,51 +68,55 @@ export const usePostStore = defineStore("post", {
   }),
   actions: {
     async getOne(postId) {
-      const response = await fetch(
-        `http://localhost:3000/api/posts/getOne/${postId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const Post = await response.json();
+      const response = await axios({
+        url: `http://localhost:3000/api/posts/getOne/${postId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const Post = await response.data;
       const findPost = this.posts.find((post) => post.id === Post.id);
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
-      return Post;
     },
-    async getAll() {
-      const response = await fetch("http://localhost:3000/api/posts/getAll", {
+    async getAll(userId) {
+      let url = `http://localhost:3000/api/posts/getAll/`;
+      if (userId) {
+        url += `${userId}/`;
+      }
+      const response = await axios({
+        url,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
-      this.posts = data;
+      this.posts = await response.data;
     },
     async create(data) {
-      await fetch("http://localhost:3000/api/posts/create", {
+      await axios({
+        url: "http://localhost:3000/api/posts/create",
         method: "POST",
-        body: data,
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
+        data,
       });
     },
     async update(postId, data) {
-      await fetch(`http://localhost:3000/api/posts/update/${postId}`, {
+      await axios({
+        url: `http://localhost:3000/api/posts/update/${postId}`,
         method: "PUT",
-        body: data,
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
+        data,
       });
     },
     async delete(postId) {
-      await fetch(`http://localhost:3000/api/posts/delete/${postId}`, {
+      await axios({
+        url: `http://localhost:3000/api/posts/delete/${postId}`,
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -126,19 +130,16 @@ export const usePostStore = defineStore("post", {
 export const useLikeStore = defineStore("like", {
   actions: {
     async likePost(postId) {
-      const res = await fetch(
-        `http://localhost:3000/api/posts/${postId}/react`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const resData = await res.json();
-      return resData;
+      const res = await axios({
+        url: `http://localhost:3000/api/posts/${postId}/react`,
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return await res.data;
     },
   },
 });
@@ -150,51 +151,45 @@ export const useCommentStore = defineStore("comment", {
   }),
   actions: {
     async getAll(postId) {
-      const response = await fetch(
-        `http://localhost:3000/api/posts/${postId}/comments/getAll`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await response.json();
-      this.comments = data;
+      const response = await axios({
+        url: `http://localhost:3000/api/posts/${postId}/comments/getAll`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      this.comments = await response.data;
     },
     async create(postId, data) {
-      await fetch(`http://localhost:3000/api/posts/${postId}/comments/create`, {
+      await axios({
+        url: `http://localhost:3000/api/posts/${postId}/comments/create`,
         method: "POST",
-        body: data,
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data,
+      });
+    },
+    async update(postId, commentId, data) {
+      await axios({
+        url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/update`,
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data,
+      });
+    },
+    async delete(postId, commentId) {
+      await axios({
+        url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/delete`,
+        method: "DELETE",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-    },
-    async update(postId, commentId, data) {
-      await fetch(
-        `http://localhost:3000/api/posts/${postId}/comments/${commentId}/update`,
-        {
-          method: "PUT",
-          body: data,
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    },
-    async delete(postId, commentId) {
-      await fetch(
-        `http://localhost:3000/api/posts/${postId}/comments/${commentId}/delete`,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
     },
   },
 });

@@ -86,16 +86,16 @@ const sendPost = async () => {
   } else {
     if (postData.value.content) {
       formData.append("content", postData.value.content);
-      console.log(formData);
     }
     if (imageFile.value) {
       formData.append("imageUrl", imageFile.value);
     }
     await postStore.create(formData);
+    imageBlop.value = null;
+    imageFile.value = null;
+    emptyPost.value === true ? (emptyPost.value = false) : null;
     emit("close");
     socket.emit("newPost", "Un nouveau post a été publié.");
-    imageBlop.value = null;
-    emptyPost.value === true ? (emptyPost.value = false) : null;
   }
 };
 

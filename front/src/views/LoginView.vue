@@ -44,6 +44,7 @@ const showHidePassword = (e) => {
 /* Fonction de connexion */
 const login = async () => {
   const user = await userStore.login(data.value);
+  console.log(user);
   if (Object.values(user).includes("User not found.")) {
     // Response contains "User not found."
     showErrorMsg.value = true;

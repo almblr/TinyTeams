@@ -9,11 +9,9 @@
 @import "./scss/_var.scss";
 
 #app {
-  position: relative;
-  height: 10px;
-  min-height: 100vh;
-  min-width: 100vw;
-  overflow-y: hidden;
+  height: 100vh;
+  min-width: 100%;
+  overflow: hidden;
 }
 
 *,

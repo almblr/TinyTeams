@@ -2,38 +2,43 @@
   <TheHeaderComponent />
   <main>
     <ProfilHeaderComponent
-      :backgroundUrl="userData.backgroundPicture"
+      :username="username"
       :profilPictureUrl="userData.profilPicture"
     />
-    <PostComponent />
+    <PostComponent :posts="postStore.posts" />
   </main>
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
-import { useUserStore } from "../stores";
+import { ref, onBeforeMount, computed } from "vue";
+import { useUserStore, usePostStore } from "../stores";
 import { useRoute } from "vue-router";
 import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
 import ProfilHeaderComponent from "../components/user/ProfilHeaderComponent.vue";
 import PostComponent from "../components/posts/PostComponent.vue";
 const userStore = useUserStore();
-const username = useRoute().params.username;
+const postStore = usePostStore();
 const userData = ref({});
 
+const username = computed(() => {
+  return `${userData.value.firstname} ${userData.value.lastname}`;
+});
+
 onBeforeMount(async () => {
-  const user = await userStore.getOne(username);
-  userData.value = user;
-  console.log(userData.value);
+  userData.value = await userStore.getOne(useRoute().params.username);
+  await postStore.getAll(userData.value.id);
 });
 </script>
 
 <style lang="scss" scoped>
 main {
   @include fdCol-aiCt;
-  @include width-height_max;
+  width: 100%;
+  height: 100vh;
   row-gap: 20px;
-  background-color: rgb(240, 240, 240);
+  padding-top: 50px;
   overflow-y: scroll;
+  background-color: rgb(240, 240, 240);
 }
 // .posts {
 //   @include fdCol-jcCt-aiCt;

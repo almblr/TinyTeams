@@ -1,5 +1,5 @@
 <template>
-  <article v-for="post of postStore.posts" :key="post.id" :id="post.id">
+  <article v-for="post of props.posts" :key="post.id" :id="post.id">
     <PostHeaderComponent
       :author="post.author"
       :postId="post.id"
@@ -16,7 +16,7 @@
       :postImage="post.imageUrl"
       :postReactions="post.reactions"
       :postComments="post.comments"
-      v-model:canEdit="allowEditing"
+      v-model:postToEdit="getPostId"
     />
     <DividerComponent width="98%" height="1px" backgroundColor="#c0c2c4" />
     <PostFooterComponent
@@ -28,23 +28,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { usePostStore } from "../../stores/index.js";
+import { ref } from "vue";
 import PostHeaderComponent from "./PostHeaderComponent.vue";
 import PostMainComponent from "./PostMainComponent.vue";
 import DividerComponent from "../layout/DividerComponent.vue";
 import PostFooterComponent from "./postFooterComponent.vue";
 
-const postStore = usePostStore();
-const allowEditing = ref(false);
-
-const modifyPost = () => {
-  allowEditing.value = true;
-};
-/* Au chargement de la page */
-onMounted(() => {
-  postStore.getAll();
+const props = defineProps({
+  posts: Array,
 });
+
+const getPostId = ref(null);
+const modifyPost = (postId) => {
+  getPostId.value = postId;
+};
 </script>
 
 <style lang="scss" scoped>

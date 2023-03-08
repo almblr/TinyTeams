@@ -16,7 +16,7 @@
       top="7px"
       dotSize="4px"
       v-if="props.author === userId || userIsAdmin"
-      @editPost="test"
+      @editPost="edit"
     />
   </header>
 </template>
@@ -43,8 +43,8 @@ const props = defineProps({
   createdAt: { type: String, required: true },
 });
 
-const test = () => {
-  emit("editPost");
+const edit = (postId) => {
+  emit("editPost", postId);
 };
 </script>
 

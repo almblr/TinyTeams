@@ -40,10 +40,14 @@ const logout = () => {
 }
 header {
   @include jcSb;
+  position: fixed;
+  top: 0;
   width: 100%;
   height: 50px;
   padding-left: 1%;
-  background-color: #242526;
+  z-index: 999;
+  background-color: #242526f1;
+  backdrop-filter: blur(1px);
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
   & .logo {
     display: flex;

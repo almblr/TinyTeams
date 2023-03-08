@@ -3,7 +3,7 @@
     <div class="band"></div>
     <img class="profilPicture" :src="props.profilPictureUrl" />
     <div class="userInfo">
-      <h2 class="userInfo__name">Pierre Dupont</h2>
+      <h2 class="userInfo__name">{{ props.username }}</h2>
       <p class="userInfo__job">Développeur</p>
       <div class="userInfo__followBtn">
         <fa icon="fa-solid fa-user-plus" />S'abonner
@@ -14,6 +14,8 @@
 
 <script setup>
 const props = defineProps({
+  username: String,
+  job: String,
   profilPictureUrl: String,
 });
 </script>
@@ -27,6 +29,7 @@ const props = defineProps({
   min-height: 250px;
   background-color: white;
   transition: 300ms;
+  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
 }
 
 .band {

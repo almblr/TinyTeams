@@ -2,7 +2,7 @@
   <the-header />
   <main id="main">
     <div class="posts">
-      <PostComponent />
+      <PostComponent :posts="postStore.posts" />
     </div>
   </main>
   <button class="createPost" @click="showCreateModal = true">
@@ -20,13 +20,12 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import PostModal from "@/components/posts/PostModalComponent.vue";
 import TheHeader from "@/components/layout/TheHeaderComponent.vue";
 import PostComponent from "@/components/posts/PostComponent.vue";
 import { usePostStore } from "@/stores/index.js";
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`user`));
 
 const showCreateModal = ref(false);
 
@@ -35,22 +34,25 @@ const closeCreateModal = async () => {
   await nextTick(); // Attend le prochain cycle de màj Vue (50 ms environ)
   await postStore.getAll();
 };
+
+/* Au chargement de la page */
+onMounted(() => {
+  postStore.getAll();
+});
 </script>
 
 <style lang="scss" scoped>
 #main {
   @include fdCol-aiCt;
   @include width-height_max;
-  row-gap: 30px;
   background-color: rgb(240, 240, 240);
   overflow-y: scroll;
-  padding-top: 2em;
+  padding-top: 60px;
 }
 .posts {
   @include fdCol-aiCt;
   width: 100%;
   gap: 30px;
-  padding-bottom: 20px;
 
   & p {
     color: black;
@@ -60,28 +62,6 @@ const closeCreateModal = async () => {
     height: 200px;
   }
 }
-/* SCROLLBAR */
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  border-radius: 20px;
-  background: rgba(255, 41, 3, 0.863);
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: rgb(255, 38, 0);
-}
-
 .createPost {
   @include jcCt-aiCt;
   position: absolute;
@@ -113,9 +93,6 @@ const closeCreateModal = async () => {
     & .icon {
       font-size: 25px;
     }
-  }
-  ::-webkit-scrollbar {
-    display: none;
   }
 }
 </style>

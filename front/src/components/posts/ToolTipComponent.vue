@@ -20,9 +20,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { usePostStore, useCommentStore } from "../../stores";
 import { vOnClickOutside } from "@vueuse/components";
+import { useRoute } from "vue-router";
 
 const postStore = usePostStore();
 const commentStore = useCommentStore();
@@ -33,6 +34,7 @@ const spaceUp = ref(null);
 const showTooltip = ref(null);
 const postToModify = ref({});
 const commentToModify = ref({});
+const userParams = useRoute().params.username || null;
 
 const emit = defineEmits(["editPost", "editComment"]);
 const props = defineProps({
@@ -68,7 +70,7 @@ const closeTooltip = () => {
 const modify = async (id) => {
   if (props.type === "post") {
     postToModify.value = postStore.posts.find((post) => post.id === id);
-    emit("editPost");
+    emit("editPost", props.postId);
     closeTooltip();
   }
   if (props.type === "comment") {
@@ -83,7 +85,13 @@ const modify = async (id) => {
 const remove = async (postId, commentId) => {
   if (props.type === "post") {
     await postStore.delete(postId);
-    await postStore.getAll();
+    if (userParams) {
+      // Si on est sur la page profil
+      await postStore.getAll(props.author);
+    } else {
+      // Si on est sur la page d'acceuil
+      await postStore.getAll();
+    }
   }
   if (props.type === "comment") {
     await commentStore.delete(postId, commentId);

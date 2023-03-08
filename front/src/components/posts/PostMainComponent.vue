@@ -57,7 +57,7 @@ const userId = locStr.userId;
 const likeBtn = ref(null);
 const editingMode = ref(false);
 
-const emit = defineEmits(["update:canEdit"]);
+const emit = defineEmits(["update:postToEdit"]);
 const props = defineProps({
   postId: Number,
   author: Number,
@@ -65,7 +65,7 @@ const props = defineProps({
   postImage: String,
   postReactions: Array,
   postComments: Array,
-  canEdit: Boolean,
+  postToEdit: Number,
 });
 
 /* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
@@ -106,16 +106,16 @@ const updateLike = async (postId, author, liker) => {
 };
 
 watch(
-  () => props.canEdit,
+  () => props.postToEdit,
   async (newVar) => {
-    if (newVar) {
+    if (newVar === props.postId) {
       editingMode.value = true;
     }
   }
 );
 
 watch(editingMode, () => {
-  emit("update:canEdit", false);
+  emit("update:postToEdit", null);
 });
 </script>
 

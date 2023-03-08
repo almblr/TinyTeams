@@ -73,6 +73,7 @@ const postCtrl = {
   getAll: async (req, res) => {
     try {
       const allPosts = await post.findAll({
+        where: req.params.userId ? { author: req.params.userId } : {},
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
@@ -121,7 +122,6 @@ const postCtrl = {
       res.status(500).send();
     }
   },
-
   update: async (req, res) => {
     const Post = await post.findByPk(req.params.postId);
     if (req.auth.userId !== Post.author) {
