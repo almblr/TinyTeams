@@ -1,9 +1,9 @@
 <template>
   <header class="post__header" :id="props.postId">
     <div class="post__header__user">
-      <div class="post__header__user__pic">
+      <router-link :to="`/user/${username}`" class="post__header__user__pic">
         <img :src="props.imageUrl" alt="Photo de profil" />
-      </div>
+      </router-link>
       <div class="post__header__user__title">
         <h2>{{ props.firstname }} {{ props.lastname }}</h2>
         <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
@@ -29,10 +29,6 @@ import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
-const locStr = JSON.parse(localStorage.getItem(`user`));
-const userId = locStr.userId;
-const userIsAdmin = locStr.isAdmin;
-
 const emit = defineEmits(["editPost"]);
 const props = defineProps({
   author: { type: Number, required: true },
@@ -42,6 +38,11 @@ const props = defineProps({
   lastname: { type: String, required: true },
   createdAt: { type: String, required: true },
 });
+
+const locStr = JSON.parse(localStorage.getItem(`user`));
+const userId = locStr.userId;
+const userIsAdmin = locStr.isAdmin;
+const username = (props.firstname + props.lastname).toLowerCase();
 
 const edit = (postId) => {
   emit("editPost", postId);

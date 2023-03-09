@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { useUserStore } from "../stores";
 import Login from "../views/LoginView.vue";
 import News from "../views/NewsFeedView.vue";
 import Signup from "../views/SignupView.vue";

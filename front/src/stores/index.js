@@ -194,6 +194,44 @@ export const useCommentStore = defineStore("comment", {
   },
 });
 
+export const useFollowStore = defineStore("follow", {
+  id: "Follows",
+  actions: {
+    async sendFollow(userId) {
+      const response = await axios({
+        url: `http://localhost:3000/api/users/follow/${userId}`,
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+    async getOne(userId) {
+      const response = await axios({
+        url: `http://localhost:3000/api/users/follow/getOne/${userId}`,
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+    async unfollow(userId) {
+      const response = await axios({
+        url: `http://localhost:3000/api/users/unfollow/${userId}`,
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+  },
+});
+
 export const useGiphyStore = defineStore("gif", {
   id: "Gifs",
   state: () => ({

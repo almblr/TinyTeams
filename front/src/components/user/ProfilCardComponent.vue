@@ -5,19 +5,40 @@
     <div class="userInfo">
       <h2 class="userInfo__name">{{ props.username }}</h2>
       <p class="userInfo__job">Développeur</p>
-      <div class="userInfo__followBtn">
+      <div v-if="props.connectedUser" class="userInfo__btn edit">
+        <fa icon="fa-solid fa-gear" />Modifier votre profil
+      </div>
+      <div
+        v-if="isSubscribed === false && !props.connectedUser"
+        class="userInfo__btn follow"
+        @click="followStore.sendFollow(props.userId)"
+      >
         <fa icon="fa-solid fa-user-plus" />S'abonner
+      </div>
+      <div
+        v-if="isSubscribed"
+        class="userInfo__btn unfollow"
+        @click="followStore.unfollow(props.userId)"
+      >
+        <fa icon="fa-solid fa-check" />Abonné
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useFollowStore } from "../../stores";
+
 const props = defineProps({
+  userId: Number,
   username: String,
   job: String,
   profilPictureUrl: String,
+  connectedUser: Boolean,
+  isSubscribed: Boolean,
 });
+
+const followStore = useFollowStore();
 </script>
 
 <style lang="scss" scoped>
@@ -55,22 +76,35 @@ const props = defineProps({
   padding-top: 40px;
   width: 100%;
   color: rgb(48, 43, 43);
-  &__followBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-    width: 200px;
+  &__btn {
+    @include jcCt-aiCt;
+    gap: 10px;
+    max-width: 300px;
     height: 35px;
+    margin-top: 20px;
+    padding: 0px 15px;
     text-align: center;
     border-radius: 5px;
     font-size: 19px;
     color: #ffffff;
-    gap: 10px;
-    background-color: #2374e1;
     transition: 200ms;
+  }
+  :hover {
+    cursor: pointer;
+  }
+  .edit {
+    background-color: rgba(65, 65, 65, 0.555);
+  }
+  .follow {
+    background-color: #2374e1;
     &:hover {
       background-color: #2375e1ec;
+    }
+  }
+  .unfollow {
+    background-color: #81be8b;
+    &:hover {
+      background-color: #c74242;
       cursor: pointer;
     }
   }

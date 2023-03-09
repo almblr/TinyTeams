@@ -14,6 +14,8 @@ import {
   faCamera,
   faXmark,
   faUserPlus,
+  faGear,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -25,7 +27,9 @@ library.add(
   faThumbsUp,
   faCamera,
   faXmark,
-  faUserPlus
+  faUserPlus,
+  faGear,
+  faCheck
 );
 
 const app = createApp(App);
