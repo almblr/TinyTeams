@@ -41,7 +41,9 @@ export const useUserStore = defineStore("user", {
         JSON.stringify({
           userId: response.data.userId,
           isAdmin: response.data.isAdmin,
-          userName: response.data.userName,
+          firstname: response.data.firstname,
+          lastname: response.data.lastname,
+          username: response.data.username,
           profilPicture: response.data.profilPicture,
           token: response.data.token,
         })

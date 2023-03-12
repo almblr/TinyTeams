@@ -13,34 +13,27 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount, computed, watch } from "vue";
+import { ref, onMounted, computed, watch, onMounted } from "vue";
 import { useUserStore, usePostStore, useFollowStore } from "../stores";
 import { useRoute } from "vue-router";
 import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
 import ProfilCardComponent from "../components/user/ProfilCardComponent.vue";
 import PostComponent from "../components/posts/PostComponent.vue";
 const locStr = JSON.parse(localStorage.getItem(`user`));
-const userName = locStr.userName;
+const usernameLS = locStr.username;
 const userStore = useUserStore();
 const postStore = usePostStore();
 const followStore = useFollowStore();
 const route = useRoute();
 const userData = ref({});
-const isSameUser = ref(false);
+const isUsersProfile = ref(false);
 const isSubscribed = ref(false);
 
-const username = computed(() => {
-  return `${userData.value.firstname} ${userData.value.lastname}`;
-});
-
-if (username === userName) {
-  console.log("same person");
-}
-onBeforeMount(async () => {
-  userData.value = await userStore.getOne(useRoute().params.username);
+onMounted(async () => {
+  userData.value = await userStore.getOne(route.params.username);
   await postStore.getAll(userData.value.id);
-  if (username.value === userName) {
-    isSameUser.value = true;
+  if (route.params.username === usernameLS) {
+    isUsersProfile.value = true;
   }
   const isFollowing = await followStore.getOne(userData.value.id);
   if (isFollowing === true) {
@@ -51,10 +44,9 @@ onBeforeMount(async () => {
 watch(
   () => route.params.username,
   async (newValue) => {
-    console.log(newValue);
     userData.value = await userStore.getOne(route.params.username);
     await postStore.getAll(userData.value.id);
-    if (username.value === userName) {
+    if (route.params.username === usernameLS) {
       isSameUser.value = true;
       isSubscribed.value = true;
     }

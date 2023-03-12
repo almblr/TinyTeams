@@ -49,7 +49,8 @@ const userCtrl = {
       res.status(200).json({
         userId: User.id,
         isAdmin: User.isAdmin,
-        userName: `${User.firstname} ${User.lastname}`,
+        fullname: `${User.firstname} ${User.lastname}`,
+        username: User.username,
         profilPicture: User.profilPicture,
         token: token,
       });
