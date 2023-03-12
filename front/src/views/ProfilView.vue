@@ -1,57 +1,24 @@
 <template>
   <TheHeaderComponent />
   <main>
-    <ProfilCardComponent
-      :userId="user.id"
-      :fullname="`${user.firstname} ${user.lastname}`"
-      :username="user.username"
-      :profilPictureUrl="user.profilPicture"
-      :connectedUser="loggedInUserProfile"
-      :v-model:isSubscribed="isSubscribed"
-    />
+    <ProfilCardComponent />
     <PostComponent :posts="postStore.posts" />
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, watchEffect } from "vue";
-import { useUserStore, usePostStore, useFollowStore } from "../stores";
+import { onMounted } from "vue";
+import { usePostStore } from "@/stores/index.js";
 import { useRoute } from "vue-router";
-import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
-import ProfilCardComponent from "../components/user/ProfilCardComponent.vue";
-import PostComponent from "../components/posts/PostComponent.vue";
-const locStr = JSON.parse(localStorage.getItem(`user`));
-const usernameLS = locStr.username;
-const userStore = useUserStore();
+import TheHeaderComponent from "@/components/layout/TheHeaderComponent.vue";
+import ProfilCardComponent from "@/components/user/ProfilCardComponent.vue";
+import PostComponent from "@/components/posts/PostComponent.vue";
+
 const postStore = usePostStore();
-const followStore = useFollowStore();
 const route = useRoute();
-const user = ref({});
-const loggedInUserProfile = ref(false);
-const isSubscribed = ref(false);
 
-const getUserInfos = async () => {
-  user.value = await userStore.getOne(route.params.username);
-  await postStore.getAll(user.value.id);
-  if (route.params.username === usernameLS) {
-    return (loggedInUserProfile.value = true);
-  }
-  const isFollowing = await followStore.getOne(user.value.id);
-  isFollowing ? (isSubscribed.value = true) : null;
-};
-
-watch(
-  () => isSubscribed.value,
-  async (newValue) => {
-    console.log(isSubscribed.value);
-    await userStore.getOne(user.value.username);
-  }
-);
-onMounted(() => {
-  /* Même chose que faire un watch et un onMounted séparemment */
-  watchEffect(() => {
-    getUserInfos();
-  });
+onMounted(async () => {
+  await postStore.getAll(route.params.username);
 });
 </script>
 

@@ -1,22 +1,22 @@
 <template>
   <div class="container">
     <div class="band"></div>
-    <img class="profilPicture" :src="props.profilPictureUrl" />
+    <img class="profilPicture" :src="user.profilPicture" />
     <div class="userInfo">
-      <h2 class="userInfo__name">{{ props.fullname }}</h2>
+      <h2 class="userInfo__name">{{ user.firstname }} {{ user.lastname }}</h2>
       <p class="userInfo__job">Développeur</p>
-      <div v-if="props.connectedUser" class="userInfo__btn edit">
+      <div v-if="loggedInUserProfile" class="userInfo__btn edit">
         <fa icon="fa-solid fa-gear" />Modifier votre profil
       </div>
       <div
-        v-if="isSubscribed === false && !props.connectedUser"
+        v-if="isSubscribed === false && !loggedInUserProfile"
         class="userInfo__btn follow"
         @click="updateFollow('follow')"
       >
         <fa icon="fa-solid fa-user-plus" />S'abonner
       </div>
       <div
-        v-if="isSubscribed && !props.connectedUser"
+        v-if="isSubscribed && !loggedInUserProfile"
         class="userInfo__btn unfollow"
         @click="updateFollow('unfollow')"
       >
@@ -27,34 +27,40 @@
 </template>
 
 <script setup>
-import { useUserStore, useFollowStore } from "../../stores";
-
-const emit = defineEmits(["update:isSubscribed"]);
-const props = defineProps({
-  userId: Number,
-  fullname: String,
-  username: String,
-  job: String,
-  profilPictureUrl: String,
-  connectedUser: Boolean,
-  isSubscribed: Boolean,
-});
+import { ref, onMounted, watchEffect } from "vue";
+import { useUserStore, useFollowStore } from "@/stores/index.js";
+import { useRoute } from "vue-router";
 
 const userStore = useUserStore();
 const followStore = useFollowStore();
+const locStr = JSON.parse(localStorage.getItem(`user`));
+const usernameLS = locStr.username;
+const route = useRoute();
+const user = ref({});
+const loggedInUserProfile = ref(false);
+const isSubscribed = ref(false);
 
 const updateFollow = async (type) => {
   if (type === "follow") {
-    // await followStore.sendFollow(props.userId);
-    emit("update:isSubscribed", true);
+    await followStore.sendFollow(user.value.id);
+    isSubscribed.value = true;
   } else {
-    // await followStore.unfollow(props.userId);
-    emit("update:isSubscribed", false);
+    await followStore.unfollow(user.value.id);
+    isSubscribed.value = false;
   }
-  await userStore.getOne(props.username);
 };
 
-console.log(props.isSubscribed);
+onMounted(() => {
+  /* Même chose que faire un watch et un onMounted séparemment */
+  watchEffect(async () => {
+    user.value = await userStore.getOne(route.params.username);
+    if (route.params.username === usernameLS) {
+      return (loggedInUserProfile.value = true);
+    }
+    const isFollowing = await followStore.getOne(user.value.id);
+    isFollowing ? (isSubscribed.value = true) : null;
+  });
+});
 </script>
 
 <style lang="scss" scoped>
