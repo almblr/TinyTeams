@@ -2,18 +2,19 @@
   <TheHeaderComponent />
   <main>
     <ProfilCardComponent
-      :userId="userData.id"
-      :username="username"
-      :profilPictureUrl="userData.profilPicture"
-      :connectedUser="isSameUser"
-      :isSubscribed="isSubscribed"
+      :userId="user.id"
+      :fullname="`${user.firstname} ${user.lastname}`"
+      :username="user.username"
+      :profilPictureUrl="user.profilPicture"
+      :connectedUser="loggedInUserProfile"
+      :v-model:isSubscribed="isSubscribed"
     />
     <PostComponent :posts="postStore.posts" />
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, onMounted } from "vue";
+import { ref, onMounted, watch, watchEffect } from "vue";
 import { useUserStore, usePostStore, useFollowStore } from "../stores";
 import { useRoute } from "vue-router";
 import TheHeaderComponent from "../components/layout/TheHeaderComponent.vue";
@@ -25,39 +26,33 @@ const userStore = useUserStore();
 const postStore = usePostStore();
 const followStore = useFollowStore();
 const route = useRoute();
-const userData = ref({});
-const isUsersProfile = ref(false);
+const user = ref({});
+const loggedInUserProfile = ref(false);
 const isSubscribed = ref(false);
 
-onMounted(async () => {
-  userData.value = await userStore.getOne(route.params.username);
-  await postStore.getAll(userData.value.id);
+const getUserInfos = async () => {
+  user.value = await userStore.getOne(route.params.username);
+  await postStore.getAll(user.value.id);
   if (route.params.username === usernameLS) {
-    isUsersProfile.value = true;
+    return (loggedInUserProfile.value = true);
   }
-  const isFollowing = await followStore.getOne(userData.value.id);
-  if (isFollowing === true) {
-    isSubscribed.value = true;
-  }
-});
+  const isFollowing = await followStore.getOne(user.value.id);
+  isFollowing ? (isSubscribed.value = true) : null;
+};
 
 watch(
-  () => route.params.username,
+  () => isSubscribed.value,
   async (newValue) => {
-    userData.value = await userStore.getOne(route.params.username);
-    await postStore.getAll(userData.value.id);
-    if (route.params.username === usernameLS) {
-      isSameUser.value = true;
-      isSubscribed.value = true;
-    }
-    const isFollowing = await followStore.getOne(userData.value.id);
-    if (isFollowing === true) {
-      isSubscribed.value = true;
-    } else {
-      isSubscribed.value = true;
-    }
+    console.log(isSubscribed.value);
+    await userStore.getOne(user.value.username);
   }
 );
+onMounted(() => {
+  /* Même chose que faire un watch et un onMounted séparemment */
+  watchEffect(() => {
+    getUserInfos();
+  });
+});
 </script>
 
 <style lang="scss" scoped>

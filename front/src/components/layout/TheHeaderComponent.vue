@@ -15,7 +15,7 @@
 
 <script setup>
 const locStr = JSON.parse(localStorage.getItem(`user`));
-const username = locStr.userName.split(" ").join("").toLowerCase();
+const username = locStr.username;
 
 /* Deconnexion : vide le localstorage */
 const logout = () => {

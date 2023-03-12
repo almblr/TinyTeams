@@ -58,10 +58,9 @@ const emit = defineEmits(["close"]);
 
 const postStore = usePostStore();
 const locStr = JSON.parse(localStorage.getItem(`user`));
+const firstname = locStr.firstname;
 const postData = ref({});
 const emptyPost = ref(null);
-const userName = locStr.userName;
-const firstname = userName.split(" ")[0];
 const textarea = ref("");
 const imageBlop = ref(null);
 const imageFile = ref(null);

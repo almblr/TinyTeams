@@ -27,7 +27,6 @@ const props = defineProps({
   textareaType: String,
 });
 
-const locStr = JSON.parse(localStorage.getItem(`user`));
 const postStore = usePostStore();
 const commentStore = useCommentStore();
 const textarea = ref(null);

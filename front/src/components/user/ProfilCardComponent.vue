@@ -3,7 +3,7 @@
     <div class="band"></div>
     <img class="profilPicture" :src="props.profilPictureUrl" />
     <div class="userInfo">
-      <h2 class="userInfo__name">{{ props.username }}</h2>
+      <h2 class="userInfo__name">{{ props.fullname }}</h2>
       <p class="userInfo__job">Développeur</p>
       <div v-if="props.connectedUser" class="userInfo__btn edit">
         <fa icon="fa-solid fa-gear" />Modifier votre profil
@@ -11,14 +11,14 @@
       <div
         v-if="isSubscribed === false && !props.connectedUser"
         class="userInfo__btn follow"
-        @click="followStore.sendFollow(props.userId)"
+        @click="updateFollow('follow')"
       >
         <fa icon="fa-solid fa-user-plus" />S'abonner
       </div>
       <div
-        v-if="isSubscribed"
+        v-if="isSubscribed && !props.connectedUser"
         class="userInfo__btn unfollow"
-        @click="followStore.unfollow(props.userId)"
+        @click="updateFollow('unfollow')"
       >
         <fa icon="fa-solid fa-check" />Abonné
       </div>
@@ -27,10 +27,12 @@
 </template>
 
 <script setup>
-import { useFollowStore } from "../../stores";
+import { useUserStore, useFollowStore } from "../../stores";
 
+const emit = defineEmits(["update:isSubscribed"]);
 const props = defineProps({
   userId: Number,
+  fullname: String,
   username: String,
   job: String,
   profilPictureUrl: String,
@@ -38,7 +40,21 @@ const props = defineProps({
   isSubscribed: Boolean,
 });
 
+const userStore = useUserStore();
 const followStore = useFollowStore();
+
+const updateFollow = async (type) => {
+  if (type === "follow") {
+    // await followStore.sendFollow(props.userId);
+    emit("update:isSubscribed", true);
+  } else {
+    // await followStore.unfollow(props.userId);
+    emit("update:isSubscribed", false);
+  }
+  await userStore.getOne(props.username);
+};
+
+console.log(props.isSubscribed);
 </script>
 
 <style lang="scss" scoped>
