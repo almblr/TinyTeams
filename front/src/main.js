@@ -16,7 +16,10 @@ import {
   faUserPlus,
   faGear,
   faCheck,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { faFacebookMessenger } from "@fortawesome/free-brands-svg-icons";
 
 library.add(
   faEye,
@@ -29,7 +32,9 @@ library.add(
   faXmark,
   faUserPlus,
   faGear,
-  faCheck
+  faCheck,
+  faBell,
+  faFacebookMessenger
 );
 
 const app = createApp(App);

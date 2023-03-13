@@ -45,7 +45,7 @@ const props = defineProps({
 
 const commentStore = useCommentStore();
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`user`));
+const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const showing = ref(false);
 const textareaContent = ref("");
 const containerTextarea = ref(null);

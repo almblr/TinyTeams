@@ -1,5 +1,6 @@
 <template>
-  <article v-for="post of postStore.posts" :key="post.id" :id="post.id">
+  <span v-if="postStore.posts.length === 0"> {{ noPost }}</span>
+  <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
     <PostHeaderComponent
       :author="post.author"
       :postId="post.id"
@@ -28,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { usePostStore, useUserStore } from "../../stores";
 import { useRoute } from "vue-router";
 import PostHeaderComponent from "./PostHeaderComponent.vue";
@@ -40,6 +41,14 @@ const postStore = usePostStore();
 const userStore = useUserStore();
 const route = useRoute();
 
+const noPost = computed(() => {
+  if (route.name === "News") {
+    return "Il n'y a aucun post à afficher";
+  }
+  if (route.name === "UserProfil") {
+    return "Cet utilisateur n'a pas encore posté de post";
+  }
+});
 const getPostId = ref(null);
 const modifyPost = (postId) => {
   getPostId.value = postId;
@@ -55,6 +64,13 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+span {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.5em;
+  font-style: italic;
+  color: rgb(176, 176, 177);
+}
+
 article {
   display: flex;
   flex-direction: column;

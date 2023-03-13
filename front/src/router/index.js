@@ -33,7 +33,7 @@ const routes = [
       },
     ],
     beforeEnter: (_, _2, next) => {
-      window.localStorage.getItem("user") ? next() : next("/login");
+      window.sessionStorage.getItem("user") ? next() : next("/login");
     },
   },
   {

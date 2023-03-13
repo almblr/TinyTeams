@@ -7,19 +7,20 @@
       <router-link to="/news" class="button">Accueil</router-link>
       <router-link :to="`/user/${username}`" class="button">Profil</router-link>
     </nav>
+    <div></div>
     <router-link to="/" @click="logout" class="button logout">
-      <fa icon="fa-solid fa-power-off" />
+      Déconnexion
     </router-link>
   </header>
 </template>
 
 <script setup>
-const locStr = JSON.parse(localStorage.getItem(`user`));
-const username = locStr.username;
+const sesStr = JSON.parse(sessionStorage.getItem(`user`));
+const username = sesStr.username;
 
-/* Deconnexion : vide le localstorage */
+/* Deconnexion : vide le sessionStorage */
 const logout = () => {
-  window.localStorage.length > 0 ? window.localStorage.clear() : null;
+  window.sessionStorage.length > 0 ? window.sessionStorage.clear() : null;
 };
 </script>
 
@@ -48,7 +49,7 @@ header {
   z-index: 999;
   background-color: #242526f1;
   backdrop-filter: blur(1px);
-  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.7);
   & .logo {
     display: flex;
     align-items: center;

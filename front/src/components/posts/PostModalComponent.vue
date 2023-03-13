@@ -57,8 +57,8 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const postStore = usePostStore();
-const locStr = JSON.parse(localStorage.getItem(`user`));
-const firstname = locStr.firstname;
+const sesStr = JSON.parse(sessionStorage.getItem(`user`));
+const firstname = sesStr.firstname;
 const postData = ref({});
 const emptyPost = ref(null);
 const textarea = ref("");

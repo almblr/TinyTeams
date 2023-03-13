@@ -37,8 +37,8 @@ import { useRoute } from "vue-router";
 
 const userStore = useUserStore();
 const followStore = useFollowStore();
-const locStr = JSON.parse(localStorage.getItem(`user`));
-const usernameLS = locStr.username;
+const sesStr = JSON.parse(sessionStorage.getItem(`user`));
+const usernameLS = sesStr.username;
 const route = useRoute();
 const user = ref({});
 const loggedInUserProfile = ref(false);
@@ -50,7 +50,7 @@ const updateFollow = async (type, userId) => {
     await followStore.sendFollow(userId);
     isSubscribed.value = true;
     socket.emit("sendFollow", {
-      author: locStr.userId,
+      author: sesStr.userId,
       isFollowing: user.value.id,
     });
   } else {

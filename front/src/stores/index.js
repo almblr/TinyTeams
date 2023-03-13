@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-let token = JSON.parse(localStorage.getItem(`user`))?.token || null;
+let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
 
 export const useUserStore = defineStore("user", {
   id: "User",
@@ -36,7 +36,7 @@ export const useUserStore = defineStore("user", {
           "Content-Type": "application/json",
         },
       });
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify({
           userId: response.data.userId,

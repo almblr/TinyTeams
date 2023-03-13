@@ -52,8 +52,8 @@ import socket from "../../services/socketio.js";
 
 const postStore = usePostStore();
 const likeStore = useLikeStore();
-const locStr = JSON.parse(localStorage.getItem(`user`));
-const userId = locStr.userId;
+const sesStr = JSON.parse(sessionStorage.getItem(`user`));
+const userId = sesStr.userId;
 const likeBtn = ref(null);
 const editingMode = ref(false);
 
@@ -93,7 +93,7 @@ const updateLike = async (postId, author, liker) => {
         postId: postId,
         author: author,
         likerId: userId,
-        likerName: locStr.userName,
+        likerName: sesStr.userName,
       });
     }
 

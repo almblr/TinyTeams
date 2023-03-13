@@ -27,8 +27,8 @@ import { useRoute } from "vue-router";
 
 const postStore = usePostStore();
 const commentStore = useCommentStore();
-const locStr = JSON.parse(localStorage.getItem(`user`));
-const userId = locStr.userId;
+const sesStr = JSON.parse(sessionStorage.getItem(`user`));
+const userId = sesStr.userId;
 const btn = ref(null);
 const spaceUp = ref(null);
 const showTooltip = ref(null);
