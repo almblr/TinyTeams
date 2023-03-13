@@ -2,7 +2,7 @@
   <the-header />
   <main id="main">
     <div class="posts">
-      <PostComponent :posts="postStore.posts" />
+      <PostComponent />
     </div>
   </main>
   <button class="createPost" @click="showCreateModal = true">

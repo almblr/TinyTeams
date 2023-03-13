@@ -11,16 +11,19 @@
       <div
         v-if="isSubscribed === false && !loggedInUserProfile"
         class="userInfo__btn follow"
-        @click="updateFollow('follow')"
+        @click="updateFollow('follow', user.id)"
       >
         <fa icon="fa-solid fa-user-plus" />S'abonner
       </div>
       <div
         v-if="isSubscribed && !loggedInUserProfile"
+        @mouseover="isHovered = true"
+        @mouseleave="isHovered = false"
         class="userInfo__btn unfollow"
-        @click="updateFollow('unfollow')"
+        @click="updateFollow('unfollow', user.id)"
       >
-        <fa icon="fa-solid fa-check" />Abonné
+        <fa icon="fa-solid fa-check" v-if="isHovered === false" />
+        <fa icon="fa-solid fa-xmark" v-if="isHovered === true" />Abonné
       </div>
     </div>
   </div>
@@ -29,6 +32,7 @@
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
 import { useUserStore, useFollowStore } from "@/stores/index.js";
+import socket from "../../services/socketio.js";
 import { useRoute } from "vue-router";
 
 const userStore = useUserStore();
@@ -39,13 +43,18 @@ const route = useRoute();
 const user = ref({});
 const loggedInUserProfile = ref(false);
 const isSubscribed = ref(false);
+const isHovered = ref(false);
 
-const updateFollow = async (type) => {
+const updateFollow = async (type, userId) => {
   if (type === "follow") {
-    await followStore.sendFollow(user.value.id);
+    await followStore.sendFollow(userId);
     isSubscribed.value = true;
+    socket.emit("sendFollow", {
+      author: locStr.userId,
+      isFollowing: user.value.id,
+    });
   } else {
-    await followStore.unfollow(user.value.id);
+    await followStore.unfollow(userId);
     isSubscribed.value = false;
   }
 };

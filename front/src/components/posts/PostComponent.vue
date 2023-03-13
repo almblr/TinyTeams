@@ -1,5 +1,5 @@
 <template>
-  <article v-for="post of props.posts" :key="post.id" :id="post.id">
+  <article v-for="post of postStore.posts" :key="post.id" :id="post.id">
     <PostHeaderComponent
       :author="post.author"
       :postId="post.id"
@@ -28,20 +28,30 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { usePostStore, useUserStore } from "../../stores";
+import { useRoute } from "vue-router";
 import PostHeaderComponent from "./PostHeaderComponent.vue";
 import PostMainComponent from "./PostMainComponent.vue";
 import DividerComponent from "../layout/DividerComponent.vue";
 import PostFooterComponent from "./postFooterComponent.vue";
 
-const props = defineProps({
-  posts: Array,
-});
+const postStore = usePostStore();
+const userStore = useUserStore();
+const route = useRoute();
 
 const getPostId = ref(null);
 const modifyPost = (postId) => {
   getPostId.value = postId;
 };
+
+onMounted(async () => {
+  if (route.params.username) {
+    const user = await userStore.getOne(route.params.username);
+    return await postStore.getAll(user.id);
+  }
+  await postStore.getAll();
+});
 </script>
 
 <style lang="scss" scoped>

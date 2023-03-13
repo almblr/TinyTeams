@@ -106,6 +106,18 @@ io.on("connection", (socket) => {
       "Quelqu'un a aimé votre post !"
     );
   });
+  socket.on("sendFollow", async (followInfos) => {
+    const receiver = followInfos.isFollowing;
+    const author = await user.findOne({
+      where: {
+        id: followInfos.author,
+      },
+    });
+    io.to(sessionsMap[receiver]).emit(
+      "followNotification",
+      `${author.firstname} ${author.lastname} vous suit !`
+    );
+  });
 });
 httpServer.listen(process.env.PORT || 3000);
 // app.listen(process.env.PORT || 3000);

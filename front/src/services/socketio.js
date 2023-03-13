@@ -17,6 +17,12 @@ socket.on("message", (arg) => {
   alert(arg);
 });
 
+socket.on("followNotification", (arg) => {
+  console.log(arg);
+  const sound = new Audio("../../public/notificationSound.mp3");
+  sound.play();
+});
+
 sendUserId();
 
 export default socket;

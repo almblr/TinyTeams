@@ -7,19 +7,12 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
 import { usePostStore } from "@/stores/index.js";
-import { useRoute } from "vue-router";
 import TheHeaderComponent from "@/components/layout/TheHeaderComponent.vue";
 import ProfilCardComponent from "@/components/user/ProfilCardComponent.vue";
 import PostComponent from "@/components/posts/PostComponent.vue";
 
 const postStore = usePostStore();
-const route = useRoute();
-
-onMounted(async () => {
-  await postStore.getAll(route.params.username);
-});
 </script>
 
 <style lang="scss" scoped>
