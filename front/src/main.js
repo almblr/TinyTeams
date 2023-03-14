@@ -17,6 +17,8 @@ import {
   faGear,
   faCheck,
   faBell,
+  faHouse,
+  faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faFacebookMessenger } from "@fortawesome/free-brands-svg-icons";
@@ -34,6 +36,8 @@ library.add(
   faGear,
   faCheck,
   faBell,
+  faHouse,
+  faUserGroup,
   faFacebookMessenger
 );
 

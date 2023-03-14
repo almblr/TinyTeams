@@ -81,6 +81,7 @@ article {
   min-width: 260px;
   border-radius: 10px;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
+  // background-color: #242526;
 }
 
 input[type="file"] {

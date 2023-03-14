@@ -1,10 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { useUserStore } from "../stores";
-import Login from "../views/LoginView.vue";
-import News from "../views/NewsFeedView.vue";
-import Signup from "../views/SignupView.vue";
-import ViewPost from "../views/ViewPost.vue";
-import ProfilPage from "../views/ProfilView.vue";
+import Login from "@/views/LoginView.vue";
+import News from "@/views/NewsFeedView.vue";
+import Signup from "@/views/SignupView.vue";
+import ViewPost from "@/views/ViewPost.vue";
+import ProfilPage from "@/views/ProfilView.vue";
+import UsersList from "@/views/UsersListView.vue";
 
 const routes = [
   {
@@ -37,15 +37,14 @@ const routes = [
     },
   },
   {
-    path: "/user",
+    path: "/users",
     name: "User",
-    children: [
-      {
-        path: ":username",
-        name: "UserProfil",
-        component: ProfilPage,
-      },
-    ],
+    component: UsersList,
+  },
+  {
+    path: "/users/:username",
+    name: "UserProfil",
+    component: ProfilPage,
   },
 ];
 

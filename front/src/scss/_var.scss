@@ -15,9 +15,10 @@
   justify-content: center;
 }
 
-@mixin jcSb {
+@mixin jcSb-aiCt {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 @mixin fdCol-jcSe-aiCt {

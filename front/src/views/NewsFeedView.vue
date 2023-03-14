@@ -46,8 +46,9 @@ onMounted(() => {
   @include fdCol-aiCt;
   @include width-height_max;
   background-color: rgb(240, 240, 240);
+  // background-color: rgb(29, 28, 28);
   overflow-y: scroll;
-  padding-top: 60px;
+  padding-top: 70px;
 }
 .posts {
   @include fdCol-aiCt;

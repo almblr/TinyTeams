@@ -2,17 +2,14 @@
   <TheHeaderComponent />
   <main>
     <ProfilCardComponent />
-    <PostComponent :posts="postStore.posts" />
+    <PostComponent />
   </main>
 </template>
 
 <script setup>
-import { usePostStore } from "@/stores/index.js";
 import TheHeaderComponent from "@/components/layout/TheHeaderComponent.vue";
 import ProfilCardComponent from "@/components/user/ProfilCardComponent.vue";
 import PostComponent from "@/components/posts/PostComponent.vue";
-
-const postStore = usePostStore();
 </script>
 
 <style lang="scss" scoped>

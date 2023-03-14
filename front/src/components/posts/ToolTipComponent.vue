@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { usePostStore, useCommentStore } from "../../stores";
 import { vOnClickOutside } from "@vueuse/components";
 import { useRoute } from "vue-router";

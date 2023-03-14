@@ -1,7 +1,7 @@
 <template>
   <header class="post__header" :id="props.postId">
     <div class="post__header__user">
-      <router-link :to="`/user/${username}`" class="post__header__user__pic">
+      <router-link :to="`/users/${username}`" class="post__header__user__pic">
         <img :src="props.imageUrl" alt="Photo de profil" />
       </router-link>
       <div class="post__header__user__title">
