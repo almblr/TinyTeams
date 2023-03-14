@@ -64,13 +64,6 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-span {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 1.5em;
-  font-style: italic;
-  color: rgb(176, 176, 177);
-}
-
 article {
   display: flex;
   flex-direction: column;
@@ -80,8 +73,9 @@ article {
   max-width: 700px;
   min-width: 260px;
   border-radius: 10px;
+  color: var(--textColor);
+  background-color: var(--backgroundSecond);
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
-  // background-color: #242526;
 }
 
 input[type="file"] {

@@ -2,7 +2,7 @@
   <the-header />
   <main id="main">
     <div class="posts">
-      <PostComponent />
+      <post-component />
     </div>
   </main>
   <button class="createPost" @click="showCreateModal = true">
@@ -11,7 +11,7 @@
   <Teleport to="body">
     <post-modal
       :show="showCreateModal"
-      @close="closeCreateModal"
+      @close="showCreateModal = false"
       :modalType="'New'"
       :post="{}"
     >
@@ -20,33 +20,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref } from "vue";
 import PostModal from "@/components/posts/PostModalComponent.vue";
 import TheHeader from "@/components/layout/TheHeaderComponent.vue";
 import PostComponent from "@/components/posts/PostComponent.vue";
-import { usePostStore } from "@/stores/index.js";
-const postStore = usePostStore();
 
 const showCreateModal = ref(false);
-
-const closeCreateModal = async () => {
-  showCreateModal.value = false;
-  await nextTick(); // Attend le prochain cycle de màj Vue (50 ms environ)
-  await postStore.getAll();
-};
-
-/* Au chargement de la page */
-onMounted(() => {
-  postStore.getAll();
-});
 </script>
 
 <style lang="scss" scoped>
 #main {
   @include fdCol-aiCt;
   @include width-height_max;
-  background-color: rgb(240, 240, 240);
-  // background-color: rgb(29, 28, 28);
+  background-color: var(--backgroundMain);
   overflow-y: scroll;
   padding-top: 70px;
 }

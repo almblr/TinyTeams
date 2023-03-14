@@ -1,3 +1,16 @@
+html {
+  --backgroundMain: #f7f7f7;
+  --backgroundSecond: #ffffff;
+  --textColor: #000000;
+  --textarea: #ffffff;
+}
+html.dark {
+  --backgroundMain: #18191a;
+  --backgroundSecond: #242526;
+  --textColor: #ffffff;
+  --textarea: #242526;
+}
+
 @mixin jcCt-aiCt {
   display: flex;
   justify-content: center;

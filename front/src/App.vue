@@ -2,7 +2,11 @@
   <RouterView />
 </template>
 
-<script setup></script>
+<script setup>
+import { useDark } from "@vueuse/core";
+
+const isDark = useDark();
+</script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");

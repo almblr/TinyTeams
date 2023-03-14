@@ -119,7 +119,7 @@ const autoResize = (el) => {
     flex-wrap: wrap;
     flex: 1;
     max-width: 630px;
-    background-color: white;
+    background-color: var(--textarea);
     border: 1px solid #c0c2c4;
     border-radius: 20px;
     padding: 0 15px;
@@ -131,6 +131,7 @@ const autoResize = (el) => {
       height: 30px;
       padding-top: 7px;
       max-height: 250px;
+      background-color: var(--textarea);
       font-size: 15px;
       border: none;
       &:focus {

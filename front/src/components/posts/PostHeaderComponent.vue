@@ -57,7 +57,6 @@ const edit = (postId) => {
   padding: 1% 3%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  background-color: rgb(248, 248, 248);
   &__user {
     display: flex;
     width: 100%;

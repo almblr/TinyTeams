@@ -90,6 +90,7 @@ const sendPost = async () => {
       formData.append("imageUrl", imageFile.value);
     }
     await postStore.create(formData);
+    await postStore.getAll();
     imageBlop.value = null;
     imageFile.value = null;
     emptyPost.value === true ? (emptyPost.value = false) : null;
