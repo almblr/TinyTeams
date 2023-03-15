@@ -9,24 +9,29 @@
         ><fa icon="fa-solid fa-user-group"
       /></router-link>
     </nav>
-    <router-link to="/" class="btn"
-      ><fa icon="fa-brands fa-facebook-messenger"
-    /></router-link>
-    <router-link to="/" class="btn"><fa icon="fa-solid fa-bell" /></router-link>
-    <div class="btn tooltip" v-on-click-outside="closeTooltip" title="Compte">
-      <img
-        class="tooltip_button profilPicture"
-        :src="profilPicture"
-        @click="showTooltip = !showTooltip"
-      />
-      <div class="tooltip__content" v-show="showTooltip === true">
-        <router-link :to="`/users/${username}`" class="profilButton"
-          ><img :src="profilPicture" class="profilPicture" />{{
-            fullname
-          }}</router-link
-        >
-        <router-link :to="`/`">Paramètres</router-link>
-        <router-link to="/" @click="logout"> Se déconnecter </router-link>
+    <div class="buttons">
+      <SwitchTheme />
+      <router-link to="/" class="btn"
+        ><fa icon="fa-brands fa-facebook-messenger"
+      /></router-link>
+      <router-link to="/" class="btn"
+        ><fa icon="fa-solid fa-bell"
+      /></router-link>
+      <div class="btn tooltip" v-on-click-outside="closeTooltip" title="Compte">
+        <img
+          class="tooltip_button profilPicture"
+          :src="profilPicture"
+          @click="showTooltip = !showTooltip"
+        />
+        <div class="tooltip__content" v-show="showTooltip === true">
+          <router-link :to="`/users/${username}`" class="profilButton"
+            ><img :src="profilPicture" class="profilPicture" />{{
+              fullname
+            }}</router-link
+          >
+          <router-link :to="`/`">Paramètres</router-link>
+          <router-link to="/" @click="logout"> Se déconnecter </router-link>
+        </div>
       </div>
     </div>
   </header>
@@ -35,6 +40,7 @@
 <script setup>
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
+import SwitchTheme from "../buttons/SwitchTheme.vue";
 
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const fullname = `${sesStr.firstname} ${sesStr.lastname}`;
@@ -58,7 +64,7 @@ const logout = () => {
 <style lang="scss" scoped>
 @mixin button {
   @include jcCt-aiCt;
-  min-width: 80px;
+  min-width: 65px;
   text-align: center;
   font-weight: bold;
   text-decoration: none;
@@ -70,7 +76,7 @@ const logout = () => {
   }
 }
 header {
-  @include jcSb-aiCt;
+  @include jcCt-aiCt;
   position: fixed;
   top: 0;
   width: 100%;
@@ -79,10 +85,11 @@ header {
   background-color: #242526;
   backdrop-filter: blur(1px);
   padding: 0px 10px 0 5px;
+  gap: 10px;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.7);
   & .logo {
-    display: flex;
-    align-items: center;
+    @include aiCt;
+    flex: 1;
     height: 100%;
     border-bottom: none;
     & > img {
@@ -92,11 +99,18 @@ header {
   nav {
     @include jcCt;
     flex: 1;
-    min-height: 100%;
+    margin: 0 auto;
+    height: 100%;
     & a {
       @include button;
       font-size: 19px;
     }
+  }
+  .buttons {
+    @include aiCt;
+    justify-content: flex-end;
+    flex: 1;
+    gap: 5px;
   }
 }
 
@@ -105,7 +119,6 @@ header {
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  margin: 0px 5px;
   background-color: #333435;
   & > * {
     font-size: 20px;

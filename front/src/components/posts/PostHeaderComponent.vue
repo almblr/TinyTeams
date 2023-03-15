@@ -80,10 +80,13 @@ const edit = (postId) => {
       }
     }
     &__title {
+      padding-top: 4px;
       display: flex;
+      gap: 1px;
       flex-direction: column;
+      color: var(--textColorMain);
       & h2 {
-        font-size: 1em;
+        font-size: 16px;
         margin-right: 5px;
       }
       & span {

@@ -1,14 +1,34 @@
 html {
   --backgroundMain: #f7f7f7;
   --backgroundSecond: #ffffff;
-  --textColor: #000000;
+  --colorDivider: #0000002a;
+  --textColorMain: #000000;
+  --textColorSecond: #000000;
   --textarea: #ffffff;
+  --textareaBorder: #0000003d;
+  --addMediaColor: #575656;
+  --addMediaBackground: #00000027;
 }
 html.dark {
   --backgroundMain: #18191a;
   --backgroundSecond: #242526;
-  --textColor: #ffffff;
-  --textarea: #242526;
+  --colorDivider: #3e4042;
+  --textColorMain: #ffffff;
+  --textColorSecond: #ffffffb9;
+  --textarea: #3a3b3c;
+  --textareaBorder: none;
+  --addMediaColor: #ffffff80;
+  --addMediaBackground: #0000003f;
+}
+
+@mixin jcCt {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin aiCt {
+  display: flex;
+  align-items: center;
 }
 
 @mixin jcCt-aiCt {
@@ -17,20 +37,15 @@ html.dark {
   align-items: center;
 }
 
-@mixin fdCol-aiCt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-@mixin jcCt {
-  display: flex;
-  justify-content: center;
-}
-
 @mixin jcSb-aiCt {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+@mixin fdCol-aiCt {
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 

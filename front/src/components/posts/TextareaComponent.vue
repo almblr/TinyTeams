@@ -11,12 +11,7 @@
       ></textarea>
       <div class="container__buttons">
         <div title="Insérez une image" @click="!showing">
-          <AddMediaButton
-            color="#575656"
-            width="30px"
-            height="25px"
-            iconSize="19px"
-            @showUploadedImg="getUrls"
+          <AddMediaButton iconSize="19px" @showUploadedImg="getUrls"
             ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
           ></AddMediaButton>
         </div>
@@ -120,11 +115,12 @@ const autoResize = (el) => {
     flex: 1;
     max-width: 630px;
     background-color: var(--textarea);
-    border: 1px solid #c0c2c4;
+    border: 1px solid var(--textareaBorder);
     border-radius: 20px;
     padding: 0 15px;
     height: 35px;
     max-height: 300px;
+    caret-color: var(--textColorMain);
     & > textarea {
       width: calc(100% - 60px);
       resize: none;
@@ -139,20 +135,15 @@ const autoResize = (el) => {
       }
     }
     & > div {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      @include jcCt-aiCt;
       margin-left: auto;
       & > * {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        @include jcCt-aiCt;
         width: 30px;
         height: 25px;
         border-radius: 5px;
         &:hover {
-          background-color: #dfdfdf;
-          cursor: pointer;
+          background-color: var(--addMediaBackground);
         }
         & > .addImage {
           color: #575656;

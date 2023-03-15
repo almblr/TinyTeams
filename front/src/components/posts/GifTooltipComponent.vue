@@ -120,7 +120,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .btn {
   position: relative;
-  color: #575656;
+  color: var(--addMediaColor);
   & > .icon {
     position: relative;
     font-size: 19px;

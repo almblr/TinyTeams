@@ -3,7 +3,6 @@
     :style="{
       width: props.width,
       height: props.height,
-      backgroundColor: props.backgroundColor,
     }"
   ></div>
 </template>
@@ -12,8 +11,11 @@
 const props = defineProps({
   width: String,
   height: String,
-  backgroundColor: String,
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+div {
+  background-color: var(--colorDivider);
+}
+</style>

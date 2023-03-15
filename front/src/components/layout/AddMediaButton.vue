@@ -17,9 +17,6 @@ import { ref } from "vue";
 const props = defineProps({
   width: String,
   height: String,
-  color: String,
-  backgroundColor: String,
-  backgroundColorHover: String,
   iconSize: String,
 });
 const emit = defineEmits(["showUploadedImg"]);
@@ -42,26 +39,13 @@ input[type="file"] {
 .file__label {
   @include jcCt-aiCt;
   border-radius: 5px;
-  transition: 0.2s;
   width: v-bind("props.width");
   height: v-bind("props.height");
-  background-color: v-bind("props.backgroundColor");
-  &:hover {
-    opacity: 1;
-    cursor: pointer;
-    transition: 0.2s;
-    background-color: v-bind("props.backgroundColorHover");
-  }
   label {
     @include jcCt-aiCt;
     transition: 0.1s;
     font-size: v-bind("props.iconSize");
-    color: v-bind("props.color");
-    &:hover {
-      opacity: 1;
-      cursor: pointer;
-      transition: 0.1s;
-    }
+    color: var(--addMediaColor);
   }
 }
 </style>

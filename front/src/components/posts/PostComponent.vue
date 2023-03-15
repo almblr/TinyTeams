@@ -19,7 +19,7 @@
       :postComments="post.comments"
       v-model:postToEdit="getPostId"
     />
-    <DividerComponent width="98%" height="1px" backgroundColor="#c0c2c4" />
+    <DividerComponent width="98%" height="1px" />
     <PostFooterComponent
       :postId="post.id"
       :profilPicture="post.user.profilPicture"
@@ -73,7 +73,6 @@ article {
   max-width: 700px;
   min-width: 260px;
   border-radius: 10px;
-  color: var(--textColor);
   background-color: var(--backgroundSecond);
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
 }

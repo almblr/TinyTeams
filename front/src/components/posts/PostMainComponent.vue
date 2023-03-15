@@ -134,12 +134,11 @@ watch(editingMode, () => {
   &__image {
     width: 100%;
     max-height: 450px;
-    background-color: rgb(0, 0, 0);
     margin-bottom: 5px;
     & img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
     }
   }
   &__stats {
@@ -148,6 +147,7 @@ watch(editingMode, () => {
     flex: 1;
     margin-left: 15px;
     gap: 3px;
+    color: var(--textColorSecond);
     & span {
       font-size: 16px;
     }
@@ -158,16 +158,17 @@ watch(editingMode, () => {
     align-items: center;
     padding: 2px 7px;
     gap: 5px;
+    color: var(--textColorSecond);
     border-radius: 5px;
     & .thumbsup {
-      color: rgb(207, 49, 49);
+      color: #2374e1;
     }
     &:hover {
       background-color: rgba(165, 165, 165, 0.192);
       cursor: pointer;
     }
     &:hover + .thumbsup {
-      color: rgb(207, 49, 49);
+      color: #2374e1;
     }
     & > span {
       font-size: 16px;
@@ -189,7 +190,7 @@ watch(editingMode, () => {
 .coloredHeart {
   font-size: 18px;
   transition: 0.3s;
-  color: rgba(230, 54, 0, 0.95);
+  color: #2374e1;
   &:hover {
     transition: 0.3s;
     cursor: pointer;
