@@ -8,17 +8,19 @@ html {
   --textareaBorder: #0000003d;
   --addMediaColor: #575656;
   --addMediaBackground: #00000027;
+  --commentBackground: #0f0f0f1c;
 }
 html.dark {
   --backgroundMain: #18191a;
   --backgroundSecond: #242526;
   --colorDivider: #3e4042;
-  --textColorMain: #ffffff;
+  --textColorMain: #ebebeb;
   --textColorSecond: #ffffffb9;
   --textarea: #3a3b3c;
   --textareaBorder: none;
   --addMediaColor: #ffffff80;
   --addMediaBackground: #0000003f;
+  --commentBackground: #3e4042;
 }
 
 @mixin jcCt {

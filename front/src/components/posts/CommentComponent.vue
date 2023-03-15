@@ -90,8 +90,9 @@ watch(
   min-width: 100px;
   height: min-content;
   border-radius: 10px;
-  background-color: rgb(219, 219, 219);
+  background-color: var(--commentBackground);
   padding: 5px 10px 5px 10px;
+  color: var(--textColorMain);
   & > header {
     align-items: center;
     display: flex;
@@ -99,15 +100,16 @@ watch(
     min-width: 100%;
     & > .title {
       font-size: 15px;
-      font-weight: bold;
+      font-weight: 600;
       overflow: hidden !important;
       white-space: nowrap !important;
       text-overflow: ellipsis !important;
       margin-right: 10px;
       text-decoration: none;
-      color: rgb(0, 0, 0);
+      color: var(--textColorMain);
       &:hover {
         cursor: pointer;
+        text-decoration: underline;
       }
     }
   }

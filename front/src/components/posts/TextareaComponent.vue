@@ -3,7 +3,7 @@
     <div class="container__textarea" ref="containerTextarea">
       <textarea
         :id="props.postId"
-        placeholder="Ecrivez quelque chose..."
+        placeholder="Ecrivez un commentaire..."
         @keydown.enter="sendComment(props.postId)"
         @input="autoResize(textarea)"
         ref="textarea"
@@ -120,7 +120,6 @@ const autoResize = (el) => {
     padding: 0 15px;
     height: 35px;
     max-height: 300px;
-    caret-color: var(--textColorMain);
     & > textarea {
       width: calc(100% - 60px);
       resize: none;
@@ -128,10 +127,15 @@ const autoResize = (el) => {
       padding-top: 7px;
       max-height: 250px;
       background-color: var(--textarea);
+      color: var(--textColorMain);
+      caret-color: var(--textColorMain);
       font-size: 15px;
       border: none;
       &:focus {
         outline: none;
+      }
+      &::placeholder {
+        color: var(--textColorSecond);
       }
     }
     & > div {
