@@ -121,6 +121,7 @@ onMounted(() => {
 .btn {
   position: relative;
   color: var(--addMediaColor);
+  cursor: pointer;
   & > .icon {
     position: relative;
     font-size: 19px;
@@ -128,11 +129,11 @@ onMounted(() => {
 }
 
 .tooltip-down {
-  top: 30px !important;
+  top: 30px;
 }
 
 .tooltip-up {
-  top: -310px;
+  top: -311px;
 }
 .tooltip {
   @include fdCol-aiCt;

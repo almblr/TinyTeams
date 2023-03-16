@@ -1,7 +1,12 @@
 <template>
   <ModalLayer v-if="show" @click.self="emit('close', (imageBlop = null))">
     <div class="container">
-      <main class="main">
+      <header>
+        <h2>Créer une publication</h2>
+        <div class="exit"></div>
+      </header>
+      <DividerComponent width="100%" height="1px" />
+      <main>
         <textarea
           :placeholder="`Quoi de neuf, ${firstname} ?`"
           v-model="postData.content"
@@ -16,14 +21,9 @@
         <footer>
           <div class="file">
             <AddMediaButton
-              color="rgba(218, 39, 39, 0.918)"
-              width="35px"
-              height="35px"
-              backgroundColor="rgba(248, 183, 183, 0.281)"
-              backgroundColorHover="rgba(248, 183, 183, 0.767)"
               iconSize="24px"
               @showUploadedImg="displayImagePreview"
-              ><template v-slot:icon><fa icon="fa-solid fa-image" /></template
+              ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
             ></AddMediaButton>
           </div>
           <button @click="sendPost">Publier</button>
@@ -39,10 +39,12 @@
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
 import { usePostStore } from "../../stores/index.js";
+import { io } from "socket.io-client";
 import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
 import AddMediaButton from "@/components/layout/AddMediaButton.vue";
 import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
-import { io } from "socket.io-client";
+import DividerComponent from "../layout/DividerComponent.vue";
+import { isSVGTag } from "@vue/shared";
 
 const socket = io("http://localhost:3000");
 
@@ -124,25 +126,41 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .container {
-  @include jcCt;
+  @include jcCt-aiCt;
+  flex-direction: column;
   align-items: center;
   position: relative;
   width: 100%;
   max-width: 500px;
   margin: 0px auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  background-color: #fff;
+  background-color: var(--backgroundSecond);
   border-radius: 5px;
   transition: all 0.3s ease;
 }
 
-.main {
+header {
+  width: 100%;
+  position: relative;
+  padding: 15px 0px;
+  color: var(--textColorSecond);
+  font-size: 15px;
+  text-align: center;
+  & .exit {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    color: rgb(0, 0, 0);
+  }
+}
+
+main {
   @include fdCol-aiCt;
   @include width-height_max;
   justify-content: center;
   flex-wrap: nowrap;
   border-radius: 5px;
-  padding: 20px;
+  padding: 20px 10px;
   gap: 20px;
   textarea {
     width: 100%;
@@ -151,13 +169,15 @@ onMounted(() => {
     min-height: 150px;
     max-height: 2000px;
     padding: 10px 0 0 10px;
-    font-size: 20px;
+    font-size: 19px;
     border: none;
-    border: 1px solid #00000027;
+    background-color: var(--textarea);
+    caret-color: var(--textColorMain);
     &::placeholder {
       opacity: 0.7;
       top: 10px;
       left: 10px;
+      color: var(--placeholder);
     }
     &:focus {
       outline: none;
@@ -172,7 +192,7 @@ footer {
   gap: 5px;
   & button {
     flex: 1;
-    background: #ff2a00d8;
+    background: #2374e1;
     color: white;
     font-size: 16px;
     border-radius: 5px;
@@ -180,6 +200,17 @@ footer {
     height: 35px;
     cursor: pointer;
     border: none;
+  }
+  & .file {
+    @include jcCt-aiCt;
+    border-radius: 5px;
+    width: 35px;
+    height: 35px;
+    &:hover {
+      cursor: pointer;
+      background-color: var(--addMediaBackground);
+      filter: brightness(90%);
+    }
   }
 }
 

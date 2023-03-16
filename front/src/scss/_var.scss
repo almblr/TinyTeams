@@ -1,14 +1,17 @@
 html {
   --backgroundMain: #f7f7f7;
   --backgroundSecond: #ffffff;
-  --colorDivider: #0000002a;
+  --colorDivider: #0000001c;
   --textColorMain: #000000;
-  --textColorSecond: #000000;
+  --textColorSecond: #3a3838;
+  --placeholder: #000000b7;
   --textarea: #ffffff;
-  --textareaBorder: #0000003d;
+  --textareaBorder: #00000028;
   --addMediaColor: #575656;
   --addMediaBackground: #00000027;
   --commentBackground: #0f0f0f1c;
+  --cancelButton: #4747bd;
+  --cancelButtonHover: #2121e0;
 }
 html.dark {
   --backgroundMain: #18191a;
@@ -16,11 +19,14 @@ html.dark {
   --colorDivider: #3e4042;
   --textColorMain: #ebebeb;
   --textColorSecond: #ffffffb9;
+  --placeholder: #e0ddddd0;
   --textarea: #3a3b3c;
   --textareaBorder: none;
   --addMediaColor: #ffffff80;
-  --addMediaBackground: #0000003f;
+  --addMediaBackground: #ffffff21;
   --commentBackground: #3e4042;
+  --cancelButton: #aac8ff;
+  --cancelButtonHover: #6ea0f7;
 }
 
 @mixin jcCt {

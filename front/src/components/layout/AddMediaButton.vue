@@ -15,8 +15,6 @@
 <script setup>
 import { ref } from "vue";
 const props = defineProps({
-  width: String,
-  height: String,
   iconSize: String,
 });
 const emit = defineEmits(["showUploadedImg"]);
@@ -36,16 +34,9 @@ const GetUploadedImg = (event) => {
 input[type="file"] {
   display: none;
 }
-.file__label {
-  @include jcCt-aiCt;
-  border-radius: 5px;
-  width: v-bind("props.width");
-  height: v-bind("props.height");
-  label {
-    @include jcCt-aiCt;
-    transition: 0.1s;
-    font-size: v-bind("props.iconSize");
-    color: var(--addMediaColor);
-  }
+label {
+  font-size: v-bind("props.iconSize");
+  color: var(--addMediaColor);
+  cursor: pointer;
 }
 </style>

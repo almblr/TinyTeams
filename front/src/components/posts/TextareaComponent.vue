@@ -135,24 +135,19 @@ const autoResize = (el) => {
         outline: none;
       }
       &::placeholder {
-        color: var(--textColorSecond);
+        color: var(--placeholder);
       }
     }
+  }
+  &__buttons {
+    @include jcCt-aiCt;
     & > div {
       @include jcCt-aiCt;
-      margin-left: auto;
-      & > * {
-        @include jcCt-aiCt;
-        width: 30px;
-        height: 25px;
-        border-radius: 5px;
-        &:hover {
-          background-color: var(--addMediaBackground);
-        }
-        & > .addImage {
-          color: #575656;
-          font-size: 19px;
-        }
+      width: 30px;
+      height: 25px;
+      border-radius: 5px;
+      &:hover {
+        background-color: var(--addMediaBackground);
       }
     }
   }

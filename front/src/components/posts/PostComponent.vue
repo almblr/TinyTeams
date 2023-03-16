@@ -64,6 +64,11 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+span {
+  color: var(--placeholder);
+  font-size: 1.2em;
+  font-style: italic;
+}
 article {
   display: flex;
   flex-direction: column;

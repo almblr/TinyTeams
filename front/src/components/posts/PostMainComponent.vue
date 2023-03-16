@@ -130,6 +130,7 @@ watch(editingMode, () => {
     min-width: 100%;
     overflow-wrap: break-word;
     padding: 10px 15px;
+    color: var(--textColorMain);
   }
   &__image {
     width: 100%;
@@ -156,7 +157,8 @@ watch(editingMode, () => {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 2px 7px;
+    padding: 5px 9px;
+    margin-right: 10px;
     gap: 5px;
     color: var(--textColorSecond);
     border-radius: 5px;

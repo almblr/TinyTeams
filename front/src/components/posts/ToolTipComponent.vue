@@ -117,7 +117,7 @@ const remove = async (postId, commentId) => {
     & > .dot {
       width: v-bind("props.dotSize");
       height: v-bind("props.dotSize");
-      background: rgb(39, 36, 36);
+      background: var(--textColorSecond);
       border-radius: 5px;
     }
   }

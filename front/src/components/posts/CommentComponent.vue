@@ -94,8 +94,9 @@ watch(
   padding: 5px 10px 5px 10px;
   color: var(--textColorMain);
   & > header {
-    align-items: center;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: relative;
     min-width: 100%;
     & > .title {
@@ -124,10 +125,11 @@ watch(
   }
   & span {
     font-size: 11px;
-    color: rgb(71, 71, 189);
+    margin-top: 5px;
+    color: var(--cancelButton);
     &:hover {
       cursor: pointer;
-      color: rgb(33, 33, 224);
+      color: var(--cancelButtonHover);
     }
   }
 }

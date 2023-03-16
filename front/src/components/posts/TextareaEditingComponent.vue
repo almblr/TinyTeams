@@ -71,16 +71,20 @@ onMounted(() => {
 
 .textareaComment {
   border-radius: 5px;
-  background-color: rgb(241, 241, 241);
+  background-color: var(--textarea);
   font-size: 1em;
   padding-left: 5px;
   margin-top: 2px;
+  color: var(--textColorMain);
+  caret-color: var(--textColorMain);
 }
 
 .textareaPost {
-  background-color: rgb(255, 255, 255);
+  background-color: var(--backgroudMain);
   width: 100%;
   font-size: 1.1em;
   padding: 10px 15px;
+  color: var(--textColorMain);
+  caret-color: var(--textColorMain);
 }
 </style>
