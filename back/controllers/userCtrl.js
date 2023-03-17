@@ -39,7 +39,7 @@ const userCtrl = {
         User.password
       );
       if (!isPasswordValid && !User) {
-        return res.status(404).json({ message: "User not found." });
+        return res.status(404).json({ message: "User not found" });
       }
       const token = jwt.sign(
         { userId: User.id, isAdmin: User.isAdmin },
@@ -72,7 +72,7 @@ const userCtrl = {
       if (User) {
         res.status(201).send(User);
       } else {
-        res.status(404).json({ eror: "User not found." });
+        res.status(404).json({ eror: "User not found" });
       }
     } catch {
       res.status(500).send();
@@ -94,7 +94,7 @@ const userCtrl = {
       if (!passwordRegex.test(req.body.newPassword)) {
         return res
           .status(400)
-          .json({ message: "The new password is not strong enough." });
+          .json({ message: "The new password is not strong enough" });
       }
     }
     const User = await user.findByPk(req.params.id);
@@ -106,7 +106,7 @@ const userCtrl = {
         ? req.body.profilPicture
         : User.profilPicture,
     }).then(() => {
-      res.status(200).json({ message: "User updated successfully!" });
+      res.status(200).json({ message: "User updated successfully" });
     });
   },
 };

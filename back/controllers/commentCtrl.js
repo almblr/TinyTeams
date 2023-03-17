@@ -4,7 +4,7 @@ import fs from "fs";
 const commentCtrl = {
   create: async (req, res) => {
     if (!req.body.content && !req.file && !req.body.imageUrl) {
-      return res.status(400).json({ message: "Commentaire vide." });
+      return res.status(400).json({ message: "Empty comment" });
     }
     try {
       const Comment = await comment.create({
@@ -43,7 +43,7 @@ const commentCtrl = {
     ) {
       return res
         .status(401)
-        .json({ message: "You cannot update this comment." });
+        .json({ message: "You cannot update this comment" });
     }
     try {
       // update the content of the comment
@@ -64,7 +64,7 @@ const commentCtrl = {
     ) {
       return res
         .status(401)
-        .json({ message: "You cannot delete this Comment." });
+        .json({ message: "You cannot delete this comment" });
     }
     try {
       // Si le Comment contenait une image
@@ -74,7 +74,7 @@ const commentCtrl = {
         filename ? await fs.promises.unlink(`images/${filename}`) : null;
       }
       await Comment.destroy();
-      res.status(200).json({ message: "Comment deleted." });
+      res.status(200).json({ message: "Comment removed" });
     } catch {
       res.status(500).send();
     }

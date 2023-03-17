@@ -20,11 +20,11 @@ const reactionCtrl = {
         res.status(201).send(newReaction);
       } else {
         if (userId !== reaction.userId) {
-          res.status(401).json({ message: "Non autorisé." });
+          res.status(401).json({ message: "Unauthorized" });
         } else {
           if (req.body.value === reaction.value) {
             await reaction.destroy();
-            res.status(200).json({ message: "Réaction supprimée" });
+            res.status(200).json({ message: "Like removed" });
           }
         }
       }
