@@ -6,7 +6,7 @@ Le refonte n'étant pas achevée, les instructions concernant l'installation du 
 
 **Technologies déployées** : Vue 3, Node.js, Sequelize, SQLite
 
-_Dernière mise à jour du readme : 17 Février 2023_
+_Dernière mise à jour du readme : 17 Mars 2023_
 
 # Fonctionnalités disponibles
 
@@ -21,10 +21,10 @@ _Dernière mise à jour du readme : 17 Février 2023_
 - page profil
 - notifications quand un utilisateur vous suit
 - notifications quand un utilisateur auquel vous êtes abonné publie un post
+- mode sombre
 
 # Fonctionnalités à venir
 
 - page paramètres
 - messagerie instantanée
 - notifications à la réception d'un message
-- notifications quand un utilisateur publie un nouveau post (?)
