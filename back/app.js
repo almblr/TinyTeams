@@ -8,7 +8,7 @@ import url from "url";
 import bcrypt from "bcrypt";
 import "dotenv/config";
 import { sequelize } from "./db/db_init.js";
-import { user } from "./db/sequelize.js";
+import { user, post } from "./db/sequelize.js";
 import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import reactionRoutes from "./routes/reactionRoutes.js";

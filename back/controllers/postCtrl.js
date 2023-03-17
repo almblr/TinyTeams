@@ -37,7 +37,7 @@ const getPostComments = async (author, postId) => {
 /////////////////////////////////////////
 /////////////////////////////////////////
 
-const postCtrl = {
+const postController = {
   create: async (req, res) => {
     if (!req.body.content && !req.file) {
       return res.status(400).json({ message: "Empty post." });
@@ -80,7 +80,6 @@ const postCtrl = {
   getAll: async (req, res) => {
     try {
       const allPosts = await post.findAll({
-        where: req.params.userId ? { author: req.params.userId } : {},
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
@@ -97,13 +96,45 @@ const postCtrl = {
         Post.setDataValue("comments", PostComments);
       }
       // For the infinite scroll, to display nexts posts
-      if (req.body.idLastPost) {
-        const start =
-          allPosts.findIndex((post) => post.id === req.body.idLastPost) + 1;
+      if (req.params.idLastPost) {
+        const lastPost = allPosts.findIndex(
+          (post) => post.id === parseInt(req.params.idLastPost)
+        );
+        if (lastPost === -1) {
+          return res.status(400).send({ message: "Post not found" });
+        }
+        const start = lastPost;
         const end = start + 10;
+        if (start + 1 === allPosts.length) {
+          return;
+        }
         return res.status(200).send(allPosts.slice(start, end));
       }
       res.status(200).send(allPosts.slice(0, 10));
+    } catch {
+      res.status(500).send();
+    }
+  },
+  getUserPosts: async (req, res) => {
+    try {
+      const allPosts = await post.findAll({
+        where: { author: req.params.userId },
+        order: [
+          ["createdAt", "DESC"], // Du plus récent au moins récent
+        ],
+        include: [
+          react,
+          {
+            model: user,
+            attributes: ["id", "firstname", "lastname", "profilPicture"],
+          },
+        ],
+      });
+      for (const Post of allPosts) {
+        const PostComments = await getPostComments(req.auth.userId, Post.id);
+        Post.setDataValue("comments", PostComments);
+      }
+      res.status(200).send(allPosts);
     } catch {
       res.status(500).send();
     }
@@ -140,4 +171,4 @@ const postCtrl = {
   },
 };
 
-export default postCtrl;
+export default postController;

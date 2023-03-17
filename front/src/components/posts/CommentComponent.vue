@@ -35,7 +35,6 @@
 
 <script setup>
 import { ref, watch } from "vue";
-
 import TextareaEditingComponent from "./TextareaEditingComponent.vue";
 import ToolTipComponent from "./ToolTipComponent.vue";
 
@@ -54,7 +53,6 @@ const props = defineProps({
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const userId = sesStr.userId;
 const isAdmin = sesStr.isAdmin;
-
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);

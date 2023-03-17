@@ -1,7 +1,7 @@
 <template>
   <the-header />
   <main id="main">
-    <div class="posts">
+    <div class="posts" ref="posts">
       <post-component />
     </div>
   </main>
@@ -21,11 +21,30 @@
 
 <script setup>
 import { ref } from "vue";
+import { usePostStore } from "../stores";
 import PostModal from "@/components/posts/PostModalComponent.vue";
 import TheHeader from "@/components/layout/TheHeaderComponent.vue";
 import PostComponent from "@/components/posts/PostComponent.vue";
+import { useInfiniteScroll } from "@vueuse/core";
 
 const showCreateModal = ref(false);
+const posts = ref(null);
+const postStore = usePostStore();
+
+useInfiniteScroll(
+  posts,
+  async () => {
+    const lastPost = postStore.posts[postStore.posts.length - 1];
+    const idLastPost = lastPost.id;
+    const indexLastPost = postStore.posts.findIndex(
+      (post) => post.id === idLastPost
+    );
+    await postStore.getAll(idLastPost);
+  },
+  {
+    distance: 10,
+  }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -33,13 +52,13 @@ const showCreateModal = ref(false);
   @include fdCol-aiCt;
   @include width-height_max;
   background-color: var(--backgroundMain);
-  overflow-y: scroll;
   padding-top: 70px;
 }
 .posts {
   @include fdCol-aiCt;
   width: 100%;
   gap: 30px;
+  overflow-y: scroll;
 
   & p {
     color: black;

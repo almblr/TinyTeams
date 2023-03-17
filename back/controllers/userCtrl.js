@@ -2,7 +2,7 @@ import { user } from "../db/sequelize.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const userCtrl = {
+const userController = {
   create: async (req, res) => {
     // Check if password matches the required RegExp
     const passwordRegex =
@@ -111,4 +111,4 @@ const userCtrl = {
   },
 };
 
-export default userCtrl;
+export default userController;

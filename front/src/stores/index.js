@@ -81,10 +81,10 @@ export const usePostStore = defineStore("post", {
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
     },
-    async getAll(userId) {
+    async getAll(lastPostViewed) {
       let url = `http://localhost:3000/api/posts/getAll/`;
-      if (userId) {
-        url += `${userId}/`;
+      if (lastPostViewed) {
+        url += lastPostViewed;
       }
       const response = await axios({
         url,
@@ -92,7 +92,7 @@ export const usePostStore = defineStore("post", {
           Authorization: `Bearer ${token}`,
         },
       });
-      this.posts = await response.data;
+      this.posts.push(...response.data);
     },
     async create(data) {
       await axios({

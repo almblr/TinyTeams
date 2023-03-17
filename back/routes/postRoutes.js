@@ -1,14 +1,14 @@
 import express from "express";
 import auth from "../middleware/auth.js";
 import multerConfig from "../middleware/multer-config.js";
-import postCtrl from "../controllers/postCtrl.js";
+import postController from "../controllers/postCtrl.js";
 
 const router = express.Router();
 
-router.post("/create", auth, multerConfig, postCtrl.create);
-router.get("/getAll/:userId?", auth, postCtrl.getAll);
-router.get("/getOne/:postId", auth, postCtrl.getOne);
-router.put("/update/:postId", auth, multerConfig, postCtrl.update);
-router.delete("/delete/:postId", auth, postCtrl.delete);
+router.post("/create", auth, multerConfig, postController.create);
+router.get("/getAll/:idLastPost?/", auth, postController.getAll);
+router.get("/getOne/:postId", auth, postController.getOne);
+router.put("/update/:postId", auth, multerConfig, postController.update);
+router.delete("/delete/:postId", auth, postController.delete);
 
 export default router;
