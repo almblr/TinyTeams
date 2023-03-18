@@ -36,9 +36,6 @@ useInfiniteScroll(
   async () => {
     const lastPost = postStore.posts[postStore.posts.length - 1];
     const idLastPost = lastPost.id;
-    const indexLastPost = postStore.posts.findIndex(
-      (post) => post.id === idLastPost
-    );
     await postStore.getAll(idLastPost);
   },
   {
