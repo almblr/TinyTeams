@@ -6,7 +6,7 @@ import postController from "../controllers/postCtrl.js";
 const router = express.Router();
 
 router.post("/create", auth, multerConfig, postController.create);
-router.get("/getAll/:userId?/:idLastPost?/", auth, postController.getAll);
+router.get("/getAll/", auth, postController.getAll);
 router.get("/getOne/:postId", auth, postController.getOne);
 router.put("/update/:postId", auth, multerConfig, postController.update);
 router.delete("/delete/:postId", auth, postController.delete);

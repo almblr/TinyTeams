@@ -83,16 +83,17 @@ export const usePostStore = defineStore("post", {
     },
     async getAll(userId, lastPostViewed) {
       let url = `http://localhost:3000/api/posts/getAll/`;
-      if (lastPostViewed) {
-        url += lastPostViewed;
-      }
       const response = await axios({
         url,
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          userId: userId,
+          lastPostId: lastPostViewed,
+        },
       });
-      this.posts.push(...response.data);
+      this.posts = response.data;
     },
     async create(data) {
       await axios({

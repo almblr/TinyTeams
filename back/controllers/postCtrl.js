@@ -78,10 +78,9 @@ const postController = {
     }
   },
   getAll: async (req, res) => {
-    console.log(req.query.userId);
     try {
       const allPosts = await post.findAll({
-        where: req.params.userId ? { author: req.params.userId } : {},
+        where: "userId" in req.query ? { author: req.query.userId } : {},
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
@@ -98,10 +97,9 @@ const postController = {
         Post.setDataValue("comments", PostComments);
       }
       // For the infinite scroll, to display nexts posts
-      if (req.params.idLastPost) {
-        const lastPost = allPosts.findIndex(
-          (post) => post.id === parseInt(req.params.idLastPost)
-        );
+      if ("lastPostId" in req.query) {
+        const lastPostId = parseInt(req.query.lastPostId);
+        const lastPost = allPosts.findIndex((post) => post.id === lastPostId);
         if (lastPost === -1) {
           return res.status(400).send({ message: "Post not found" });
         }
@@ -113,30 +111,6 @@ const postController = {
         return res.status(200).send(allPosts.slice(start, end));
       }
       res.status(200).send(allPosts.slice(0, 10));
-    } catch {
-      res.status(500).send();
-    }
-  },
-  getUserPosts: async (req, res) => {
-    try {
-      const allPosts = await post.findAll({
-        where: { author: req.params.userId },
-        order: [
-          ["createdAt", "DESC"], // Du plus récent au moins récent
-        ],
-        include: [
-          react,
-          {
-            model: user,
-            attributes: ["id", "firstname", "lastname", "profilPicture"],
-          },
-        ],
-      });
-      for (const Post of allPosts) {
-        const PostComments = await getPostComments(req.auth.userId, Post.id);
-        Post.setDataValue("comments", PostComments);
-      }
-      res.status(200).send(allPosts);
     } catch {
       res.status(500).send();
     }

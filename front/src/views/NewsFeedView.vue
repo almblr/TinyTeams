@@ -38,8 +38,8 @@ useInfiniteScroll(
   posts,
   async () => {
     const lastPost = postStore.posts[postStore.posts.length - 1];
-    const idLastPost = lastPost.id;
-    await postStore.getAll(idLastPost);
+    const lastPostId = lastPost.id;
+    await postStore.getAll("", lastPostId);
   },
   {
     distance: 10,
