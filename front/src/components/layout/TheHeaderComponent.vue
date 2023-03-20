@@ -77,11 +77,11 @@ const logout = () => {
 }
 header {
   @include jcCt-aiCt;
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   height: 50px;
-  z-index: 999;
+  z-index: 9999;
   background-color: #242526;
   backdrop-filter: blur(1px);
   padding: 0px 10px 0 5px;
@@ -150,7 +150,7 @@ header {
     position: absolute;
     right: 0;
     top: 40px;
-    z-index: 999;
+    z-index: 9999;
     background: rgb(44, 43, 43);
     box-shadow: 5px 5px 20px #000000c7;
     margin-top: 3px;

@@ -11,6 +11,7 @@
       >
       <ToolTipComponent
         :commentId="props.commentId"
+        :postId="props.postId"
         :author="props.author"
         type="comment"
         top="3px"

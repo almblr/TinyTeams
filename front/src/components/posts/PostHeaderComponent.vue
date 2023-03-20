@@ -55,6 +55,7 @@ const edit = (postId) => {
   justify-content: space-between;
   width: 100%;
   padding: 1% 3%;
+  gap: 5px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   background-color: var(--headerBackground);
@@ -87,11 +88,10 @@ const edit = (postId) => {
       flex-direction: column;
       color: var(--textColorMain);
       & h2 {
-        font-size: 16px;
-        margin-right: 5px;
+        font-size: 0.95rem;
       }
       & span {
-        font-size: 1em;
+        font-size: 0.93rem;
       }
     }
   }

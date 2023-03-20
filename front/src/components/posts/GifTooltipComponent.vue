@@ -139,6 +139,7 @@ onMounted(() => {
   @include fdCol-aiCt;
   position: absolute;
   right: 0px;
+  z-index: 99;
   background: rgb(39, 39, 39);
   min-width: 250px;
   height: 310px;

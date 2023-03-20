@@ -81,7 +81,7 @@ export const usePostStore = defineStore("post", {
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
     },
-    async getAll(lastPostViewed) {
+    async getAll(userId, lastPostViewed) {
       let url = `http://localhost:3000/api/posts/getAll/`;
       if (lastPostViewed) {
         url += lastPostViewed;
@@ -125,6 +125,8 @@ export const usePostStore = defineStore("post", {
           Authorization: `Bearer ${token}`,
         },
       });
+      const postToDelete = this.posts.findIndex((post) => post.id === postId);
+      this.posts.splice(postToDelete, 1);
     },
   },
 });

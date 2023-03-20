@@ -78,8 +78,10 @@ const postController = {
     }
   },
   getAll: async (req, res) => {
+    console.log(req.query.userId);
     try {
       const allPosts = await post.findAll({
+        where: req.params.userId ? { author: req.params.userId } : {},
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
@@ -103,7 +105,7 @@ const postController = {
         if (lastPost === -1) {
           return res.status(400).send({ message: "Post not found" });
         }
-        const start = lastPost;
+        const start = lastPost + 1;
         const end = start + 10;
         if (start + 1 === allPosts.length) {
           return;

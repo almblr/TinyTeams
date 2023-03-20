@@ -16,6 +16,7 @@ const props = defineProps({
 <style lang="scss" scoped>
 .imagePreview {
   position: relative;
+  width: 50%;
   img {
     width: 100%;
   }

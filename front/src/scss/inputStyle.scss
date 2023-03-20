@@ -12,11 +12,3 @@ input {
     outline: none;
   }
 }
-
-input:valid {
-  border: 2px solid green !important;
-}
-
-input:not(:placeholder-shown):invalid {
-  border: 2px solid red !important;
-}

@@ -1,5 +1,5 @@
 <template>
-  <RouterView />
+  <RouterView ref="test" />
 </template>
 
 <script setup>
@@ -15,7 +15,7 @@ const isDark = useDark();
 #app {
   height: 100vh;
   min-width: 100%;
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 *,
@@ -25,5 +25,27 @@ const isDark = useDark();
   padding: 0;
   box-sizing: border-box;
   font-family: "Lato", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+  width: 13px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--backgroundMain);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--colorDivider);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--addMediaBackground);
 }
 </style>

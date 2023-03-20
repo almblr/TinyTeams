@@ -90,12 +90,12 @@ const remove = async (postId, commentId) => {
       await postStore.getAll(props.author);
     } else {
       // Si on est sur la page d'acceuil
-      await postStore.getAll();
+      // await postStore.getAll();
     }
   }
   if (props.type === "comment") {
     await commentStore.delete(postId, commentId);
-    await postStore.getAll();
+    await postStore.getOne(postId);
   }
 };
 </script>
@@ -125,7 +125,7 @@ const remove = async (postId, commentId) => {
     @include fdCol-aiCt;
     position: absolute;
     right: 0;
-    z-index: 999;
+    z-index: 99;
     background: black;
     margin-top: 3px;
     opacity: 0.8;

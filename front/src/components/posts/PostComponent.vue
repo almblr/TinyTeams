@@ -70,10 +70,8 @@ span {
   font-style: italic;
 }
 article {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  @include fdCol-jcCt-aiCt;
+  position: relative;
   width: 95%;
   max-width: 700px;
   min-width: 260px;
