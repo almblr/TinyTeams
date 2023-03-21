@@ -39,7 +39,7 @@ useInfiniteScroll(
   async () => {
     const lastPost = postStore.posts[postStore.posts.length - 1];
     const lastPostId = lastPost.id;
-    await postStore.getAll("", lastPostId);
+    await postStore.getAll(undefined, lastPostId);
   },
   {
     distance: 10,
@@ -57,6 +57,8 @@ useInfiniteScroll(
 #main {
   @include fdCol-aiCt;
   background-color: var(--backgroundMain);
+  transition: 200ms;
+  min-height: 100%;
 }
 .posts {
   @include fdCol-aiCt;

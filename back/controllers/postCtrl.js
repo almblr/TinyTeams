@@ -43,13 +43,23 @@ const postController = {
       return res.status(400).json({ message: "Empty post." });
     }
     try {
-      const Post = await post.create({
+      const createdPost = await post.create({
         userId: req.auth.userId,
         content: req.body.content,
         imageUrl: req.file?.filename
           ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
           : null,
         author: req.auth.userId,
+      });
+      const Post = await post.findByPk(createdPost.id, {
+        include: [
+          react,
+          {
+            model: user,
+            attributes: ["id", "firstname", "lastname", "profilPicture"],
+          },
+          comment,
+        ],
       });
       res.status(201).send(Post);
     } catch {
@@ -98,8 +108,9 @@ const postController = {
       }
       // For the infinite scroll, to display nexts posts
       if ("lastPostId" in req.query) {
-        const lastPostId = parseInt(req.query.lastPostId);
-        const lastPost = allPosts.findIndex((post) => post.id === lastPostId);
+        const lastPost = allPosts.findIndex(
+          (post) => post.id === parseInt(req.query.lastPostId)
+        );
         if (lastPost === -1) {
           return res.status(400).send({ message: "Post not found" });
         }
@@ -121,10 +132,20 @@ const postController = {
       return res.status(401).json({ message: "You cannot update this post" });
     }
     try {
-      await Post.update({
+      const updatedPost = await Post.update({
         content: req.body.content || null,
       });
-      res.status(201).send(Post);
+      const postToSend = await post.findByPk(updatedPost.id, {
+        include: [
+          react,
+          {
+            model: user,
+            attributes: ["id", "firstname", "lastname", "profilPicture"],
+          },
+          comment,
+        ],
+      });
+      res.status(201).send(postToSend);
     } catch {
       res.status(500).send();
     }

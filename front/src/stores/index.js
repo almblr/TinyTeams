@@ -22,6 +22,7 @@ export const useUserStore = defineStore("user", {
           "Content-Type": "application/json",
         },
       });
+      useUserStore().login(data);
     },
     async login(data) {
       const response = await axios({
@@ -89,14 +90,14 @@ export const usePostStore = defineStore("post", {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          userId: userId,
+          userId,
           lastPostId: lastPostViewed,
         },
       });
-      this.posts = response.data;
+      this.posts.push(...response.data);
     },
     async create(data) {
-      await axios({
+      const response = await axios({
         url: "http://localhost:3000/api/posts/create",
         method: "POST",
         headers: {
@@ -105,9 +106,10 @@ export const usePostStore = defineStore("post", {
         },
         data,
       });
+      this.posts.unshift(response.data);
     },
     async update(postId, data) {
-      await axios({
+      const response = await axios({
         url: `http://localhost:3000/api/posts/update/${postId}`,
         method: "PUT",
         headers: {
@@ -116,6 +118,10 @@ export const usePostStore = defineStore("post", {
         },
         data,
       });
+      const Post = await response.data;
+      const findPost = this.posts.find((post) => post.id === Post.id);
+      const index = this.posts.indexOf(findPost);
+      this.posts.splice(index, 1, Post);
     },
     async delete(postId) {
       await axios({
@@ -174,6 +180,7 @@ export const useCommentStore = defineStore("comment", {
         },
         data,
       });
+      await usePostStore().getOne(postId);
     },
     async update(postId, commentId, data) {
       await axios({
@@ -195,6 +202,7 @@ export const useCommentStore = defineStore("comment", {
           Authorization: `Bearer ${token}`,
         },
       });
+      await usePostStore().getOne(postId);
     },
   },
 });

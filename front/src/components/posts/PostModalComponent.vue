@@ -44,7 +44,6 @@ import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
 import AddMediaButton from "@/components/layout/AddMediaButton.vue";
 import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
 import DividerComponent from "../layout/DividerComponent.vue";
-import { isSVGTag } from "@vue/shared";
 
 const socket = io("http://localhost:3000");
 
@@ -92,7 +91,6 @@ const sendPost = async () => {
       formData.append("imageUrl", imageFile.value);
     }
     await postStore.create(formData);
-    await postStore.getAll();
     imageBlop.value = null;
     imageFile.value = null;
     emptyPost.value === true ? (emptyPost.value = false) : null;
@@ -173,6 +171,7 @@ main {
     border: none;
     background-color: var(--textarea);
     caret-color: var(--textColorMain);
+    color: var(--textColorMain);
     &::placeholder {
       opacity: 0.7;
       top: 10px;

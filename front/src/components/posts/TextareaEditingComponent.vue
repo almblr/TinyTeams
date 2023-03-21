@@ -44,10 +44,8 @@ const update = async () => {
   formData.append("content", textareaContent.value);
   if (props.textareaType === "comment") {
     await commentStore.update(props.postId, props.commentId, formData);
-    await postStore.getOne(props.postId);
   } else if (props.textareaType === "post") {
     await postStore.update(props.postId, formData);
-    await postStore.getOne(props.postId);
   }
   emit("update:show", false);
 };

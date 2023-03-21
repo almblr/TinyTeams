@@ -76,7 +76,6 @@ const sendComment = async (postId) => {
   mediaPreview.value = "";
   mediaToSend.value = "";
   autoResize(textarea.value);
-  await postStore.getOne(postId);
 };
 
 const autoResize = (el) => {

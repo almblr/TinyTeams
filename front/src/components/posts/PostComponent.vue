@@ -57,8 +57,10 @@ const modifyPost = (postId) => {
 onMounted(async () => {
   if (route.params.username) {
     const user = await userStore.getOne(route.params.username);
+    postStore.posts.length = 0;
     return await postStore.getAll(user.id);
   }
+  postStore.posts.length = 0;
   await postStore.getAll();
 });
 </script>

@@ -68,6 +68,14 @@ sequelize
       });
     }
   })
+  // .then(async () => {
+  //   for (let i = 0; i < 50; i++) {
+  //     await post.create({
+  //       author: 1,
+  //       content: "test " + i,
+  //     });
+  //   }
+  // })
   .catch((error) => console.log(error));
 
 app.use("/api/users/", userRoutes);

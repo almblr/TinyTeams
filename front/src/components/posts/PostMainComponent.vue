@@ -87,7 +87,6 @@ const updateLike = async (postId, author, liker) => {
   const doesUserLike = postReactions.find((react) => react.userId === userId);
   if (doesUserLike === undefined) {
     await likeStore.likePost(postId);
-    await postStore.getOne(postId);
     if (liker !== author) {
       socket.emit("sendLike", {
         postId: postId,
@@ -100,7 +99,6 @@ const updateLike = async (postId, author, liker) => {
     return true;
   } else {
     await likeStore.likePost(postId);
-    await postStore.getOne(postId);
     return false;
   }
 };

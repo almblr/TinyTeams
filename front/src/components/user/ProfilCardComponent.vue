@@ -79,8 +79,8 @@ onMounted(() => {
   max-width: 700px;
   width: 100%;
   min-height: 250px;
-  background-color: white;
-  transition: 300ms;
+  background-color: var(--backgroundSecond);
+  transition: 200ms;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -106,7 +106,10 @@ onMounted(() => {
   flex: 1;
   padding-top: 40px;
   width: 100%;
-  color: rgb(48, 43, 43);
+  color: var(--textColorMain);
+  &__name {
+    font-size: 1.45rem;
+  }
   &__btn {
     @include jcCt-aiCt;
     gap: 10px;

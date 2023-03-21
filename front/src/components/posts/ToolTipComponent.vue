@@ -85,17 +85,9 @@ const modify = async (id) => {
 const remove = async (postId, commentId) => {
   if (props.type === "post") {
     await postStore.delete(postId);
-    if (userParams) {
-      // Si on est sur la page profil
-      await postStore.getAll(props.author);
-    } else {
-      // Si on est sur la page d'acceuil
-      // await postStore.getAll();
-    }
   }
   if (props.type === "comment") {
     await commentStore.delete(postId, commentId);
-    await postStore.getOne(postId);
   }
 };
 </script>

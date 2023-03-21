@@ -72,7 +72,6 @@ const showHidePassword = (e) => {
 
 const signup = async () => {
   await userStore.signup(userInfo.value);
-  await userStore.login(userInfo.value);
   router.push("/news");
 };
 </script>

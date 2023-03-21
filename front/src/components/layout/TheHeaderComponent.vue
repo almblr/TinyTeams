@@ -24,11 +24,9 @@
           @click="showTooltip = !showTooltip"
         />
         <div class="tooltip__content" v-show="showTooltip === true">
-          <router-link :to="`/users/${username}`" class="profilButton"
-            ><img :src="profilPicture" class="profilPicture" />{{
-              fullname
-            }}</router-link
-          >
+          <router-link :to="`/users/${username}`" class="profilButton">{{
+            "Votre profil"
+          }}</router-link>
           <router-link :to="`/`">Paramètres</router-link>
           <router-link to="/" @click="logout"> Se déconnecter </router-link>
         </div>
@@ -43,7 +41,6 @@ import { vOnClickOutside } from "@vueuse/components";
 import SwitchTheme from "../buttons/SwitchTheme.vue";
 
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const fullname = `${sesStr.firstname} ${sesStr.lastname}`;
 const username = sesStr.username;
 const profilPicture = sesStr.profilPicture;
 const showTooltip = ref(null);

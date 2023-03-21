@@ -21,8 +21,8 @@ const props = defineProps({
 button {
   width: 100%;
   max-width: 200px;
-  max-height: 50px;
-  min-height: 50px;
+  max-height: 40px;
+  min-height: 40px;
   background: #ff2a00f5;
   opacity: 0.9;
   box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.5);
@@ -31,7 +31,7 @@ button {
   transition: 0.2s;
   & > span {
     font-weight: 700;
-    font-size: 22px;
+    font-size: 19px;
     text-align: center;
     color: #ffffff;
   }
