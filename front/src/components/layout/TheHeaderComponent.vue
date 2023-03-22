@@ -1,8 +1,10 @@
 <template>
   <header>
-    <router-link to="/news" class="logo-router-link logo">
-      <img src="@/assets/logo-white.png" alt="logo Groupomania" />
-    </router-link>
+    <div class="divLogo">
+      <router-link to="/news" class="logo-router-link logo">
+        <img src="@/assets/logo-white.png" alt="logo Groupomania" />
+      </router-link>
+    </div>
     <nav>
       <router-link to="/news"><fa icon="fa-solid fa-house" /></router-link>
       <router-link to="/users"
@@ -27,7 +29,7 @@
           <router-link :to="`/users/${username}`" class="profilButton">{{
             "Votre profil"
           }}</router-link>
-          <router-link :to="`/`">Paramètres</router-link>
+          <router-link to="/">Paramètres</router-link>
           <router-link to="/" @click="logout"> Se déconnecter </router-link>
         </div>
       </div>
@@ -84,13 +86,17 @@ header {
   padding: 0px 10px 0 5px;
   gap: 10px;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.7);
-  & .logo {
+  & > .divLogo {
     @include aiCt;
     flex: 1;
     height: 100%;
-    border-bottom: none;
-    & > img {
-      height: 70%;
+    & .logo {
+      @include aiCt;
+      height: 100%;
+      border-bottom: none;
+      & > img {
+        height: 70%;
+      }
     }
   }
   nav {

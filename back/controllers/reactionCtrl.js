@@ -24,7 +24,9 @@ const reactionController = {
         } else {
           if (req.body.value === reaction.value) {
             await reaction.destroy();
-            res.status(200).json({ message: "Like removed" });
+            res
+              .status(200)
+              .json({ message: "Like removed", removedLikeId: reaction.id });
           }
         }
       }

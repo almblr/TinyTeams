@@ -40,6 +40,7 @@ import PostFooterComponent from "./postFooterComponent.vue";
 const postStore = usePostStore();
 const userStore = useUserStore();
 const route = useRoute();
+const article = ref(null);
 
 const noPost = computed(() => {
   if (route.name === "News") {
@@ -79,7 +80,7 @@ article {
   min-width: 260px;
   border-radius: 10px;
   background-color: var(--backgroundSecond);
-  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 0px 20px var(--shadowColor);
 }
 
 input[type="file"] {

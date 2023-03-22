@@ -1,32 +1,27 @@
 <template>
   <div class="file__label">
-    <label id="custom-label" ref="label"
+    <label id="custom-label"
       ><slot name="icon"> </slot>
       <input
-        ref="input"
+        class="toto"
         type="file"
         accept="image/png, image/jpg, image/jpeg"
-        @change="GetUploadedImg($event)"
+        @input="GetUploadedImg($event)"
       />
     </label>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
 const props = defineProps({
   iconSize: String,
 });
 const emit = defineEmits(["showUploadedImg"]);
-
-const input = ref(null);
-const label = ref(null);
-
-/* Affiche la preview du fichier (l'image) uploadé  */
 const GetUploadedImg = (event) => {
   const blop = URL.createObjectURL(event.target.files[0]);
-  const file = input.value.files[0];
+  const file = event.target.files[0];
   emit("showUploadedImg", blop, file);
+  event.target.value = "";
 };
 </script>
 

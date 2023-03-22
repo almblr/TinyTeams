@@ -21,10 +21,9 @@ const toggleDark = useToggle(isDark);
   min-height: 22px;
   background-color: #28292c;
   border-radius: 25px;
-  cursor: pointer;
-  border: 3px solid #28292c;
   border: 2px solid #414347;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 .switch-ligth {

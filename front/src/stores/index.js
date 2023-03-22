@@ -25,7 +25,7 @@ export const useUserStore = defineStore("user", {
       useUserStore().login(data);
     },
     async login(data) {
-      const response = await axios({
+      const res = await axios({
         url: "http://localhost:3000/api/users/login",
         method: "POST",
         data: JSON.stringify({
@@ -40,26 +40,26 @@ export const useUserStore = defineStore("user", {
       sessionStorage.setItem(
         "user",
         JSON.stringify({
-          userId: response.data.userId,
-          isAdmin: response.data.isAdmin,
-          firstname: response.data.firstname,
-          lastname: response.data.lastname,
-          username: response.data.username,
-          profilPicture: response.data.profilPicture,
-          token: response.data.token,
+          userId: res.data.userId,
+          isAdmin: res.data.isAdmin,
+          firstname: res.data.firstname,
+          lastname: res.data.lastname,
+          username: res.data.username,
+          profilPicture: res.data.profilPicture,
+          token: res.data.token,
         })
       );
-      token = response.data.token;
-      return response.data;
+      token = res.data.token;
+      return res.data;
     },
     async getOne(username) {
-      const response = await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/users/getOne/${username}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+      return res.data;
     },
   },
 });
@@ -71,20 +71,20 @@ export const usePostStore = defineStore("post", {
   }),
   actions: {
     async getOne(postId) {
-      const response = await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/posts/getOne/${postId}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const Post = await response.data;
+      const Post = await res.data;
       const findPost = this.posts.find((post) => post.id === Post.id);
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
     },
     async getAll(userId, lastPostViewed) {
       let url = `http://localhost:3000/api/posts/getAll/`;
-      const response = await axios({
+      const res = await axios({
         url,
         headers: {
           Authorization: `Bearer ${token}`,
@@ -94,10 +94,10 @@ export const usePostStore = defineStore("post", {
           lastPostId: lastPostViewed,
         },
       });
-      this.posts.push(...response.data);
+      this.posts.push(...res.data);
     },
     async create(data) {
-      const response = await axios({
+      const res = await axios({
         url: "http://localhost:3000/api/posts/create",
         method: "POST",
         headers: {
@@ -106,10 +106,10 @@ export const usePostStore = defineStore("post", {
         },
         data,
       });
-      this.posts.unshift(response.data);
+      this.posts.unshift(res.data);
     },
     async update(postId, data) {
-      const response = await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/posts/update/${postId}`,
         method: "PUT",
         headers: {
@@ -118,7 +118,7 @@ export const usePostStore = defineStore("post", {
         },
         data,
       });
-      const Post = await response.data;
+      const Post = await res.data;
       const findPost = this.posts.find((post) => post.id === Post.id);
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
@@ -150,7 +150,16 @@ export const useLikeStore = defineStore("like", {
           Authorization: `Bearer ${token}`,
         },
       });
-      return await res.data;
+      const posts = usePostStore().posts;
+      const foundPost = posts.find((post) => post.id === postId);
+      if ("removedLikeId" in res.data) {
+        const existingLike = foundPost.reactions.findIndex(
+          (like) => (like.id = res.data.likeId)
+        );
+        foundPost.reactions.splice(existingLike, 1);
+      } else {
+        foundPost.reactions.push(res.data);
+      }
     },
   },
 });
@@ -162,13 +171,13 @@ export const useCommentStore = defineStore("comment", {
   }),
   actions: {
     async getAll(postId) {
-      const response = await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/posts/${postId}/comments/getAll`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      this.comments = await response.data;
+      this.comments = await res.data;
     },
     async create(postId, data) {
       await axios({
@@ -211,7 +220,7 @@ export const useFollowStore = defineStore("follow", {
   id: "Follows",
   actions: {
     async sendFollow(userId) {
-      const response = await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/users/follow/${userId}`,
         method: "POST",
         headers: {
@@ -219,20 +228,20 @@ export const useFollowStore = defineStore("follow", {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+      return res.data;
     },
     async getOne(userId) {
-      const response = await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/users/follow/getOne/${userId}`,
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+      return res.data;
     },
     async unfollow(userId) {
-      const response = await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/users/unfollow/${userId}`,
         method: "DELETE",
         headers: {
@@ -240,7 +249,7 @@ export const useFollowStore = defineStore("follow", {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+      return res.data;
     },
   },
 });
@@ -260,18 +269,18 @@ export const useGiphyStore = defineStore("gif", {
       this.offset_search = 0;
     },
     async getTrendsGif() {
-      const response = await axios(
+      const res = await axios(
         `https://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_KEY}&offset=${this.offset_trends}&limit=5`
       );
       this.offset_trends += 5;
-      this.gifs.push(...response.data.data);
+      this.gifs.push(...res.data.data);
     },
     async searchGif(q) {
-      const response = await axios(
+      const res = await axios(
         `https://api.giphy.com/v1/gifs/search?api_key=${this.GIPHY_KEY}&offset=${this.offset_search}&q=${q}&limit=5`
       );
       this.offset_search += 5;
-      this.gifs.push(...response.data.data);
+      this.gifs.push(...res.data.data);
     },
   },
 });

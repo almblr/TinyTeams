@@ -57,7 +57,6 @@ const resetForm = () => {
   width: 100%;
   max-width: 600px;
   max-height: min-content;
-  // background-color: rgb(255, 255, 255);
   background-color: rgb(255, 255, 255);
   box-shadow: 5px 5px 20px #0000003d;
   padding: 3% 2%;
@@ -109,10 +108,10 @@ footer {
     text-decoration: none;
     font-size: 17px;
     margin-left: 3px;
+    cursor: pointer;
     &:hover {
       color: #ff0000;
       font-weight: bold;
-      cursor: pointer;
     }
   }
 }

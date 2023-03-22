@@ -12,6 +12,7 @@ html {
   --commentBackground: #0f0f0f1c;
   --cancelButton: #4747bd;
   --cancelButtonHover: #2121e0;
+  --shadowColor: rgba(0, 0, 0, 0.2);
 }
 html.dark {
   --backgroundMain: #18191a;
@@ -27,6 +28,7 @@ html.dark {
   --commentBackground: #3e4042;
   --cancelButton: #aac8ff;
   --cancelButtonHover: #6ea0f7;
+  --shadowColor: none;
 }
 
 @mixin jcCt {

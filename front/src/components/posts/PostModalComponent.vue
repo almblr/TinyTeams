@@ -1,34 +1,32 @@
 <template>
-  <ModalLayer v-if="show" @click.self="emit('close', (imageBlop = null))">
+  <ModalLayer v-if="show" @click.self="emit('close'), resetPost()">
     <div class="container">
       <header>
         <h2>Créer une publication</h2>
-        <div class="exit"></div>
       </header>
       <DividerComponent width="100%" height="1px" />
       <main>
         <textarea
           :placeholder="`Quoi de neuf, ${firstname} ?`"
-          v-model="postData.content"
+          v-model="input"
           maxlength="560"
           ref="textarea"
-          @input="autoResizing(textarea)"
         ></textarea>
-        <ImagePreviewComponent
-          :src="imageBlop"
-          @remove-image="deleteImagePreview"
-        />
-        <footer>
-          <div class="file">
-            <AddMediaButton
-              iconSize="24px"
-              @showUploadedImg="displayImagePreview"
-              ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
-            ></AddMediaButton>
-          </div>
-          <button @click="sendPost">Publier</button>
-        </footer>
+        <div class="imagePreview" v-if="imageBlop">
+          <ImagePreviewComponent
+            :src="imageBlop"
+            @remove-image="deleteImagePreview"
+          />
+        </div>
       </main>
+      <footer>
+        <div class="file">
+          <AddMediaButton iconSize="24px" @showUploadedImg="displayImagePreview"
+            ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
+          ></AddMediaButton>
+        </div>
+        <button @click="sendPost">Publier</button>
+      </footer>
     </div>
     <div class="error" v-if="emptyPost">
       <span>Votre post ne peut pas être vide.</span>
@@ -37,32 +35,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from "vue";
+import { ref } from "vue";
 import { usePostStore } from "../../stores/index.js";
 import { io } from "socket.io-client";
 import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
 import AddMediaButton from "@/components/layout/AddMediaButton.vue";
 import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
 import DividerComponent from "../layout/DividerComponent.vue";
+import { useTextareaAutosize } from "@vueuse/core";
 
-const socket = io("http://localhost:3000");
-
+const emit = defineEmits(["close"]);
 const props = defineProps({
   show: {
     type: Boolean,
   },
-  post: {
-    type: Object,
-  },
 });
-const emit = defineEmits(["close"]);
 
+const { textarea, input } = useTextareaAutosize();
+const socket = io("http://localhost:3000");
 const postStore = usePostStore();
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const firstname = sesStr.firstname;
-const postData = ref({});
 const emptyPost = ref(null);
-const textarea = ref("");
 const imageBlop = ref(null);
 const imageFile = ref(null);
 
@@ -73,60 +67,40 @@ const displayImagePreview = (blop, file) => {
 
 const deleteImagePreview = () => {
   imageBlop.value = null;
+  imageFile.value = null;
 };
 
-/* Fonction qui permet de modifier ou de supprimer un post (selon la modal ouverte) */
+const resetPost = () => {
+  deleteImagePreview();
+  input.value = "";
+};
+
 const sendPost = async () => {
   const formData = new FormData();
-  if (!postData.value.content && !imageFile.value) {
+  if (!input.value && !imageFile.value) {
     emptyPost.value = true;
     setTimeout(() => {
       emptyPost.value = false;
     }, 5000);
   } else {
-    if (postData.value.content) {
-      formData.append("content", postData.value.content);
+    if (input.value) {
+      formData.append("content", input.value);
     }
     if (imageFile.value) {
       formData.append("imageUrl", imageFile.value);
     }
     await postStore.create(formData);
-    imageBlop.value = null;
-    imageFile.value = null;
     emptyPost.value === true ? (emptyPost.value = false) : null;
+    resetPost();
     emit("close");
     socket.emit("newPost", "Un nouveau post a été publié.");
   }
 };
-
-const autoResizing = (el) => {
-  el.style.height = "50px";
-  el.style.height = `${el.scrollHeight}px`;
-};
-
-/* Observe les changements de visibilité de la modal pour reset l'objet post */
-watch(
-  () => props.show,
-  async (newShow) => {
-    //newShow représente la nouvelle valeur qu'a pris la props show
-    if (newShow && props.post) {
-      postData.value = { ...props.post }; // ... = affectation par décomposition : déstructure les 2 objets pour éviter que si l'on modifie un, l'autre se modifie aussi
-      emptyPost.value === true ? (emptyPost.value = false) : null;
-    }
-  }
-);
-onMounted(() => {
-  if (props.post) {
-    postData.value = { ...props.post };
-  }
-});
 </script>
 
 <style lang="scss" scoped>
 .container {
-  @include jcCt-aiCt;
-  flex-direction: column;
-  align-items: center;
+  @include fdCol-jcCt-aiCt;
   position: relative;
   width: 100%;
   max-width: 500px;
@@ -134,12 +108,11 @@ onMounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   background-color: var(--backgroundSecond);
   border-radius: 5px;
-  transition: all 0.3s ease;
 }
 
 header {
-  width: 100%;
   position: relative;
+  width: 100%;
   padding: 15px 0px;
   color: var(--textColorSecond);
   font-size: 15px;
@@ -153,22 +126,21 @@ header {
 }
 
 main {
-  @include fdCol-aiCt;
+  @include fdCol-jcCt-aiCt;
   @include width-height_max;
-  justify-content: center;
   flex-wrap: nowrap;
   border-radius: 5px;
   padding: 20px 10px;
   gap: 20px;
   textarea {
     width: 100%;
-    border-radius: 5px;
-    resize: none;
     min-height: 150px;
     max-height: 2000px;
+    resize: none;
     padding: 10px 0 0 10px;
     font-size: 19px;
     border: none;
+    border-radius: 5px;
     background-color: var(--textarea);
     caret-color: var(--textColorMain);
     color: var(--textColorMain);
@@ -182,10 +154,18 @@ main {
       outline: none;
     }
   }
+  .imagePreview {
+    position: relative;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--colorDivider);
+    border-radius: 10px;
+  }
 }
 
 footer {
   @include jcCt-aiCt;
+  padding: 0 10px 10px 10px;
   flex-wrap: wrap;
   width: 100%;
   gap: 5px;
@@ -214,13 +194,11 @@ footer {
 }
 
 .error {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include jcCt-aiCt;
   position: absolute;
   width: 300px;
   height: 40px;
-  background-color: #fd1e01d5;
+  background-color: #fd1e01de;
   border-radius: 5px;
   bottom: 3%;
   left: 50%;

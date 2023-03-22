@@ -5,9 +5,8 @@
         :id="props.postId"
         placeholder="Ecrivez un commentaire..."
         @keydown.enter="sendComment(props.postId)"
-        @input="autoResize(textarea)"
         ref="textarea"
-        v-model="textareaContent"
+        v-model="input"
       ></textarea>
       <div class="container__buttons">
         <div title="Insérez une image" @click="!showing">
@@ -20,32 +19,33 @@
         </div>
       </div>
     </div>
-    <ImagePreviewComponent
-      :src="mediaPreview"
-      @remove-image="deleteImagePreview"
-    />
+    <div class="imagePreview" v-if="mediaPreview">
+      <ImagePreviewComponent
+        :src="mediaPreview"
+        @remove-image="deleteImagePreview"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { useCommentStore, usePostStore } from "../../stores/index.js";
+import { useCommentStore } from "../../stores/index.js";
 import AddMediaButton from "../layout/AddMediaButton.vue";
 import GifTooltipComponent from "./GifTooltipComponent.vue";
 import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
+import { useTextareaAutosize } from "@vueuse/core";
+
+const { textarea, input } = useTextareaAutosize();
 
 const props = defineProps({
   postId: Number,
 });
 
 const commentStore = useCommentStore();
-const postStore = usePostStore();
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const showing = ref(false);
-const textareaContent = ref("");
 const containerTextarea = ref(null);
 const container = ref(null);
-const textarea = ref(null);
 const mediaToSend = ref("");
 const mediaPreview = ref(null);
 
@@ -66,39 +66,15 @@ const getUrls = (path, file) => {
 const sendComment = async (postId) => {
   const formData = new FormData();
   // Check if string contains only spaces
-  if (!textareaContent.value.trim()) {
+  if (!input.value.trim()) {
     return;
   }
-  formData.append("content", textareaContent.value);
+  formData.append("content", input.value);
   formData.append("imageUrl", mediaToSend.value);
   await commentStore.create(postId, formData);
-  textareaContent.value = "";
+  input.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
-  autoResize(textarea.value);
-};
-
-const autoResize = (el) => {
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  context.font = "15px Lato";
-  const strWidth = Math.ceil(context.measureText(textareaContent.value).width);
-  const containerWidth = containerTextarea.value.offsetWidth;
-  // 100 étant la width des boutons + qlq pixels
-  if (containerWidth - strWidth < 100 && el.style.minWidth !== "100%") {
-    el.style.minWidth = "100%";
-    containerTextarea.value.style.height = `${el.scrollHeight + 35}px`;
-    el.style.height = `${el.scrollHeight}px`;
-  }
-  if (containerWidth - strWidth < 100 && el.style.minWidth === "100%") {
-    containerTextarea.value.style.height = `${el.scrollHeight + 35}px`;
-    el.style.height = `${el.scrollHeight}px`;
-  }
-  if (containerWidth - strWidth > 100 && el.style.height !== `30px`) {
-    el.style.minWidth = "initial";
-    containerTextarea.value.style.height = `35px`;
-    el.style.height = `30px`;
-  }
 };
 </script>
 
@@ -150,5 +126,10 @@ const autoResize = (el) => {
       }
     }
   }
+}
+
+.imagePreview {
+  position: relative;
+  width: 50%;
 }
 </style>
