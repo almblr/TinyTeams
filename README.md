@@ -1,12 +1,12 @@
-# [](https://github.com/soonbtf/Groupomania-V2/edit/main/README.md#présentation)Présentation
+# [](https://github.com/soonbtf/TinyTeams/edit/main/README.md#présentation)Présentation
 
-**Groupomania V2** est une **refonte globale** de mon dernier projet OpenClassrooms dans le cadre de la formation développeur web. Il s'agit d'un réseau social d'entreprise.
+**TinyTeams** est un réseau social d'entreprise mais également mon projet le plus ambitieux. En effet, pour ce projet, j'ai décidé de partir de 0 et de réaliser le back et le front de mon site en m'inspirant du réseau social Facebook.
 
-Le refonte n'étant pas achevée, les instructions concernant l'installation du projet ne seront pas communiquées pour le moment.
+Le projet n'étant pas encore terminé, les instructions concernant son installation ne seront pas communiquées pour le moment.
 
-**Technologies déployées** : Vue 3, Node.js, Sequelize, SQLite
+**Technologies déployées** : Vue 3, Node.js, Sequelize, SQLite, Socket.io, Vue Use
 
-_Dernière mise à jour du readme : 17 Mars 2023_
+_Dernière mise à jour du readme : 23 Mars 2023_
 
 # Fonctionnalités disponibles
 
@@ -21,6 +21,7 @@ _Dernière mise à jour du readme : 17 Mars 2023_
 - page profil
 - notifications quand un utilisateur vous suit
 - notifications quand un utilisateur auquel vous êtes abonné publie un post
+- infinite scroll
 - mode sombre
 
 # Fonctionnalités à venir
