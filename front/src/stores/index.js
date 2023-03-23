@@ -5,7 +5,9 @@ let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
 
 export const useUserStore = defineStore("user", {
   id: "User",
-  state: () => ({}),
+  state: () => ({
+    users: [],
+  }),
   actions: {
     async signup(data) {
       await axios({
@@ -60,6 +62,15 @@ export const useUserStore = defineStore("user", {
         },
       });
       return res.data;
+    },
+    async getAll() {
+      const res = await axios({
+        url: `http://localhost:3000/api/users/getAll/`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      this.users.push(...res.data);
     },
   },
 });

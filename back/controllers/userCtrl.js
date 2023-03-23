@@ -78,6 +78,23 @@ const userController = {
       res.status(500).send();
     }
   },
+  getAll: async (req, res) => {
+    try {
+      const Users = await user.findAll({
+        order: [["firstname", "ASC"]],
+        attributes: [
+          "id",
+          "firstname",
+          "lastname",
+          "username",
+          "job",
+          "profilPicture",
+          "isAdmin",
+        ],
+      });
+      res.status(200).send(Users);
+    } catch {}
+  },
   update: async (req, res) => {
     // Check if the new email address is valid (if provided)
     if (

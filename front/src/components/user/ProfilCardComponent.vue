@@ -8,67 +8,47 @@
       <div v-if="loggedInUserProfile" class="userInfo__btn edit">
         <fa icon="fa-solid fa-gear" />Modifier votre profil
       </div>
-      <div
-        v-if="isSubscribed === false && !loggedInUserProfile"
-        class="userInfo__btn follow"
-        @click="updateFollow('follow', user.id)"
-      >
-        <fa icon="fa-solid fa-user-plus" />S'abonner
-      </div>
-      <div
-        v-if="isSubscribed && !loggedInUserProfile"
-        @mouseover="isHovered = true"
-        @mouseleave="isHovered = false"
-        class="userInfo__btn unfollow"
-        @click="updateFollow('unfollow', user.id)"
-      >
-        <fa icon="fa-solid fa-check" v-if="isHovered === false" />
-        <fa icon="fa-solid fa-xmark" v-if="isHovered === true" />Abonné
-      </div>
+      <FollowButtonComponent
+        :userId="user.id"
+        :loggedInUserProfile="loggedInUserProfile"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect } from "vue";
-import { useUserStore, useFollowStore } from "@/stores/index.js";
-import socket from "../../services/socketio.js";
+import { ref, onMounted, watch, watchEffect } from "vue";
+import { useUserStore } from "@/stores/index.js";
 import { useRoute } from "vue-router";
+import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
 
 const userStore = useUserStore();
-const followStore = useFollowStore();
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const usernameLS = sesStr.username;
 const route = useRoute();
 const user = ref({});
 const loggedInUserProfile = ref(false);
-const isSubscribed = ref(false);
-const isHovered = ref(false);
 
-const updateFollow = async (type, userId) => {
-  if (type === "follow") {
-    await followStore.sendFollow(userId);
-    isSubscribed.value = true;
-    socket.emit("sendFollow", {
-      author: sesStr.userId,
-      isFollowing: user.value.id,
-    });
-  } else {
-    await followStore.unfollow(userId);
-    isSubscribed.value = false;
-  }
-};
-
-onMounted(() => {
-  /* Même chose que faire un watch et un onMounted séparemment */
-  watchEffect(async () => {
-    user.value = await userStore.getOne(route.params.username);
-    if (route.params.username === usernameLS) {
-      return (loggedInUserProfile.value = true);
+watch(
+  () => route.params.username,
+  async (newValue) => {
+    user.value = await userStore.getOne(newValue);
+    console.log(user.value);
+    if (newValue === usernameLS) {
+      loggedInUserProfile.value = true;
+    } else {
+      loggedInUserProfile.value = false;
     }
-    const isFollowing = await followStore.getOne(user.value.id);
-    isFollowing ? (isSubscribed.value = true) : null;
-  });
+  }
+);
+onMounted(async () => {
+  user.value = await userStore.getOne(route.params.username);
+  console.log(user.value);
+  if (route.params.username === usernameLS) {
+    loggedInUserProfile.value = true;
+  } else {
+    loggedInUserProfile.value = false;
+  }
 });
 </script>
 

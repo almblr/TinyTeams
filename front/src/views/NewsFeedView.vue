@@ -1,10 +1,8 @@
 <template>
   <div id="container" ref="posts">
     <the-header />
-    <main id="main">
-      <div class="posts">
-        <post-component />
-      </div>
+    <main id="posts">
+      <post-component />
     </main>
     <button class="createPost" @click="showCreateModal = true">
       <fa icon="fa-solid fa-feather" class="show-modal icon" />
@@ -54,24 +52,13 @@ useInfiniteScroll(
   position: relative;
 }
 
-#main {
+#posts {
   @include fdCol-aiCt;
   background-color: var(--backgroundMain);
   transition: 200ms;
   min-height: 100%;
-}
-.posts {
-  @include fdCol-aiCt;
-  width: 100%;
-  gap: 30px;
   padding-top: 30px;
-  & p {
-    color: black;
-  }
-  & img {
-    width: 200px;
-    height: 200px;
-  }
+  gap: 30px;
 }
 .createPost {
   @include jcCt-aiCt;

@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { usePostStore, useUserStore } from "../../stores";
 import { useRoute } from "vue-router";
 import PostHeaderComponent from "./PostHeaderComponent.vue";
@@ -51,6 +51,7 @@ const noPost = computed(() => {
   }
 });
 const getPostId = ref(null);
+
 const modifyPost = (postId) => {
   getPostId.value = postId;
 };
@@ -64,6 +65,17 @@ onMounted(async () => {
   postStore.posts.length = 0;
   await postStore.getAll();
 });
+
+watch(
+  () => route.params.username,
+  async (newValue) => {
+    if (newValue) {
+      const user = await userStore.getOne(route.params.username);
+      postStore.posts.length = 0;
+      return await postStore.getAll(user.id);
+    }
+  }
+);
 </script>
 
 <style lang="scss" scoped>

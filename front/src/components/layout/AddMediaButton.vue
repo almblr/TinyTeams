@@ -3,7 +3,6 @@
     <label id="custom-label"
       ><slot name="icon"> </slot>
       <input
-        class="toto"
         type="file"
         accept="image/png, image/jpg, image/jpeg"
         @input="GetUploadedImg($event)"
