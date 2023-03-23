@@ -4,7 +4,7 @@
       <textarea
         :id="props.postId"
         placeholder="Ecrivez un commentaire..."
-        @keydown.enter="sendComment(props.postId)"
+        @keydown.enter.prevent="sendComment(props.postId)"
         ref="textarea"
         v-model="input"
       ></textarea>
@@ -66,13 +66,13 @@ const getUrls = (path, file) => {
 const sendComment = async (postId) => {
   const formData = new FormData();
   // Check if string contains only spaces
-  if (!input.value.trim()) {
-    return;
-  }
+  // if (!input.value.trim()) {
+  //   return;
+  // }
   formData.append("content", input.value);
   formData.append("imageUrl", mediaToSend.value);
-  await commentStore.create(postId, formData);
   input.value = "";
+  await commentStore.create(postId, formData);
   mediaPreview.value = "";
   mediaToSend.value = "";
 };
@@ -93,18 +93,17 @@ const sendComment = async (postId) => {
     border: 1px solid var(--textareaBorder);
     border-radius: 20px;
     padding: 0 15px;
-    height: 35px;
     max-height: 300px;
     & > textarea {
       width: calc(100% - 60px);
       resize: none;
-      height: 30px;
       padding-top: 7px;
-      max-height: 250px;
       background-color: var(--textarea);
       color: var(--textColorMain);
       caret-color: var(--textColorMain);
       font-size: 15px;
+      height: 30px;
+      max-height: 250px;
       border: none;
       &:focus {
         outline: none;

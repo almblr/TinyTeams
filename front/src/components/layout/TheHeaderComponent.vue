@@ -2,7 +2,7 @@
   <header>
     <div class="divLogo">
       <router-link to="/news" class="logo-router-link logo">
-        <img src="@/assets/logo-white.png" alt="logo Groupomania" />
+        <img src="@/assets/logo-white.png" alt="logo TinyTeams" />
       </router-link>
     </div>
     <nav>

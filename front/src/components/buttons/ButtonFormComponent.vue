@@ -23,7 +23,7 @@ button {
   max-width: 200px;
   max-height: 40px;
   min-height: 40px;
-  background: #ff2a00f5;
+  background: #2374e1;
   opacity: 0.9;
   box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
@@ -36,7 +36,7 @@ button {
     color: #ffffff;
   }
   &:hover {
-    background: #fd2d01;
+    background: #1a79f5;
     opacity: 1;
     transition: 0.2s;
     box-shadow: 5px 4px 7px rgba(0, 0, 0, 0.5);

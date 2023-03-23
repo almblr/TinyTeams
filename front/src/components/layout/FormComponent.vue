@@ -96,22 +96,11 @@ footer {
     font-size: 18px;
     text-align: center;
     & a {
-      color: red;
+      color: #2374e1;
       text-decoration: none;
       &:hover {
         font-weight: bold;
       }
-    }
-  }
-  & span {
-    color: #d63535;
-    text-decoration: none;
-    font-size: 17px;
-    margin-left: 3px;
-    cursor: pointer;
-    &:hover {
-      color: #ff0000;
-      font-weight: bold;
     }
   }
 }

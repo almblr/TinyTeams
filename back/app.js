@@ -61,8 +61,8 @@ sequelize
           email: "admin@gmail.com",
           password: hash,
           firstname: "Modérateur",
-          lastname: "Groupomania",
-          username: "modérateurgroupomania",
+          lastname: "TinyTeams",
+          username: "modérateurTinyTeams",
           isAdmin: true,
         });
       });

@@ -81,7 +81,7 @@ useInfiniteScroll(
   right: 20px;
   width: 50px;
   height: 50px;
-  background-color: rgb(233, 50, 18);
+  background-color: #2374e1;
   border-radius: 70px;
   transition: 0.3s;
   box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.432);
