@@ -8,7 +8,7 @@
       <h3>Jobless</h3>
     </div>
     <div>
-      <follow-button-component
+      <FollowButtonComponent
         :userId="user.id"
         :loggedInUserProfile="user.id === connectedUser"
       />
@@ -17,15 +17,12 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
 import { useUserStore } from "@/stores/index.js";
 import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
 
 const userStore = useUserStore();
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const connectedUser = sesStr.userId;
-
-onMounted(async () => {});
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="user">
     <div class="band"></div>
     <img class="profilPicture" :src="user.profilPicture" />
     <div class="userInfo">
@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, watchEffect } from "vue";
+import { ref, onMounted, watch, computed, watchEffect } from "vue";
 import { useUserStore } from "@/stores/index.js";
 import { useRoute } from "vue-router";
 import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
@@ -26,30 +26,16 @@ const userStore = useUserStore();
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const usernameLS = sesStr.username;
 const route = useRoute();
-const user = ref({});
+const user = ref(null);
 const loggedInUserProfile = ref(false);
 
-watch(
-  () => route.params.username,
-  async (newValue) => {
-    user.value = await userStore.getOne(newValue);
-    console.log(user.value);
-    if (newValue === usernameLS) {
-      loggedInUserProfile.value = true;
-    } else {
-      loggedInUserProfile.value = false;
-    }
-  }
-);
-onMounted(async () => {
-  user.value = await userStore.getOne(route.params.username);
-  console.log(user.value);
-  if (route.params.username === usernameLS) {
-    loggedInUserProfile.value = true;
-  } else {
-    loggedInUserProfile.value = false;
-  }
-});
+const updateUser = async (username) => {
+  user.value = await userStore.getOne(username);
+  loggedInUserProfile.value = username === usernameLS;
+};
+
+watch(() => route.params.username, updateUser);
+onMounted(() => updateUser(route.params.username));
 </script>
 
 <style lang="scss" scoped>

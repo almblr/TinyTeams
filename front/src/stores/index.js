@@ -72,6 +72,18 @@ export const useUserStore = defineStore("user", {
       });
       this.users.push(...res.data);
     },
+    async getAll(string) {
+      const res = await axios({
+        url: `http://localhost:3000/api/users/getAll/`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          string,
+        },
+      });
+      this.users.push(...res.data);
+    },
   },
 });
 

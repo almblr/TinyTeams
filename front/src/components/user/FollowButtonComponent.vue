@@ -36,22 +36,17 @@ const isSubscribed = ref(false);
 const updateFollow = async (type, userId) => {
   if (type === "follow") {
     await followStore.sendFollow(userId);
-    isSubscribed.value = true;
     socket.emit("sendFollow", {
       author: sesStr.userId,
       isFollowing: userId,
     });
   } else {
     await followStore.unfollow(userId);
-    isSubscribed.value = false;
   }
+  isSubscribed.value = type === "follow";
 };
-
 onMounted(async () => {
-  const isFollowing = await followStore.getOne(props.userId);
-  isFollowing === true
-    ? (isSubscribed.value = true)
-    : (isSubscribed.value = false);
+  isSubscribed.value = await followStore.getOne(props.userId);
 });
 </script>
 

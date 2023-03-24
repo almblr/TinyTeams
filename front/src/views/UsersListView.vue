@@ -2,17 +2,19 @@
   <div id="container">
     <TheHeader />
     <main id="users">
+      <input type="text" v-model="search" placeholder="Rechercher un membre" />
       <ListCardComponent />
     </main>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/index.js";
 import TheHeader from "@/components/layout/TheHeaderComponent.vue";
 import ListCardComponent from "@/components/user/ListCardComponent.vue";
 const userStore = useUserStore();
+const search = ref(null);
 
 onMounted(async () => {
   userStore.users.length = 0;

@@ -95,6 +95,27 @@ const userController = {
       res.status(200).send(Users);
     } catch {}
   },
+  search: async (req, res) => {
+    try {
+      const Users = await user.findAll({
+        where: {
+          firstname: {
+            [Op.like]: "%" + req.body.search + "%",
+          },
+        },
+        attributes: [
+          "id",
+          "firstname",
+          "lastname",
+          "username",
+          "job",
+          "profilPicture",
+          "isAdmin",
+        ],
+      });
+      res.status(200).send(Users);
+    } catch {}
+  },
   update: async (req, res) => {
     // Check if the new email address is valid (if provided)
     if (

@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "../stores/index.js";
 import router from "../router/index.js";
 import FormComponent from "@/components/layout/FormComponent.vue";
