@@ -117,7 +117,7 @@ const postController = {
         const start = lastPost + 1;
         const end = start + 10;
         if (start + 1 === allPosts.length) {
-          return;
+          return res.status(200).send(allPosts.slice(start, allPosts.length));
         }
         return res.status(200).send(allPosts.slice(start, end));
       }

@@ -1,5 +1,5 @@
 <template>
-  <article v-for="user in userStore.users" :key="user.id">
+  <article v-for="user in props.users" :key="user.id" v-if="props.users">
     <img :src="user.profilPicture" alt="profilPicture" class="userPicture" />
     <div class="userInfos">
       <router-link :to="`/users/${user.username}`">
@@ -17,10 +17,11 @@
 </template>
 
 <script setup>
-import { useUserStore } from "@/stores/index.js";
 import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
 
-const userStore = useUserStore();
+const props = defineProps({
+  users: Array,
+});
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const connectedUser = sesStr.userId;
 </script>

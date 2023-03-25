@@ -35,9 +35,11 @@ const followController = {
         },
       });
       if (!Follow) {
-        return res.status(200).send(false);
+        return res.status(200).send({
+          message: "Follow not found",
+        });
       }
-      res.status(200).send(true);
+      res.status(200).send(Follow);
     } catch {
       res.status(500).send();
     }
@@ -46,8 +48,7 @@ const followController = {
     try {
       const Follow = await follow.findOne({
         where: {
-          author: req.auth.userId,
-          isFollowing: req.params.userId,
+          id: req.params.followId,
         },
       });
       await Follow.destroy();

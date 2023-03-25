@@ -2,8 +2,13 @@
   <div id="container">
     <TheHeader />
     <main id="users">
-      <input type="text" v-model="search" placeholder="Rechercher un membre" />
-      <ListCardComponent />
+      <input
+        type="text"
+        v-model="search"
+        placeholder="Rechercher un membre"
+        @input="searchUser(search)"
+      />
+      <ListCardComponent :users="userStore.users" />
     </main>
   </div>
 </template>
@@ -16,8 +21,11 @@ import ListCardComponent from "@/components/user/ListCardComponent.vue";
 const userStore = useUserStore();
 const search = ref(null);
 
+const searchUser = async (string) => {
+  await userStore.getAll(string);
+};
+
 onMounted(async () => {
-  userStore.users.length = 0;
   await userStore.getAll();
 });
 </script>

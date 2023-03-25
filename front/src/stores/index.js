@@ -63,26 +63,18 @@ export const useUserStore = defineStore("user", {
       });
       return res.data;
     },
-    async getAll() {
-      const res = await axios({
-        url: `http://localhost:3000/api/users/getAll/`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      this.users.push(...res.data);
-    },
-    async getAll(string) {
+    async getAll(string, lastUserViewed) {
       const res = await axios({
         url: `http://localhost:3000/api/users/getAll/`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          string,
+          search: string,
+          lastUserId: lastUserViewed,
         },
       });
-      this.users.push(...res.data);
+      this.users = res.data;
     },
   },
 });
@@ -241,6 +233,9 @@ export const useCommentStore = defineStore("comment", {
 
 export const useFollowStore = defineStore("follow", {
   id: "Follows",
+  state: () => ({
+    follows: [],
+  }),
   actions: {
     async sendFollow(userId) {
       const res = await axios({
@@ -251,7 +246,7 @@ export const useFollowStore = defineStore("follow", {
           Authorization: `Bearer ${token}`,
         },
       });
-      return res.data;
+      this.follows.push(...res.data);
     },
     async getOne(userId) {
       const res = await axios({
@@ -261,18 +256,22 @@ export const useFollowStore = defineStore("follow", {
           Authorization: `Bearer ${token}`,
         },
       });
-      return res.data;
+      Object.values(res.data).includes("Follow not found")
+        ? false
+        : this.follows.push(res.data);
     },
-    async unfollow(userId) {
+    async unfollow(followId) {
       const res = await axios({
-        url: `http://localhost:3000/api/users/unfollow/${userId}`,
+        url: `http://localhost:3000/api/users/unfollow/${followId}`,
         method: "DELETE",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      return res.data;
+      const follow = this.follows.find((follow) => follow.id === userId);
+      const followIndex = this.follows.indexOf(follow);
+      this.follows.splice(followIndex, 1);
     },
   },
 });

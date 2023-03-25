@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { user } from "../db/sequelize.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -81,6 +82,22 @@ const userController = {
   getAll: async (req, res) => {
     try {
       const Users = await user.findAll({
+        where: req.query.search
+          ? {
+              [Op.or]: [
+                {
+                  firstname: {
+                    [Op.like]: "%" + req.query.search + "%",
+                  },
+                },
+                {
+                  lastname: {
+                    [Op.like]: "%" + req.query.search + "%",
+                  },
+                },
+              ],
+            }
+          : {},
         order: [["firstname", "ASC"]],
         attributes: [
           "id",
@@ -92,29 +109,25 @@ const userController = {
           "isAdmin",
         ],
       });
-      res.status(200).send(Users);
-    } catch {}
-  },
-  search: async (req, res) => {
-    try {
-      const Users = await user.findAll({
-        where: {
-          firstname: {
-            [Op.like]: "%" + req.body.search + "%",
-          },
-        },
-        attributes: [
-          "id",
-          "firstname",
-          "lastname",
-          "username",
-          "job",
-          "profilPicture",
-          "isAdmin",
-        ],
-      });
-      res.status(200).send(Users);
-    } catch {}
+      if ("lastUserId" in req.query) {
+        const lastUser = Users.findIndex(
+          (user) => user.id === parseInt(req.query.lastUserId)
+        );
+        if (lastUser === -1) {
+          console.log("User not found");
+          return res.status(400).send({ message: "User not found" });
+        }
+        const start = lastUser + 1;
+        const end = start + 10;
+        if (start + 1 === Users.length) {
+          return res.status(200).send(Users.slice(start, Users.length));
+        }
+        return res.status(200).send(Users.slice(start, end));
+      }
+      res.status(200).send(Users.slice(0, 10));
+    } catch {
+      res.status(500).send();
+    }
   },
   update: async (req, res) => {
     // Check if the new email address is valid (if provided)

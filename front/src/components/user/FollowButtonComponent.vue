@@ -41,12 +41,25 @@ const updateFollow = async (type, userId) => {
       isFollowing: userId,
     });
   } else {
-    await followStore.unfollow(userId);
+    const followId = followStore.follows.find(
+      (follow) =>
+        follow.author === sesStr.userId && follow.isFollowing === userId
+    ).id;
+    await followStore.unfollow(followId);
   }
   isSubscribed.value = type === "follow";
 };
+
 onMounted(async () => {
-  isSubscribed.value = await followStore.getOne(props.userId);
+  console.log("coucou");
+  const follow = followStore.follows.find(
+    (follow) =>
+      follow.author === sesStr.userId && follow.isFollowing === props.userId
+  );
+  if (follow) {
+    return (isSubscribed.value = true);
+  }
+  await followStore.getOne(props.userId);
 });
 </script>
 
