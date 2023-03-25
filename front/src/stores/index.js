@@ -246,7 +246,7 @@ export const useFollowStore = defineStore("follow", {
           Authorization: `Bearer ${token}`,
         },
       });
-      this.follows.push(...res.data);
+      this.follows.push(res.data);
     },
     async getOne(userId) {
       const res = await axios({
@@ -269,7 +269,7 @@ export const useFollowStore = defineStore("follow", {
           Authorization: `Bearer ${token}`,
         },
       });
-      const follow = this.follows.find((follow) => follow.id === userId);
+      const follow = this.follows.find((follow) => follow.id === followId);
       const followIndex = this.follows.indexOf(follow);
       this.follows.splice(followIndex, 1);
     },

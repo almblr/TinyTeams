@@ -1,20 +1,22 @@
 <template>
-  <div
-    v-if="isSubscribed === false && !loggedInUserProfile"
-    class="btn follow"
-    @click="updateFollow('follow', props.userId)"
-  >
-    <fa icon="fa-solid fa-user-plus" />S'abonner
-  </div>
-  <div
-    v-if="isSubscribed && !loggedInUserProfile"
-    @mouseover="isHovered = true"
-    @mouseleave="isHovered = false"
-    class="btn unfollow"
-    @click="updateFollow('unfollow', props.userId)"
-  >
-    <fa icon="fa-solid fa-check" v-if="isHovered === false" />
-    <fa icon="fa-solid fa-xmark" v-if="isHovered === true" />Abonné
+  <div class="container" v-if="isSubscribed !== null">
+    <div
+      v-if="!isSubscribed && !loggedInUserProfile"
+      class="btn follow"
+      @click="updateFollow('follow', props.userId)"
+    >
+      <fa icon="fa-solid fa-user-plus" />S'abonner
+    </div>
+    <div
+      v-if="isSubscribed && !loggedInUserProfile"
+      @mouseover="isHovered = true"
+      @mouseleave="isHovered = false"
+      class="btn unfollow"
+      @click="updateFollow('unfollow', props.userId)"
+    >
+      <fa icon="fa-solid fa-check" v-if="isHovered === false" />
+      <fa icon="fa-solid fa-xmark" v-if="isHovered === true" />Abonné
+    </div>
   </div>
 </template>
 
@@ -31,7 +33,7 @@ const props = defineProps({
 const followStore = useFollowStore();
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const isHovered = ref(false);
-const isSubscribed = ref(false);
+const isSubscribed = ref(null);
 
 const updateFollow = async (type, userId) => {
   if (type === "follow") {
@@ -43,7 +45,7 @@ const updateFollow = async (type, userId) => {
   } else {
     const followId = followStore.follows.find(
       (follow) =>
-        follow.author === sesStr.userId && follow.isFollowing === userId
+        follow.author === sesStr.userId && follow.isFollowing === props.userId
     ).id;
     await followStore.unfollow(followId);
   }
@@ -51,15 +53,12 @@ const updateFollow = async (type, userId) => {
 };
 
 onMounted(async () => {
-  console.log("coucou");
+  await followStore.getOne(props.userId);
   const follow = followStore.follows.find(
     (follow) =>
       follow.author === sesStr.userId && follow.isFollowing === props.userId
   );
-  if (follow) {
-    return (isSubscribed.value = true);
-  }
-  await followStore.getOne(props.userId);
+  follow ? (isSubscribed.value = true) : (isSubscribed.value = false);
 });
 </script>
 
