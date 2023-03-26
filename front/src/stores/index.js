@@ -6,6 +6,7 @@ let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
 export const useUserStore = defineStore("user", {
   id: "User",
   state: () => ({
+    userProfil: null,
     users: [],
   }),
   actions: {
@@ -61,7 +62,8 @@ export const useUserStore = defineStore("user", {
           Authorization: `Bearer ${token}`,
         },
       });
-      return res.data;
+      this.users.push(res.data);
+      this.userProfil = res.data;
     },
     async getAll(string, lastUserViewed) {
       const res = await axios({
@@ -109,7 +111,7 @@ export const usePostStore = defineStore("post", {
           lastPostId: lastPostViewed,
         },
       });
-      this.posts.push(...res.data);
+      this.posts = res.data;
     },
     async create(data) {
       const res = await axios({

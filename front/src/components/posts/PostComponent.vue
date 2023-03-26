@@ -62,7 +62,6 @@ onMounted(async () => {
     postStore.posts.length = 0;
     return await postStore.getAll(user.id);
   }
-  postStore.posts.length = 0;
   await postStore.getAll();
 });
 

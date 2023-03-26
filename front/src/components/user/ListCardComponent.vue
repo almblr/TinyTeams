@@ -31,12 +31,11 @@ article {
   @include aiCt;
   position: relative;
   width: 95%;
-  max-width: 700px;
-  min-width: 100%;
-  // border-radius: 10px;
+  max-width: 768px;
+  width: 100%;
   min-height: 130px;
   background-color: var(--backgroundSecond);
-  // box-shadow: 5px 0px 20px var(--shadowColor);
+
   color: var(--textColorMain);
   padding: 15px;
   gap: 20px;
@@ -64,6 +63,24 @@ article {
     h3 {
       font-size: 15px;
       font-weight: 400;
+    }
+  }
+}
+
+@media all and (min-width: 768px) {
+  article {
+    border-radius: 10px;
+    box-shadow: 5px 0px 20px var(--shadowColor);
+    & .userInfos {
+      h2 {
+        font-size: 25px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      h3 {
+        font-size: 20px;
+        font-weight: 400;
+      }
     }
   }
 }

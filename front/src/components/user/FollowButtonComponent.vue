@@ -1,23 +1,21 @@
 <template>
-  <div class="container" v-if="isSubscribed !== null">
-    <div
-      v-if="!isSubscribed && !loggedInUserProfile"
-      class="btn follow"
-      @click="updateFollow('follow')"
-    >
-      <fa icon="fa-solid fa-user-plus icon" />S'abonner
-    </div>
-    <div
-      v-if="isSubscribed && !loggedInUserProfile"
-      @mouseover="isHovered = true"
-      @mouseleave="isHovered = false"
-      class="btn unfollow"
-      @click="updateFollow('unfollow')"
-    >
+  <button
+    v-if="isSubscribed !== null && !loggedInUserProfile"
+    class="btn"
+    :class="{ follow: !isSubscribed, unfollow: isSubscribed }"
+    @click="updateFollow(isSubscribed ? 'unfollow' : 'follow')"
+    @mouseover="isHovered = true"
+    @mouseleave="isHovered = false"
+  >
+    <span v-if="!isSubscribed">
+      <fa icon="fa-solid fa-user-plus icon" />
+      S'abonner
+    </span>
+    <span v-if="isSubscribed">
       <fa icon="fa-solid fa-check icon" v-if="!isHovered" />
       <fa icon="fa-solid fa-xmark icon" v-if="isHovered" />Abonné
-    </div>
-  </div>
+    </span>
+  </button>
 </template>
 
 <script setup>
@@ -68,30 +66,40 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .btn {
   @include jcCt-aiCt;
-  gap: 10px;
   max-width: 300px;
   width: 110px;
   height: 35px;
   margin-top: 20px;
   padding: 0px 15px;
-  text-align: center;
+  border: none;
   border-radius: 5px;
   font-size: 15px;
-  color: #ffffff;
   transition: 200ms;
+  color: #ffffff;
+  cursor: pointer;
+  span {
+    @include jcCt-aiCt;
+    gap: 10px;
+  }
 }
 .follow {
   background-color: #2374e1;
-  cursor: pointer;
   &:hover {
     background-color: #2375e1ec;
   }
 }
 .unfollow {
   background-color: #81be8b;
-  cursor: pointer;
   &:hover {
     background-color: #c74242;
+  }
+}
+
+@media all and (min-width: 768px) {
+  .btn {
+    width: 170px;
+    margin-right: 30px;
+    font-size: 20px;
   }
 }
 </style>

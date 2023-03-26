@@ -1,15 +1,17 @@
 <template>
-  <div class="container" v-if="user">
+  <div class="container">
     <div class="band"></div>
-    <img class="profilPicture" :src="user.profilPicture" />
+    <img class="profilPicture" :src="userStore.userProfil.profilPicture" />
     <div class="userInfo">
-      <h2 class="userInfo__name">{{ user.firstname }} {{ user.lastname }}</h2>
+      <h2 class="userInfo__name">
+        {{ userStore.userProfil.firstname }} {{ userStore.userProfil.lastname }}
+      </h2>
       <p class="userInfo__job">Développeur</p>
       <div v-if="loggedInUserProfile" class="userInfo__btn edit">
         <fa icon="fa-solid fa-gear" />Modifier votre profil
       </div>
       <FollowButtonComponent
-        :userId="user.id"
+        :userId="userStore.userProfil.id"
         :loggedInUserProfile="loggedInUserProfile"
       />
     </div>
@@ -17,25 +19,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed, watchEffect } from "vue";
-import { useUserStore } from "@/stores/index.js";
-import { useRoute } from "vue-router";
+import { useUserStore } from "../../stores";
 import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
 
 const userStore = useUserStore();
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const usernameLS = sesStr.username;
-const route = useRoute();
-const user = ref(null);
-const loggedInUserProfile = ref(false);
-
-const updateUser = async (username) => {
-  user.value = await userStore.getOne(username);
-  loggedInUserProfile.value = username === usernameLS;
-};
-
-watch(() => route.params.username, updateUser);
-onMounted(() => updateUser(route.params.username));
+const props = defineProps({
+  loggedInUserProfile: {
+    type: Boolean,
+    required: true,
+  },
+});
 </script>
 
 <style lang="scss" scoped>

@@ -2,14 +2,18 @@
   <div id="container" ref="posts">
     <TheHeaderComponent />
     <main>
-      <ProfilCardComponent />
-      <PostComponent />
+      <ProfilCardComponent
+        v-if="userStore.userProfil"
+        :user="user"
+        :loggedInUserProfile="loggedInUserProfile"
+      />
+      <PostComponent v-if="user" />
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useUserStore, usePostStore } from "../stores";
 import { useInfiniteScroll } from "@vueuse/core";
 import { useRoute } from "vue-router";
@@ -21,14 +25,30 @@ const userStore = useUserStore();
 const postStore = usePostStore();
 const route = useRoute();
 const posts = ref(null);
+const sesStr = JSON.parse(sessionStorage.getItem(`user`));
+const usernameLS = sesStr.username;
+const user = ref(null);
+const loggedInUserProfile = ref(false);
+
+const updateUser = async (username) => {
+  const userFound = userStore.userProfil;
+  userFound
+    ? (user.value = userFound)
+    : (user.value = await userStore.getOne(username));
+  loggedInUserProfile.value = username === usernameLS;
+};
+
+watch(() => route.params.username, updateUser);
+onMounted(() => updateUser(route.params.username));
 
 useInfiniteScroll(
   posts,
   async () => {
-    const user = await userStore.getOne(route.params.username);
-    const lastPost = postStore.posts[postStore.posts.length - 1];
-    const lastPostId = lastPost.id;
-    await postStore.getAll(user.id, lastPostId);
+    if (postStore.posts !== []) {
+      const user = await userStore.getOne(route.params.username);
+      const lastPostId = postStore.posts[postStore.posts.length - 1].id;
+      await postStore.getAll(user.id, lastPostId);
+    }
   },
   {
     distance: 10,
