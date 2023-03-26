@@ -55,6 +55,7 @@ input {
   opacity: 0.8;
   background-color: var(--backgroundSecond);
   caret-color: var(--textColorMain);
+  color: var(--textColorMain);
 }
 input::placeholder {
   color: var(--textColorSecond);

@@ -3,7 +3,6 @@
     <TheHeaderComponent />
     <main>
       <ProfilCardComponent
-        v-if="userStore.userProfil"
         :user="user"
         :loggedInUserProfile="loggedInUserProfile"
       />
@@ -31,7 +30,8 @@ const user = ref(null);
 const loggedInUserProfile = ref(false);
 
 const updateUser = async (username) => {
-  const userFound = userStore.userProfil;
+  const userFound = userStore.users.find((user) => user.username === username);
+  console.log(userFound);
   userFound
     ? (user.value = userFound)
     : (user.value = await userStore.getOne(username));

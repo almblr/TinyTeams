@@ -1,17 +1,17 @@
 <template>
   <div class="container">
     <div class="band"></div>
-    <img class="profilPicture" :src="userStore.userProfil.profilPicture" />
+    <img class="profilPicture" :src="props.user.profilPicture" />
     <div class="userInfo">
       <h2 class="userInfo__name">
-        {{ userStore.userProfil.firstname }} {{ userStore.userProfil.lastname }}
+        {{ props.user.firstname }} {{ props.user.lastname }}
       </h2>
       <p class="userInfo__job">Développeur</p>
       <div v-if="loggedInUserProfile" class="userInfo__btn edit">
         <fa icon="fa-solid fa-gear" />Modifier votre profil
       </div>
       <FollowButtonComponent
-        :userId="userStore.userProfil.id"
+        :userId="props.user.id"
         :loggedInUserProfile="loggedInUserProfile"
       />
     </div>
@@ -19,11 +19,14 @@
 </template>
 
 <script setup>
-import { useUserStore } from "../../stores";
+import { defineProps } from "vue";
 import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
 
-const userStore = useUserStore();
 const props = defineProps({
+  user: {
+    type: Object,
+    required: true,
+  },
   loggedInUserProfile: {
     type: Boolean,
     required: true,

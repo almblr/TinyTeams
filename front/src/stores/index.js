@@ -6,7 +6,6 @@ let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
 export const useUserStore = defineStore("user", {
   id: "User",
   state: () => ({
-    userProfil: null,
     users: [],
   }),
   actions: {
@@ -63,7 +62,6 @@ export const useUserStore = defineStore("user", {
         },
       });
       this.users.push(res.data);
-      this.userProfil = res.data;
     },
     async getAll(string, lastUserViewed) {
       const res = await axios({
