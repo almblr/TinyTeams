@@ -32,22 +32,22 @@ article {
   position: relative;
   width: 95%;
   max-width: 700px;
-  min-width: 260px;
-  border-radius: 10px;
+  min-width: 100%;
+  // border-radius: 10px;
   min-height: 130px;
   background-color: var(--backgroundSecond);
-  box-shadow: 5px 0px 20px var(--shadowColor);
+  // box-shadow: 5px 0px 20px var(--shadowColor);
   color: var(--textColorMain);
   padding: 15px;
-  gap: 30px;
+  gap: 20px;
   a {
     text-decoration: none;
     color: var(--textColorMain);
   }
   .userPicture {
-    width: 80px;
-    height: 80px;
-    border-radius: 40px;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
     object-fit: cover;
   }
   & .userInfos {
@@ -56,6 +56,15 @@ article {
     align-items: flex-start;
     justify-content: center;
     flex: 1;
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    h3 {
+      font-size: 15px;
+      font-weight: 400;
+    }
   }
 }
 </style>

@@ -3,19 +3,19 @@
     <div
       v-if="!isSubscribed && !loggedInUserProfile"
       class="btn follow"
-      @click="updateFollow('follow', props.userId)"
+      @click="updateFollow('follow')"
     >
-      <fa icon="fa-solid fa-user-plus" />S'abonner
+      <fa icon="fa-solid fa-user-plus icon" />S'abonner
     </div>
     <div
       v-if="isSubscribed && !loggedInUserProfile"
       @mouseover="isHovered = true"
       @mouseleave="isHovered = false"
       class="btn unfollow"
-      @click="updateFollow('unfollow', props.userId)"
+      @click="updateFollow('unfollow')"
     >
-      <fa icon="fa-solid fa-check" v-if="isHovered === false" />
-      <fa icon="fa-solid fa-xmark" v-if="isHovered === true" />Abonné
+      <fa icon="fa-solid fa-check icon" v-if="!isHovered" />
+      <fa icon="fa-solid fa-xmark icon" v-if="isHovered" />Abonné
     </div>
   </div>
 </template>
@@ -35,19 +35,22 @@ const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const isHovered = ref(false);
 const isSubscribed = ref(null);
 
-const updateFollow = async (type, userId) => {
+const updateFollow = async (type) => {
   if (type === "follow") {
-    await followStore.sendFollow(userId);
+    await followStore.sendFollow(props.userId);
+
     socket.emit("sendFollow", {
       author: sesStr.userId,
-      isFollowing: userId,
+      isFollowing: props.userId,
     });
+    isHovered.value = false;
   } else {
     const followId = followStore.follows.find(
       (follow) =>
         follow.author === sesStr.userId && follow.isFollowing === props.userId
     ).id;
     await followStore.unfollow(followId);
+    isHovered.value = true;
   }
   isSubscribed.value = type === "follow";
 };
@@ -67,12 +70,13 @@ onMounted(async () => {
   @include jcCt-aiCt;
   gap: 10px;
   max-width: 300px;
+  width: 110px;
   height: 35px;
   margin-top: 20px;
   padding: 0px 15px;
   text-align: center;
   border-radius: 5px;
-  font-size: 19px;
+  font-size: 15px;
   color: #ffffff;
   transition: 200ms;
 }

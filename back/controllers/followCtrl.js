@@ -11,7 +11,7 @@ const followController = {
       const isAlreadyFollow = await follow.findOne({
         where: {
           author: req.auth.userId,
-          isFollowing: req.params.userId,
+          isFollowing: parseInt(req.params.userId),
         },
       });
       if (isAlreadyFollow) {
@@ -19,7 +19,7 @@ const followController = {
       }
       const newFollow = await follow.create({
         author: req.auth.userId,
-        isFollowing: req.params.userId,
+        isFollowing: parseInt(req.params.userId),
       });
       res.status(201).send(newFollow);
     } catch {
@@ -31,7 +31,7 @@ const followController = {
       const Follow = await follow.findOne({
         where: {
           author: req.auth.userId,
-          isFollowing: req.params.userId,
+          isFollowing: parseInt(req.params.userId),
         },
       });
       if (!Follow) {
@@ -48,7 +48,7 @@ const followController = {
     try {
       const Follow = await follow.findOne({
         where: {
-          id: req.params.followId,
+          id: parseInt(req.params.followId),
         },
       });
       await Follow.destroy();

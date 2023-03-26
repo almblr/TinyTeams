@@ -42,6 +42,6 @@ onMounted(async () => {
   transition: 200ms;
   min-height: 100%;
   padding-top: 30px;
-  gap: 30px;
+  gap: 0;
 }
 </style>
