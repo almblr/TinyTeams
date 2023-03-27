@@ -27,7 +27,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { useCommentStore } from "@/stores/index.js";
+import useCommentStore from "@/stores/commentSTORE.js";
 import { useTextareaAutosize } from "@vueuse/core";
 import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
 import GifPanel from "@/components/posts/GifPanel.vue";

@@ -15,7 +15,8 @@
 
 <script setup>
 import { onMounted, computed } from "vue";
-import { usePostStore, useCommentStore } from "@/stores/index.js";
+import usePostStore from "@/stores/postStore.js";
+import useCommentStore from "@/stores/commentStore.js";
 import { useTextareaAutosize } from "@vueuse/core";
 
 const { textarea, input } = useTextareaAutosize();

@@ -11,7 +11,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
-import { useUserStore } from "@/stores/index.js";
+import useUserStore from "@/stores/userStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardList from "@/components/users/UserCardList.vue";
 import ResearchBar from "@//components/layout/ResearchBar.vue";

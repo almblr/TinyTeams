@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useUserStore } from "@/stores/index.js";
+import useUserStore from "@/stores/userStore.js";
 
 const userStore = useUserStore();
 const search = ref(null);

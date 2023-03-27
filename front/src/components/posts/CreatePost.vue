@@ -34,8 +34,8 @@
 <script setup>
 import { ref } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
-import { usePostStore } from "@/stores/index.js";
 import { io } from "socket.io-client";
+import usePostStore from "@/stores/postStore.js";
 import ModalLayer from "@/components/layout/ModalLayer.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
 import ImagePreview from "@/components/layout/ImagePreview.vue";

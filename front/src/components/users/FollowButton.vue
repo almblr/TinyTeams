@@ -20,7 +20,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useFollowStore } from "@/stores/index.js";
+import useFollowStore from "@/stores/followStore.js";
 import socket from "@/services/socketio.js";
 
 const props = defineProps({

@@ -46,7 +46,8 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import { usePostStore, useLikeStore } from "@/stores/index.js";
+import usePostStore from "@/stores/postStore.js";
+import useLikeStore from "@/stores/likeStore.js";
 import socket from "@/services/socketio.js";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 

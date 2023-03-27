@@ -31,7 +31,8 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
-import { usePostStore, useUserStore } from "@/stores/index.js";
+import usePostStore from "@/stores/postStore.js";
+import useUserStore from "@/stores/userStore.js";
 import BlockDivider from "@//components/layout/BlockDivider.vue";
 import PostHeader from "@/components/posts/PostHeader.vue";
 import PostMain from "@/components/posts/PostMain.vue";

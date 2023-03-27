@@ -14,9 +14,10 @@
 
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { useUserStore, usePostStore } from "@/stores/index.js";
 import { useInfiniteScroll } from "@vueuse/core";
 import { useRoute } from "vue-router";
+import useUserStore from "@/stores/userStore.js";
+import usePostStore from "@/stores/postStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardProfil from "@/components/users/UserCardProfil.vue";
 import PostContainer from "@/components/posts/PostContainer.vue";

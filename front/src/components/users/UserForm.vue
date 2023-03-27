@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { useUserStore } from "@/stores/index.js";
+import useUserStore from "@/stores/userStore.js";
 import TheLogo from "@//components/layout/TheLogo.vue";
 
 const props = defineProps({

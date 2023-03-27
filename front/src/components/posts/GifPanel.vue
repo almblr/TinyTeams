@@ -27,7 +27,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
-import { useGiphyStore } from "@/stores/index.js";
+import useGiphyStore from "@/stores/giphyStore.js";
 import { vOnClickOutside } from "@vueuse/components";
 
 const gifStore = useGiphyStore();
