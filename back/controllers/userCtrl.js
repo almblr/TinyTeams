@@ -55,6 +55,8 @@ const userController = {
         username: User.username,
         profilPicture: User.profilPicture,
         token: token,
+        job: User.job,
+        email: User.email,
       });
     } catch {
       res.status(500).send();

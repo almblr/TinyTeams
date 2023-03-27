@@ -22,14 +22,14 @@
       <div class="btn tooltip" v-on-click-outside="closeTooltip" title="Compte">
         <img
           class="tooltip_button profilPicture"
-          :src="profilPicture"
+          :src="profilPictureUrl"
           @click="showTooltip = !showTooltip"
         />
         <div class="tooltip__content" v-show="showTooltip === true">
           <router-link :to="`/users/${username}`" class="profilButton">{{
             "Votre profil"
           }}</router-link>
-          <router-link to="/">Paramètres</router-link>
+          <router-link to="/settings">Paramètres</router-link>
           <router-link to="/" @click="logout"> Se déconnecter </router-link>
         </div>
       </div>
@@ -41,11 +41,12 @@
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import SwitchThemeButton from "@/components/buttons/SwitchThemeButton.vue";
+import useUserStore from "@/stores/userStore.js";
 
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const username = sesStr.username;
-const profilPicture = sesStr.profilPicture;
+const userStore = useUserStore();
 const showTooltip = ref(null);
+const profilPictureUrl = userStore.connectedUser.profilPicture;
+const username = userStore.connectedUser.username;
 
 /* La directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
 const closeTooltip = () => {

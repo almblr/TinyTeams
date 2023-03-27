@@ -26,14 +26,12 @@ const userStore = useUserStore();
 const postStore = usePostStore();
 const route = useRoute();
 const posts = ref(null);
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const usernameLS = sesStr.username;
 const user = ref(null);
 const loggedInUserProfile = ref(false);
 
 const getUser = async (username) => {
   user.value = await userStore.getOne(username);
-  loggedInUserProfile.value = username === usernameLS;
+  loggedInUserProfile.value = username === userStore.connectedUser.username;
 };
 
 watch(() => route.params.username, getUser);
@@ -57,7 +55,7 @@ useInfiniteScroll(
 <style lang="scss" scoped>
 #container {
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
 }
 main {

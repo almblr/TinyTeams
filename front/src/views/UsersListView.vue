@@ -19,10 +19,6 @@ import ResearchBar from "@//components/layout/ResearchBar.vue";
 const usersList = ref(null);
 const userStore = useUserStore();
 
-onMounted(async () => {
-  await userStore.getAll();
-});
-
 useInfiniteScroll(
   usersList,
   async () => {
@@ -34,6 +30,10 @@ useInfiniteScroll(
     distance: 10,
   }
 );
+
+onMounted(async () => {
+  await userStore.getAll();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -41,7 +41,7 @@ useInfiniteScroll(
   @include fdCol-jcCt-aiCt;
   background-color: var(--backgroundMain);
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
   gap: 30px;
 }

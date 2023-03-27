@@ -5,6 +5,7 @@ let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
 
 const useUserStore = defineStore("user", {
   state: () => ({
+    connectedUser: null,
     users: [],
   }),
   actions: {
@@ -41,16 +42,12 @@ const useUserStore = defineStore("user", {
       sessionStorage.setItem(
         "user",
         JSON.stringify({
-          userId: res.data.userId,
-          isAdmin: res.data.isAdmin,
-          firstname: res.data.firstname,
-          lastname: res.data.lastname,
-          username: res.data.username,
-          profilPicture: res.data.profilPicture,
           token: res.data.token,
         })
       );
       token = res.data.token;
+      this.connectedUser = res.data;
+      console.log(this.connectedUser);
       return res.data;
     },
     async getOne(username) {
@@ -79,6 +76,7 @@ const useUserStore = defineStore("user", {
       this.users = res.data;
     },
   },
+  persist: true,
 });
 
 export default useUserStore;

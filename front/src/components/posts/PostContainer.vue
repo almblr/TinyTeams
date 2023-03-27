@@ -1,5 +1,7 @@
 <template>
-  <span v-if="postStore.posts.length === 0"> {{ noPost }}</span>
+  <span v-if="postStore.posts.length === 0 && !isLoading">
+    {{ noPostMessage }}</span
+  >
   <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
     <PostHeader
       :author="post.author"
@@ -41,9 +43,10 @@ import PostFooter from "@/components/posts/PostFooter.vue";
 const postStore = usePostStore();
 const userStore = useUserStore();
 const route = useRoute();
+const isLoading = ref(true);
 const article = ref(null);
 
-const noPost = computed(() => {
+const noPostMessage = computed(() => {
   if (route.name === "News") {
     return "Il n'y a aucun post à afficher";
   }
@@ -64,6 +67,7 @@ onMounted(async () => {
     return await postStore.getAll(user.id);
   }
   await postStore.getAll();
+  isLoading.value = false;
 });
 
 watch(
