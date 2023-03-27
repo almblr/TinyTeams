@@ -8,7 +8,7 @@
       <h3>Jobless</h3>
     </div>
     <div>
-      <FollowButtonComponent
+      <FollowButton
         :userId="user.id"
         :loggedInUserProfile="user.id === connectedUser"
       />
@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
+import FollowButton from "@/components/users/FollowButton.vue";
 
 const props = defineProps({
   users: Array,

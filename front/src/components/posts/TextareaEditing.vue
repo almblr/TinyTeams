@@ -14,8 +14,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { usePostStore, useCommentStore } from "../../stores";
+import { onMounted, computed } from "vue";
+import { usePostStore, useCommentStore } from "@/stores/index.js";
 import { useTextareaAutosize } from "@vueuse/core";
 
 const { textarea, input } = useTextareaAutosize();

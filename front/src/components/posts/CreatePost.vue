@@ -4,7 +4,7 @@
       <header>
         <h2>Créer une publication</h2>
       </header>
-      <DividerComponent width="100%" height="1px" />
+      <BlockDivider width="100%" height="1px" />
       <main>
         <textarea
           :placeholder="`Quoi de neuf, ${firstname} ?`"
@@ -13,10 +13,7 @@
           ref="textarea"
         ></textarea>
         <div class="imagePreview" v-if="imageBlop">
-          <ImagePreviewComponent
-            :src="imageBlop"
-            @remove-image="deleteImagePreview"
-          />
+          <ImagePreview :src="imageBlop" @remove-image="deleteImagePreview" />
         </div>
       </main>
       <footer>
@@ -36,13 +33,13 @@
 
 <script setup>
 import { ref } from "vue";
-import { usePostStore } from "../../stores/index.js";
-import { io } from "socket.io-client";
-import ModalLayer from "@/components/layout/ModalLayerComponent.vue";
-import AddMediaButton from "@/components/layout/AddMediaButton.vue";
-import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
-import DividerComponent from "../layout/DividerComponent.vue";
 import { useTextareaAutosize } from "@vueuse/core";
+import { usePostStore } from "@/stores/index.js";
+import { io } from "socket.io-client";
+import ModalLayer from "@/components/layout/ModalLayer.vue";
+import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
+import ImagePreview from "@/components/layout/ImagePreview.vue";
+import BlockDivider from "@/components/layout/BlockDivider.vue";
 
 const emit = defineEmits(["close"]);
 const props = defineProps({

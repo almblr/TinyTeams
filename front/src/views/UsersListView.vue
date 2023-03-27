@@ -2,8 +2,8 @@
   <div id="container" ref="usersList">
     <TheHeader />
     <main id="users">
-      <ResearchBarComponent></ResearchBarComponent>
-      <ListCardComponent :users="userStore.users" />
+      <ResearchBar />
+      <UserCardList :users="userStore.users" />
     </main>
   </div>
 </template>
@@ -12,9 +12,9 @@
 import { ref, onMounted } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import { useUserStore } from "@/stores/index.js";
-import TheHeader from "@/components/layout/TheHeaderComponent.vue";
-import ListCardComponent from "@/components/user/ListCardComponent.vue";
-import ResearchBarComponent from "../components/layout/ResearchBarComponent.vue";
+import TheHeader from "@//components/layout/TheHeader.vue";
+import UserCardList from "@/components/users/UserCardList.vue";
+import ResearchBar from "@//components/layout/ResearchBar.vue";
 
 const usersList = ref(null);
 const userStore = useUserStore();

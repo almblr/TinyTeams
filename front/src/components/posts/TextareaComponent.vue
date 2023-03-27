@@ -15,26 +15,23 @@
           ></AddMediaButton>
         </div>
         <div title="Insérer un gif">
-          <GifTooltipComponent @showUploadedGif="getUrls" />
+          <GifPanel @showUploadedGif="getUrls" />
         </div>
       </div>
     </div>
     <div class="imagePreview" v-if="mediaPreview">
-      <ImagePreviewComponent
-        :src="mediaPreview"
-        @remove-image="deleteImagePreview"
-      />
+      <ImagePreview :src="mediaPreview" @remove-image="deleteImagePreview" />
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { useCommentStore } from "../../stores/index.js";
-import AddMediaButton from "../layout/AddMediaButton.vue";
-import GifTooltipComponent from "./GifTooltipComponent.vue";
-import ImagePreviewComponent from "../layout/ImagePreviewComponent.vue";
+import { useCommentStore } from "@/stores/index.js";
 import { useTextareaAutosize } from "@vueuse/core";
+import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
+import GifPanel from "@/components/posts/GifPanel.vue";
+import ImagePreview from "@//components/layout/ImagePreview.vue";
 
 const { textarea, input } = useTextareaAutosize();
 

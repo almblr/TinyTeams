@@ -1,18 +1,18 @@
 <template>
   <header>
     <div class="divLogo">
-      <router-link to="/news" class="logo-router-link logo">
+      <router-link to="/feed" class="logo-router-link logo">
         <img src="@/assets/logo-white.png" alt="logo TinyTeams" />
       </router-link>
     </div>
     <nav>
-      <router-link to="/news"><fa icon="fa-solid fa-house" /></router-link>
+      <router-link to="/feed"><fa icon="fa-solid fa-house" /></router-link>
       <router-link to="/users"
         ><fa icon="fa-solid fa-user-group"
       /></router-link>
     </nav>
     <div class="buttons">
-      <SwitchTheme />
+      <SwitchThemeButton />
       <router-link to="/" class="btn"
         ><fa icon="fa-brands fa-facebook-messenger"
       /></router-link>
@@ -40,7 +40,7 @@
 <script setup>
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import SwitchTheme from "../buttons/SwitchTheme.vue";
+import SwitchThemeButton from "@/components/buttons/SwitchThemeButton.vue";
 
 const sesStr = JSON.parse(sessionStorage.getItem(`user`));
 const username = sesStr.username;

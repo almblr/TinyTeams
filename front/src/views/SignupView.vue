@@ -1,5 +1,5 @@
 <template>
-  <FormComponent
+  <UserForm
     title="Inscription"
     link="/login"
     question="Déjà inscrit ?"
@@ -35,26 +35,26 @@
         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
         required
       />
-      <eye-component
+      <PasswordSwitcherButton
         :type="inputType"
         @switchInputType="showHidePassword"
-      ></eye-component>
+      ></PasswordSwitcherButton>
       <span>
         Doit contenir une majuscule, un chiffre et un caractère spécial (8
         caractères min.)
       </span>
     </div>
-    <button-form buttonType="submit" text="S'inscrire"></button-form>
-  </FormComponent>
+    <SubmitFormButton buttonType="submit" text="S'inscrire"></SubmitFormButton>
+  </UserForm>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import router from "../router/index.js";
-import { useUserStore } from "../stores/index.js";
-import FormComponent from "@/components/layout/FormComponent.vue";
-import EyeComponent from "../components/buttons/EyeComponent.vue";
-import ButtonForm from "../components/buttons/ButtonFormComponent.vue";
+import { useUserStore } from "@/stores/index.js";
+import router from "@/router/index.js";
+import UserForm from "@/components/users/UserForm.vue";
+import PasswordSwitcherButton from "@/components/buttons/PasswordSwitcherButton.vue";
+import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 
 const emit = defineEmits(["close"]);
 const props = defineProps({
@@ -72,7 +72,7 @@ const showHidePassword = (e) => {
 
 const signup = async () => {
   await userStore.signup(userInfo.value);
-  router.push("/news");
+  router.push("/feed");
 };
 </script>
 

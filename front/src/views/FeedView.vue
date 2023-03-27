@@ -1,20 +1,20 @@
 <template>
   <div id="container" ref="posts">
-    <the-header />
+    <TheHeader />
     <main id="posts">
-      <post-component />
+      <PostContainer />
     </main>
     <button class="createPost" @click="showCreateModal = true">
       <fa icon="fa-solid fa-feather" class="show-modal icon" />
     </button>
     <Teleport to="body">
-      <post-modal
+      <CreatePost
         :show="showCreateModal"
         @close="showCreateModal = false"
         :modalType="'New'"
         :post="{}"
       >
-      </post-modal>
+      </CreatePost>
     </Teleport>
   </div>
 </template>
@@ -22,10 +22,10 @@
 <script setup>
 import { ref } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
-import { usePostStore } from "../stores";
-import PostModal from "@/components/posts/PostModalComponent.vue";
-import TheHeader from "@/components/layout/TheHeaderComponent.vue";
-import PostComponent from "@/components/posts/PostComponent.vue";
+import { usePostStore } from "@//stores/index.js";
+import TheHeader from "@//components/layout/TheHeader.vue";
+import CreatePost from "@/components/posts/CreatePost.vue";
+import PostContainer from "@/components/posts/PostContainer.vue";
 
 const emit = defineEmits(["sendRefs"]);
 const postStore = usePostStore();

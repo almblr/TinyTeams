@@ -1,7 +1,7 @@
 <template>
-  <div id="body">
-    <div class="container">
-      <Logo />
+  <div id="container">
+    <div class="formContainer">
+      <TheLogo />
       <main class="form">
         <h2 class="form__title">{{ props.title }}</h2>
         <form class="form__body" @submit.prevent="props.submit">
@@ -11,9 +11,9 @@
       <footer>
         <p>
           {{ props.question }}
-          <RouterLink :to="props.link" @click="resetForm">{{
+          <router-link :to="props.link" @click="resetForm">{{
             props.reponse
-          }}</RouterLink>
+          }}</router-link>
         </p>
       </footer>
     </div>
@@ -24,9 +24,8 @@
 </template>
 
 <script setup>
-import Logo from "./LogoComponent.vue";
-import { useUserStore } from "../../stores/index.js";
-const userStore = useUserStore();
+import { useUserStore } from "@/stores/index.js";
+import TheLogo from "@//components/layout/TheLogo.vue";
 
 const props = defineProps({
   title: String,
@@ -38,13 +37,14 @@ const props = defineProps({
   popup: Boolean,
 });
 
+const userStore = useUserStore();
 const resetForm = () => {
   userStore.$reset();
 };
 </script>
 
 <style lang="scss" scoped>
-#body {
+#container {
   @include jcCt-aiCt;
   position: relative;
   width: 100vw;
@@ -52,7 +52,7 @@ const resetForm = () => {
   background: url("@/assets/entreprise.jpg");
   background-size: cover;
 }
-.container {
+.formContainer {
   @include fdCol-jcSe-aiCt;
   width: 100%;
   max-width: 600px;

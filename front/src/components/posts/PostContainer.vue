@@ -1,7 +1,7 @@
 <template>
   <span v-if="postStore.posts.length === 0"> {{ noPost }}</span>
   <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
-    <PostHeaderComponent
+    <PostHeader
       :author="post.author"
       :postId="post.id"
       :imageUrl="post.user.profilPicture"
@@ -10,7 +10,7 @@
       :createdAt="post.createdAt"
       @editPost="modifyPost"
     />
-    <PostMainComponent
+    <PostMain
       :postId="post.id"
       :author="post.author"
       :postContent="post.content"
@@ -19,8 +19,8 @@
       :postComments="post.comments"
       v-model:postToEdit="getPostId"
     />
-    <DividerComponent width="98%" height="1px" />
-    <PostFooterComponent
+    <BlockDivider width="98%" height="1px" />
+    <PostFooter
       :postId="post.id"
       :profilPicture="post.user.profilPicture"
       :postComments="[...post.comments]"
@@ -30,12 +30,12 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
-import { usePostStore, useUserStore } from "../../stores";
 import { useRoute } from "vue-router";
-import PostHeaderComponent from "./PostHeaderComponent.vue";
-import PostMainComponent from "./PostMainComponent.vue";
-import DividerComponent from "../layout/DividerComponent.vue";
-import PostFooterComponent from "./postFooterComponent.vue";
+import { usePostStore, useUserStore } from "@/stores/index.js";
+import BlockDivider from "@//components/layout/BlockDivider.vue";
+import PostHeader from "@/components/posts/PostHeader.vue";
+import PostMain from "@/components/posts/PostMain.vue";
+import PostFooter from "@/components/posts/PostFooter.vue";
 
 const postStore = usePostStore();
 const userStore = useUserStore();

@@ -1,22 +1,22 @@
 <template>
   <footer class="footer">
     <div class="footer__writeComment">
-      <ProfilPictureComponent
+      <ProfilPicture
         :url="props.profilPicture"
         alt="Profil picture"
         width="35px"
         height="35px"
       />
-      <TextareaComponent :postId="props.postId"></TextareaComponent>
+      <TextareaComponent :postId="props.postId" />
     </div>
-    <CommentSectionComponent :comments="props.postComments" />
+    <CommentSection :comments="props.postComments" />
   </footer>
 </template>
 
 <script setup>
-import ProfilPictureComponent from "./ProfilPictureComponent.vue";
-import TextareaComponent from "./TextareaComponent.vue";
-import CommentSectionComponent from "./CommentSectionComponent.vue";
+import ProfilPicture from "@/components/layout/ProfilPicture.vue";
+import TextareaComponent from "@/components/posts/TextareaComponent.vue";
+import CommentSection from "@/components/posts/CommentSection.vue";
 
 const props = defineProps({
   postId: Number,

@@ -20,9 +20,8 @@ const props = defineProps({
 });
 
 const switchInputType = () => {
-  props.type === "password"
-    ? emit("switchInputType", "text")
-    : emit("switchInputType", "password");
+  const newType = props.type === "password" ? "text" : "password";
+  emit("switchInputType", newType);
 };
 </script>
 

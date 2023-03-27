@@ -1,10 +1,5 @@
 <template>
-  <div
-    :style="{
-      width: props.width,
-      height: props.height,
-    }"
-  ></div>
+  <div class="divider"></div>
 </template>
 
 <script setup>
@@ -15,7 +10,9 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
-div {
+.divider {
   background-color: var(--colorDivider);
+  width: v-bind("props.width");
+  height: v-bind("props.height");
 }
 </style>

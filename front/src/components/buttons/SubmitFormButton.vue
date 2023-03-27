@@ -1,6 +1,6 @@
 <template>
-  <button :type="props.buttonType">
-    <span>{{ props.text }}</span>
+  <button class="button" :type="props.buttonType">
+    <span class="button__text">{{ props.text }}</span>
   </button>
 </template>
 
@@ -18,7 +18,7 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
-button {
+.button {
   width: 100%;
   max-width: 200px;
   max-height: 40px;
@@ -29,18 +29,18 @@ button {
   border-radius: 10px;
   border: none;
   transition: 0.2s;
-  & > span {
-    font-weight: 700;
-    font-size: 19px;
-    text-align: center;
-    color: #ffffff;
-  }
   &:hover {
     background: #1a79f5;
     opacity: 1;
     transition: 0.2s;
     box-shadow: 5px 4px 7px rgba(0, 0, 0, 0.5);
     cursor: pointer;
+  }
+  &__text {
+    font-weight: 700;
+    font-size: 19px;
+    text-align: center;
+    color: #ffffff;
   }
 }
 </style>

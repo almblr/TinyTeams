@@ -1,25 +1,25 @@
 <template>
   <div id="container" ref="posts">
-    <TheHeaderComponent />
+    <TheHeader />
     <main>
-      <ProfilCardComponent
+      <UserCardProfil
         v-if="user !== null"
         :user="user"
         :loggedInUserProfile="loggedInUserProfile"
       />
-      <PostComponent v-if="user" />
+      <PostContainer v-if="user" />
     </main>
   </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { useUserStore, usePostStore } from "../stores";
+import { useUserStore, usePostStore } from "@/stores/index.js";
 import { useInfiniteScroll } from "@vueuse/core";
 import { useRoute } from "vue-router";
-import TheHeaderComponent from "@/components/layout/TheHeaderComponent.vue";
-import ProfilCardComponent from "@/components/user/ProfilCardComponent.vue";
-import PostComponent from "@/components/posts/PostComponent.vue";
+import TheHeader from "@//components/layout/TheHeader.vue";
+import UserCardProfil from "@/components/users/UserCardProfil.vue";
+import PostContainer from "@/components/posts/PostContainer.vue";
 
 const userStore = useUserStore();
 const postStore = usePostStore();

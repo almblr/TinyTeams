@@ -3,7 +3,7 @@
     <p class="main__text" v-if="postContent !== null && editingMode === false">
       {{ postContent }}
     </p>
-    <TextareaEditingComponent
+    <TextareaEditing
       v-else
       :postId="props.postId"
       :content="props.postContent"
@@ -46,9 +46,9 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import { usePostStore, useLikeStore } from "../../stores/index.js";
-import TextareaEditingComponent from "./TextareaEditingComponent.vue";
-import socket from "../../services/socketio.js";
+import { usePostStore, useLikeStore } from "@/stores/index.js";
+import socket from "@/services/socketio.js";
+import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
 const postStore = usePostStore();
 const likeStore = useLikeStore();

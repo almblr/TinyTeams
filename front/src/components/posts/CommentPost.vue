@@ -1,6 +1,6 @@
 <template>
   <div
-    class="div"
+    class="container"
     @mouseover="showTooltip = true"
     @mouseleave="showTooltip = false"
     ref="comment"
@@ -9,7 +9,7 @@
       <router-link :to="`/users/${username}`" class="title"
         >{{ props.firstname }} {{ props.lastname }}</router-link
       >
-      <ToolTipComponent
+      <PostTooltip
         :commentId="props.commentId"
         :postId="props.postId"
         :author="props.author"
@@ -21,7 +21,7 @@
       />
     </header>
     <p v-if="!editingMode">{{ props.content }}</p>
-    <TextareaEditingComponent
+    <TextareaEditing
       v-else
       :postId="props.postId"
       :commentId="props.commentId"
@@ -36,8 +36,8 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import TextareaEditingComponent from "./TextareaEditingComponent.vue";
-import ToolTipComponent from "./ToolTipComponent.vue";
+import TextareaEditing from "@/components/posts/TextareaEditing.vue";
+import PostTooltip from "@/components/posts/PostTooltip.vue";
 
 const emit = defineEmits(["update:selectedCommentId"]);
 const props = defineProps({
@@ -83,7 +83,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.div {
+.container {
   display: flex;
   flex-direction: column;
   min-width: 100px;

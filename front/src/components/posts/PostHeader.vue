@@ -5,11 +5,17 @@
         <img :src="props.imageUrl" alt="Photo de profil" />
       </router-link>
       <div class="post__header__user__title">
-        <h2>{{ props.firstname }} {{ props.lastname }}</h2>
+        <router-link
+          :to="`/users/${username}`"
+          class="post__header__user__title__name"
+        >
+          <h2>{{ props.firstname }} {{ props.lastname }}</h2>
+        </router-link>
+
         <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
       </div>
     </div>
-    <ToolTipComponent
+    <PostTooltip
       :postId="props.postId"
       :author="props.author"
       type="post"
@@ -22,10 +28,10 @@
 </template>
 
 <script setup>
-import ToolTipComponent from "./ToolTipComponent.vue";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
+import PostTooltip from "@/components/posts/PostTooltip.vue";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
@@ -87,8 +93,15 @@ const edit = (postId) => {
       gap: 1px;
       flex-direction: column;
       color: var(--textColorMain);
-      & h2 {
-        font-size: 0.95rem;
+      &__name {
+        text-decoration: none;
+        h2 {
+          font-size: 0.95rem;
+          color: var(--textColorMain);
+          &:hover {
+            text-decoration: underline;
+          }
+        }
       }
       & span {
         font-size: 0.93rem;

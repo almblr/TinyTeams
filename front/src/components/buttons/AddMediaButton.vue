@@ -12,10 +12,11 @@
 </template>
 
 <script setup>
+const emit = defineEmits(["showUploadedImg"]);
 const props = defineProps({
   iconSize: String,
 });
-const emit = defineEmits(["showUploadedImg"]);
+
 const GetUploadedImg = (event) => {
   const blop = URL.createObjectURL(event.target.files[0]);
   const file = event.target.files[0];

@@ -10,7 +10,7 @@
       <div v-if="loggedInUserProfile" class="userInfo__btn edit">
         <fa icon="fa-solid fa-gear" />Modifier votre profil
       </div>
-      <FollowButtonComponent
+      <FollowButton
         :userId="props.user.id"
         :loggedInUserProfile="loggedInUserProfile"
       />
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
+import FollowButton from "@/components/users/FollowButton.vue";
 
 const props = defineProps({
   user: {

@@ -6,8 +6,6 @@
   </Transition>
 </template>
 
-<script setup></script>
-
 <style lang="scss" scoped>
 .modal__layer {
   @include jcCt;

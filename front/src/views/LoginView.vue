@@ -1,5 +1,5 @@
 <template>
-  <FormComponent
+  <UserForm
     title="Connexion"
     link="/signup"
     question="Pas de compte ?"
@@ -16,22 +16,25 @@
         v-model="data.password"
         required
       />
-      <eye-component
+      <PasswordSwitcherButton
         :type="inputType"
         @switchInputType="showHidePassword"
-      ></eye-component>
+      ></PasswordSwitcherButton>
     </div>
-    <button-form buttonType="submit" text="Se connecter"></button-form>
-  </FormComponent>
+    <SubmitFormButton
+      buttonType="submit"
+      text="Se connecter"
+    ></SubmitFormButton>
+  </UserForm>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { useUserStore } from "../stores/index.js";
-import router from "../router/index.js";
-import FormComponent from "@/components/layout/FormComponent.vue";
-import EyeComponent from "../components/buttons/EyeComponent.vue";
-import ButtonForm from "../components/buttons/ButtonFormComponent.vue";
+import { useUserStore } from "@/stores/index.js";
+import router from "@/router/index.js";
+import UserForm from "@/components/users/UserForm.vue";
+import PasswordSwitcherButton from "@/components/buttons/PasswordSwitcherButton.vue";
+import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 
 const userStore = useUserStore();
 const inputType = ref("password");
@@ -52,7 +55,7 @@ const login = async () => {
     }, 7000);
     return;
   }
-  router.push("/news");
+  router.push("/feed");
 };
 </script>
 

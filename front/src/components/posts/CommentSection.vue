@@ -12,7 +12,7 @@
         width="35px"
         height="35px"
       />
-      <CommentComponent
+      <CommentPost
         :author="comment.author"
         :postId="comment.postId"
         :commentId="comment.id"
@@ -28,8 +28,8 @@
 
 <script setup>
 import { ref } from "vue";
-import ProfilPicture from "./ProfilPictureComponent.vue";
-import CommentComponent from "./CommentComponent.vue";
+import ProfilPicture from "@/components/layout/ProfilPicture.vue";
+import CommentPost from "@/components/posts/CommentPost.vue";
 
 const props = defineProps({
   comments: Array,

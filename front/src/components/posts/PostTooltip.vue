@@ -21,7 +21,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { usePostStore, useCommentStore } from "../../stores";
+import { usePostStore, useCommentStore } from "@/stores/index.js";
 import { vOnClickOutside } from "@vueuse/components";
 import { useRoute } from "vue-router";
 

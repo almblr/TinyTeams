@@ -1,10 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Login from "@/views/LoginView.vue";
-import News from "@/views/NewsFeedView.vue";
+import Feed from "@/views/FeedView.vue";
 import Signup from "@/views/SignupView.vue";
-import ViewPost from "@/views/ViewPost.vue";
-import ProfilPage from "@/views/ProfilView.vue";
+import UserProfil from "@/views/UserProfilView.vue";
 import UsersList from "@/views/UsersListView.vue";
+import Settings from "@/views/SettingsView.vue";
 
 const routes = [
   {
@@ -22,16 +22,9 @@ const routes = [
     component: Signup,
   },
   {
-    path: "/news",
-    name: "News",
-    component: News,
-    children: [
-      {
-        path: ":id",
-        name: "ViewPost",
-        component: ViewPost,
-      },
-    ],
+    path: "/feed",
+    name: "Feed",
+    component: Feed,
     beforeEnter: (_, _2, next) => {
       window.sessionStorage.getItem("user") ? next() : next("/login");
     },
@@ -44,7 +37,12 @@ const routes = [
   {
     path: "/users/:username",
     name: "UserProfil",
-    component: ProfilPage,
+    component: UserProfil,
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
   },
 ];
 

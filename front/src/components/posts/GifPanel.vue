@@ -27,7 +27,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
-import { useGiphyStore } from "../../stores";
+import { useGiphyStore } from "@/stores/index.js";
 import { vOnClickOutside } from "@vueuse/components";
 
 const gifStore = useGiphyStore();
@@ -40,12 +40,17 @@ const searchedTerm = ref("");
 const emit = defineEmits(["showUploadedGif"]);
 
 const tooltipClass = computed(() => {
-  return {
-    "tooltip-up": spaceUp.value === true,
-    "tooltip-down": spaceUp.value === false,
-    tooltip: true, // default class
-  };
+  const direction = spaceUp.value ? "up" : "down";
+  return `tooltip-${direction} tooltip`;
 });
+
+// const tooltipClass = computed(() => {
+//   return {
+//     "tooltip-up": spaceUp.value === true,
+//     "tooltip-down": spaceUp.value === false,
+//     tooltip: true, // default class
+//   };
+// });
 
 const calculateAvailableSpace = () => {
   const clientHeight = document.documentElement.clientHeight;
