@@ -35,7 +35,6 @@ article {
   width: 100%;
   min-height: 130px;
   background-color: var(--backgroundSecond);
-
   color: var(--textColorMain);
   padding: 15px;
   gap: 20px;
@@ -71,6 +70,7 @@ article {
   article {
     border-radius: 10px;
     box-shadow: 5px 0px 20px var(--shadowColor);
+    padding: 15px 40px 15px 15px;
     & .userInfos {
       h2 {
         font-size: 25px;

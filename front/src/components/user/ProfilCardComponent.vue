@@ -19,7 +19,6 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
 import FollowButtonComponent from "@/components/user/FollowButtonComponent.vue";
 
 const props = defineProps({
@@ -37,7 +36,7 @@ const props = defineProps({
 <style lang="scss" scoped>
 .container {
   position: relative;
-  @include fdCol-aiCt;
+  @include fdCol-jcCt-aiCt;
   max-width: 700px;
   width: 100%;
   min-height: 250px;

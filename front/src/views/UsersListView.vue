@@ -1,5 +1,5 @@
 <template>
-  <div id="container">
+  <div id="container" ref="usersList">
     <TheHeader />
     <main id="users">
       <ResearchBarComponent></ResearchBarComponent>
@@ -9,21 +9,37 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
+import { useInfiniteScroll } from "@vueuse/core";
 import { useUserStore } from "@/stores/index.js";
 import TheHeader from "@/components/layout/TheHeaderComponent.vue";
 import ListCardComponent from "@/components/user/ListCardComponent.vue";
 import ResearchBarComponent from "../components/layout/ResearchBarComponent.vue";
+
+const usersList = ref(null);
 const userStore = useUserStore();
 
 onMounted(async () => {
   await userStore.getAll();
 });
+
+useInfiniteScroll(
+  usersList,
+  async () => {
+    const lastUser = userStore.users[userStore.users.length - 1];
+    const lastUserId = lastUser.id;
+    await userStore.getAll(undefined, lastUserId);
+  },
+  {
+    distance: 10,
+  }
+);
 </script>
 
 <style lang="scss" scoped>
 #container {
   @include fdCol-jcCt-aiCt;
+  background-color: var(--backgroundMain);
   height: 100%;
   overflow-y: scroll;
   position: relative;
@@ -31,11 +47,11 @@ onMounted(async () => {
 }
 #users {
   @include fdCol-aiCt;
-  width: 100%;
-  background-color: var(--backgroundMain);
   transition: 200ms;
   min-height: 100%;
   padding-top: 30px;
+  max-width: 768px;
+  width: 100%;
   gap: 0;
 }
 

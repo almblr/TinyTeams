@@ -61,7 +61,7 @@ export const useUserStore = defineStore("user", {
           Authorization: `Bearer ${token}`,
         },
       });
-      this.users.push(res.data);
+      return res.data;
     },
     async getAll(string, lastUserViewed) {
       const res = await axios({
@@ -74,6 +74,9 @@ export const useUserStore = defineStore("user", {
           lastUserId: lastUserViewed,
         },
       });
+      if (Object.values(res.data).includes("No more users")) {
+        return console.log("No more users to load");
+      }
       this.users = res.data;
     },
   },
@@ -109,6 +112,9 @@ export const usePostStore = defineStore("post", {
           lastPostId: lastPostViewed,
         },
       });
+      if (Object.values(res.data).includes("No more posts")) {
+        return console.log("No more posts to load");
+      }
       this.posts = res.data;
     },
     async create(data) {

@@ -50,13 +50,13 @@ useInfiniteScroll(
   height: 100%;
   overflow-y: scroll;
   position: relative;
+  background-color: var(--backgroundMain);
 }
 
 #posts {
   @include fdCol-aiCt;
-  background-color: var(--backgroundMain);
   transition: 200ms;
-  min-height: 100%;
+  min-height: min-content;
   padding-top: 30px;
   gap: 30px;
 }

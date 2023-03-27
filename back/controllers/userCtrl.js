@@ -119,10 +119,14 @@ const userController = {
         }
         const start = lastUser + 1;
         const end = start + 10;
+        const nextUsers = Users.slice(start, end);
+        if (nextUsers.length === 0) {
+          return res.status(200).send({ message: "No more users" });
+        }
         if (start + 1 === Users.length) {
           return res.status(200).send(Users.slice(start, Users.length));
         }
-        return res.status(200).send(Users.slice(start, end));
+        return res.status(200).send(nextUsers);
       }
       res.status(200).send(Users.slice(0, 10));
     } catch {

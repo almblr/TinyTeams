@@ -3,6 +3,7 @@
     <TheHeaderComponent />
     <main>
       <ProfilCardComponent
+        v-if="user !== null"
         :user="user"
         :loggedInUserProfile="loggedInUserProfile"
       />
@@ -29,17 +30,13 @@ const usernameLS = sesStr.username;
 const user = ref(null);
 const loggedInUserProfile = ref(false);
 
-const updateUser = async (username) => {
-  const userFound = userStore.users.find((user) => user.username === username);
-  console.log(userFound);
-  userFound
-    ? (user.value = userFound)
-    : (user.value = await userStore.getOne(username));
+const getUser = async (username) => {
+  user.value = await userStore.getOne(username);
   loggedInUserProfile.value = username === usernameLS;
 };
 
-watch(() => route.params.username, updateUser);
-onMounted(() => updateUser(route.params.username));
+watch(() => route.params.username, getUser);
+onMounted(() => getUser(route.params.username));
 
 useInfiniteScroll(
   posts,

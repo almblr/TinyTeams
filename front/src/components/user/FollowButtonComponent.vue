@@ -98,7 +98,6 @@ onMounted(async () => {
 @media all and (min-width: 768px) {
   .btn {
     width: 170px;
-    margin-right: 30px;
     font-size: 20px;
   }
 }

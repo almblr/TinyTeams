@@ -116,10 +116,14 @@ const postController = {
         }
         const start = lastPost + 1;
         const end = start + 10;
+        const nextPosts = allPosts.slice(start, end);
+        if (nextPosts.length === 0) {
+          return res.status(200).send({ message: "No more posts" });
+        }
         if (start + 1 === allPosts.length) {
           return res.status(200).send(allPosts.slice(start, allPosts.length));
         }
-        return res.status(200).send(allPosts.slice(start, end));
+        return res.status(200).send(nextPosts);
       }
       res.status(200).send(allPosts.slice(0, 10));
     } catch {
