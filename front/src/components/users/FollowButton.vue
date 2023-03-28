@@ -20,7 +20,6 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import useUserStore from "@/stores/userStore";
 import useFollowStore from "@/stores/followStore.js";
 import socket from "@/services/socketio.js";
 
@@ -29,7 +28,7 @@ const props = defineProps({
   loggedInUserProfile: Boolean,
 });
 
-const userStore = useUserStore();
+const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
 const followStore = useFollowStore();
 const isHovered = ref(false);
 const isSubscribed = ref(null);
@@ -39,15 +38,14 @@ const updateFollow = async (type) => {
     await followStore.sendFollow(props.userId);
 
     socket.emit("sendFollow", {
-      author: userStore.connectedUser.id,
+      author: userLS.userId,
       isFollowing: props.userId,
     });
     isHovered.value = false;
   } else {
     const followId = followStore.follows.find(
       (follow) =>
-        follow.author === userStore.connectedUser.id &&
-        follow.isFollowing === props.userId
+        follow.author === userLS.userId && follow.isFollowing === props.userId
     ).id;
     await followStore.unfollow(followId);
     isHovered.value = true;
@@ -59,8 +57,7 @@ onMounted(async () => {
   await followStore.getOne(props.userId);
   const follow = followStore.follows.find(
     (follow) =>
-      follow.author === userStore.connectedUser.id &&
-      follow.isFollowing === props.userId
+      follow.author === userLS.userId && follow.isFollowing === props.userId
   );
   follow ? (isSubscribed.value = true) : (isSubscribed.value = false);
 });

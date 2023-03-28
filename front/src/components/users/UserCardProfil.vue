@@ -7,9 +7,13 @@
         {{ props.user.firstname }} {{ props.user.lastname }}
       </h2>
       <p class="userInfo__job">Développeur</p>
-      <div v-if="loggedInUserProfile" class="userInfo__btn edit">
+      <router-link
+        to="/settings"
+        v-if="loggedInUserProfile"
+        class="userInfo__btn edit"
+      >
         <fa icon="fa-solid fa-gear" />Modifier votre profil
-      </div>
+      </router-link>
       <FollowButton
         :userId="props.user.id"
         :loggedInUserProfile="loggedInUserProfile"
@@ -83,6 +87,7 @@ const props = defineProps({
     font-size: 19px;
     color: #ffffff;
     transition: 200ms;
+    text-decoration: none;
   }
   :hover {
     cursor: pointer;

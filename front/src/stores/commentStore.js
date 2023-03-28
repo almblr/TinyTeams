@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import usePostStore from "./postStore";
 import axios from "axios";
 
-let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
+let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
 
 const useCommentStore = defineStore("comment", {
   state: () => ({

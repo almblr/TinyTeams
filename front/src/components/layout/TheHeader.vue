@@ -41,12 +41,11 @@
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import SwitchThemeButton from "@/components/buttons/SwitchThemeButton.vue";
-import useUserStore from "@/stores/userStore.js";
 
-const userStore = useUserStore();
 const showTooltip = ref(null);
-const profilPictureUrl = userStore.connectedUser.profilPicture;
-const username = userStore.connectedUser.username;
+const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
+const profilPictureUrl = userLS.profilPicture;
+const username = userLS.username;
 
 /* La directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
 const closeTooltip = () => {

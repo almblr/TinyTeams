@@ -10,7 +10,7 @@
     <div>
       <FollowButton
         :userId="user.id"
-        :loggedInUserProfile="user.id === connectedUser"
+        :loggedInUserProfile="user.id === userLS.userId"
       />
     </div>
   </article>
@@ -22,8 +22,7 @@ import FollowButton from "@/components/users/FollowButton.vue";
 const props = defineProps({
   users: Array,
 });
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const connectedUser = sesStr.userId;
+const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
 </script>
 
 <style lang="scss" scoped>

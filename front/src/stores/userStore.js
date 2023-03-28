@@ -1,11 +1,10 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
+let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
 
 const useUserStore = defineStore("user", {
   state: () => ({
-    connectedUser: null,
     users: [],
   }),
   actions: {
@@ -42,12 +41,10 @@ const useUserStore = defineStore("user", {
       sessionStorage.setItem(
         "user",
         JSON.stringify({
-          token: res.data.token,
+          user: res.data,
         })
       );
       token = res.data.token;
-      this.connectedUser = res.data;
-      console.log(this.connectedUser);
       return res.data;
     },
     async getOne(username) {

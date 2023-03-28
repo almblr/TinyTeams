@@ -22,6 +22,7 @@ import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardProfil from "@/components/users/UserCardProfil.vue";
 import PostContainer from "@/components/posts/PostContainer.vue";
 
+let userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
 const userStore = useUserStore();
 const postStore = usePostStore();
 const route = useRoute();
@@ -31,7 +32,7 @@ const loggedInUserProfile = ref(false);
 
 const getUser = async (username) => {
   user.value = await userStore.getOne(username);
-  loggedInUserProfile.value = username === userStore.connectedUser.username;
+  loggedInUserProfile.value = username === userLS.username;
 };
 
 watch(() => route.params.username, getUser);

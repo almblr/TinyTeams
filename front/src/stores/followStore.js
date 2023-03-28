@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-let token = JSON.parse(sessionStorage.getItem(`user`))?.token || null;
+let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
 
 const useFollowStore = defineStore("follow", {
   state: () => ({

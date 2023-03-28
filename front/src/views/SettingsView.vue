@@ -2,23 +2,12 @@
   <div id="container">
     <TheHeader />
     <main id="settings">
-      <section class="usersSettings">
-        <h3>Informations personnelles</h3>
-        <div class="inputSettings">
-          <InputSettings
-            v-for="input in inputs"
-            :key="input.value"
-            :type="input.type"
-            :value="input.value"
-            :placeholder="input.placeholder"
-            :canBeModified="input.canBeModified"
-          />
-        </div>
-      </section>
-      <section class="passwordSettings">
-        <h3>Changer le mot de passe</h3>
-        <!-- input ancien mot de passe nouveau mot de passe confirmer nouveau mot de passe -->
-      </section>
+      <sectionSettings
+        v-for="section in sections"
+        :title="section.title"
+        :inputsArray="section.inputs"
+        :submit="section.function"
+      />
     </main>
   </div>
 </template>
@@ -26,40 +15,80 @@
 <script setup>
 import useUserStore from "@/stores/userStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
-import InputSettings from "@//components/users/InputSettings.vue";
+import sectionSettings from "@/components/settings/sectionSettings.vue";
+
+let userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
 
 const userStore = useUserStore();
-const inputs = [
+const sections = [
   {
-    type: "text",
-    value: userStore.connectedUser.firstname,
-    placeholder: "Prénom",
-    canBeModified: false,
+    name: "user",
+    title: "Informations personnelles",
+    function: "saveUser",
+    inputs: [
+      {
+        name: "firstname",
+        type: "text",
+        value: userLS.firstname,
+        label: "Prénom",
+        canBeModified: false,
+      },
+      {
+        name: "lastname",
+        type: "text",
+        value: userLS.lastname,
+        label: "Nom",
+        canBeModified: false,
+      },
+      {
+        name: "email",
+        type: "email",
+        value: userLS.email,
+        label: "Votre adresse e-mail",
+        canBeModified: true,
+      },
+      {
+        name: "job",
+        type: "text",
+        value: userLS.job,
+        label: "Métier",
+        canBeModified: true,
+      },
+    ],
   },
   {
-    type: "text",
-    value: userStore.connectedUser.lastname,
-    placeholder: "Nom",
-    canBeModified: false,
-  },
-  {
-    type: "email",
-    value: userStore.connectedUser.email,
-    placeholder: "Email",
-    canBeModified: true,
-  },
-  {
-    type: "text",
-    value: userStore.connectedUser.job,
-    placeholder: "Métier",
-    canBeModified: true,
+    name: "password",
+    title: "Changer de mot de passe",
+    function: "savePassword",
+    inputs: [
+      {
+        name: "oldPassword",
+        type: "password",
+        value: "",
+        label: "Ancien mot de passe",
+        canBeModified: true,
+      },
+      {
+        name: "newPassword",
+        type: "password",
+        value: "",
+        label: "Nouveau mot de passe",
+        canBeModified: true,
+      },
+      {
+        name: "confirmPassword",
+        type: "password",
+        value: "",
+        label: "Confirmer le mot de passe",
+        canBeModified: true,
+      },
+    ],
   },
 ];
 </script>
 
 <style lang="scss" scoped>
 #container {
-  @include fdCol-aiCt;
   height: 100%;
   overflow-y: auto;
   position: relative;
@@ -68,16 +97,9 @@ const inputs = [
 
 #settings {
   @include fdCol-aiCt;
-  border: 1px solid red;
-  width: 100%;
+  transition: 200ms;
+  min-height: min-content;
   padding-top: 30px;
-  max-width: 800px;
-  gap: 20px;
-}
-section {
-  @include fdCol-jcCt-aiCt;
-  min-width: 800px;
-  background-color: var(--backgroundSecond);
-  height: 200px;
+  gap: 30px;
 }
 </style>
