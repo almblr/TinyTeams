@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
-
 const usePostStore = defineStore("post", {
   state: () => ({
+    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
     posts: [],
   }),
   actions: {
@@ -12,7 +11,7 @@ const usePostStore = defineStore("post", {
       const res = await axios({
         url: `http://localhost:3000/api/posts/getOne/${postId}`,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       const Post = await res.data;
@@ -25,7 +24,7 @@ const usePostStore = defineStore("post", {
       const res = await axios({
         url,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         params: {
           userId,
@@ -43,7 +42,7 @@ const usePostStore = defineStore("post", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         data,
       });
@@ -55,7 +54,7 @@ const usePostStore = defineStore("post", {
         method: "PUT",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         data,
       });
@@ -70,7 +69,7 @@ const usePostStore = defineStore("post", {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       const postToDelete = this.posts.findIndex((post) => post.id === postId);

@@ -2,10 +2,9 @@ import { defineStore } from "pinia";
 import usePostStore from "./postStore";
 import axios from "axios";
 
-let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
-
 const useCommentStore = defineStore("comment", {
   state: () => ({
+    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
     comments: [],
   }),
   actions: {
@@ -13,7 +12,7 @@ const useCommentStore = defineStore("comment", {
       const res = await axios({
         url: `http://localhost:3000/api/posts/${postId}/comments/getAll`,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       this.comments = await res.data;
@@ -24,7 +23,7 @@ const useCommentStore = defineStore("comment", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         data,
       });
@@ -36,10 +35,11 @@ const useCommentStore = defineStore("comment", {
         method: "PUT",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         data,
       });
+      await usePostStore().getOne(postId);
     },
     async delete(postId, commentId) {
       await axios({
@@ -47,7 +47,7 @@ const useCommentStore = defineStore("comment", {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       await usePostStore().getOne(postId);

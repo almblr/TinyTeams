@@ -28,8 +28,8 @@ import { useRoute } from "vue-router";
 
 const postStore = usePostStore();
 const commentStore = useCommentStore();
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const userId = sesStr.userId;
+const userLS = JSON.parse(sessionStorage.getItem(`user`)).user;
+const userId = userLS.userId;
 const btn = ref(null);
 const spaceUp = ref(null);
 const showTooltip = ref(null);

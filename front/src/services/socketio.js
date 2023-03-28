@@ -1,28 +1,31 @@
 import { io } from "socket.io-client";
 
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const userId = sesStr?.userId || null;
+const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user || null;
 
 const socket = io("http://localhost:3000");
 
-const sendUserId = () => {
-  if (userId) {
-    socket.on("askForUserId", () => {
-      socket.emit("sendUserId", userId);
-    });
-  }
-};
+if (!userLS) {
+  console.log("no user");
+} else {
+  const sendUserId = () => {
+    if (userLS.userId) {
+      socket.on("askForUserId", () => {
+        socket.emit("sendUserId", userLS.userId);
+      });
+    }
+  };
 
-socket.on("message", (arg) => {
-  alert(arg);
-});
+  socket.on("message", (arg) => {
+    alert(arg);
+  });
 
-socket.on("followNotification", (arg) => {
-  console.log(arg);
-  const sound = new Audio("../../public/notificationSound.mp3");
-  sound.play();
-});
+  socket.on("followNotification", (arg) => {
+    console.log(arg);
+    const sound = new Audio("../../public/notificationSound.mp3");
+    sound.play();
+  });
 
-sendUserId();
+  sendUserId();
+}
 
 export default socket;

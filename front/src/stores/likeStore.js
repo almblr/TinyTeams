@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-
-let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
+import usePostStore from "./postStore";
 
 const useLikeStore = defineStore("like", {
+  state: () => ({
+    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
+  }),
   actions: {
     async likePost(postId) {
       const res = await axios({
@@ -12,10 +14,11 @@ const useLikeStore = defineStore("like", {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       const posts = usePostStore().posts;
+      console.log(posts);
       const foundPost = posts.find((post) => post.id === postId);
       if ("removedLikeId" in res.data) {
         const existingLike = foundPost.reactions.findIndex(

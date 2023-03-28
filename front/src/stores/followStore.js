@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
-
 const useFollowStore = defineStore("follow", {
   state: () => ({
+    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
     follows: [],
   }),
   actions: {
@@ -14,7 +13,7 @@ const useFollowStore = defineStore("follow", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       this.follows.push(res.data);
@@ -24,7 +23,7 @@ const useFollowStore = defineStore("follow", {
         url: `http://localhost:3000/api/users/follow/getOne/${userId}`,
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       Object.values(res.data).includes("Follow not found")
@@ -37,7 +36,7 @@ const useFollowStore = defineStore("follow", {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       const follow = this.follows.find((follow) => follow.id === followId);

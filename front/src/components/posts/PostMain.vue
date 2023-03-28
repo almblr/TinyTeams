@@ -53,8 +53,8 @@ import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
 const postStore = usePostStore();
 const likeStore = useLikeStore();
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const userId = sesStr.userId;
+const userLS = JSON.parse(sessionStorage.getItem(`user`)).user;
+const userId = userLS.userId;
 const likeBtn = ref(null);
 const editingMode = ref(false);
 
@@ -93,7 +93,7 @@ const updateLike = async (postId, author, liker) => {
         postId: postId,
         author: author,
         likerId: userId,
-        likerName: sesStr.userName,
+        likerName: userLS.userName,
       });
     }
 

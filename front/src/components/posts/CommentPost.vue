@@ -51,9 +51,9 @@ const props = defineProps({
   lastname: String,
 });
 
-const sesStr = JSON.parse(sessionStorage.getItem(`user`));
-const userId = sesStr.userId;
-const isAdmin = sesStr.isAdmin;
+const userLS = JSON.parse(sessionStorage.getItem(`user`)).user;
+const userId = userLS.userId;
+const isAdmin = userLS.isAdmin;
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);

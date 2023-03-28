@@ -12,6 +12,7 @@
       :type="props.type"
       :value="props.value"
       :readonly="!props.canBeModified"
+      required
     />
   </div>
 </template>

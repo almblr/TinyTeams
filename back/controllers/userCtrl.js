@@ -136,16 +136,8 @@ const userController = {
     }
   },
   update: async (req, res) => {
-    // Check if the new email address is valid (if provided)
-    if (
-      req.body.newEmail &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.newEmail)
-    ) {
-      return res.status(400).json({ message: "Invalid email address." });
-    }
-
-    // Check if the new password matches the required RegExp (if provided)
-    if (req.body.newPassword) {
+    const User = await user.findByPk(req.params.userId);
+    if (req.body.newPassword && req.body.oldPassword) {
       const passwordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (!passwordRegex.test(req.body.newPassword)) {
@@ -153,18 +145,24 @@ const userController = {
           .status(400)
           .json({ message: "The new password is not strong enough" });
       }
+      const isPasswordValid = await bcrypt.compare(
+        req.body.oldPassword,
+        User.password
+      );
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Wrong password" });
+      }
     }
-    const User = await user.findByPk(req.params.id);
-    // Update the user's information
-    User.update({
-      email: req.body.newEmail ? req.body.newEmail : User.email,
-      password: req.body.newPassword ? req.body.newPassword : User.email,
-      profilPicture: req.body.profilPicture
-        ? req.body.profilPicture
-        : User.profilPicture,
-    }).then(() => {
-      res.status(200).json({ message: "User updated successfully" });
-    });
+    const updatedUser = {
+      email: req.body.newEmail || User.email,
+      password: req.body.newPassword
+        ? await bcrypt.hash(req.body.newPassword, 10)
+        : User.password,
+      profilPicture: req.body.profilPicture || User.profilPicture,
+      job: req.body.job || User.job,
+    };
+    await User.update(updatedUser);
+    res.status(200).json({ message: "User updated successfully" });
   },
 };
 

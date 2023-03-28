@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-let token = JSON.parse(sessionStorage.getItem(`user`))?.user.token || null;
-
 const useUserStore = defineStore("user", {
   state: () => ({
+    token: JSON.parse(sessionStorage.getItem(`user`))?.user.token,
     users: [],
   }),
   actions: {
@@ -44,14 +43,13 @@ const useUserStore = defineStore("user", {
           user: res.data,
         })
       );
-      token = res.data.token;
       return res.data;
     },
     async getOne(username) {
       const res = await axios({
         url: `http://localhost:3000/api/users/getOne/${username}`,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
       return res.data;
@@ -60,7 +58,7 @@ const useUserStore = defineStore("user", {
       const res = await axios({
         url: `http://localhost:3000/api/users/getAll/`,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         params: {
           search: string,
