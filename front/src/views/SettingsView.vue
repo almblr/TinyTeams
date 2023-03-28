@@ -7,6 +7,9 @@
         :title="section.title"
         :inputsArray="section.inputs"
         :submit="section.function"
+        :profilPicture="userLS.profilPicture"
+        :showProfilPicture="section.showProfilPicture"
+        :type="section.type"
       />
     </main>
   </div>
@@ -25,6 +28,7 @@ const sections = [
     name: "user",
     title: "Informations personnelles",
     function: "saveUser",
+    showProfilPicture: true,
     inputs: [
       {
         name: "firstname",
@@ -51,7 +55,7 @@ const sections = [
         name: "job",
         type: "text",
         value: userLS.job,
-        label: "Métier",
+        label: "Poste occupé",
         canBeModified: true,
       },
     ],
@@ -60,6 +64,7 @@ const sections = [
     name: "password",
     title: "Changer de mot de passe",
     function: "savePassword",
+    showProfilPicture: false,
     inputs: [
       {
         name: "oldPassword",
