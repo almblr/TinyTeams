@@ -44,7 +44,7 @@
         caractères min.)
       </span>
     </div>
-    <SubmitFormButton buttonType="submit" text="S'inscrire"></SubmitFormButton>
+    <SubmitFormButton text="S'inscrire"></SubmitFormButton>
   </UserForm>
 </template>
 

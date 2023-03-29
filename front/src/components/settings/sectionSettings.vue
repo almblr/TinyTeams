@@ -1,13 +1,18 @@
 <template>
-  <section>
+  <section :id="props.sectionName">
     <h3>
       {{ props.title }}
     </h3>
     <div class="profilPicture" v-if="props.showProfilPicture">
       <img :src="profilPictureUrl" alt="userProfilPicture" />
-      <AddMediaButton @showUploadedImg="getImageInfos"
-        ><template v-slot:icon>Changer votre photo</template>
+      <AddMediaButton
+        @showUploadedImg="profilPictureFunctions.get"
+        v-if="!canCancel"
+        ><template v-slot:icon> Changer votre photo </template>
       </AddMediaButton>
+      <span v-else class="cancelButton" @click="profilPictureFunctions.remove"
+        >Annuler</span
+      >
     </div>
     <form class="inputs" @submit.prevent="submit(props.submit)">
       <InputSettings
@@ -18,19 +23,23 @@
         :value="input.value"
         :label="input.label"
         :canBeModified="input.canBeModified"
+        :resetInput="resetInput"
       />
-      <SubmitFormButton text="Sauvegarder les modifications" />
+      <div class="formButtons">
+        <SubmitFormButton text="Valider" :isDisabled="!canSaveChanges" />
+      </div>
     </form>
   </section>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, reactive } from "vue";
 import InputSettings from "@/components/settings/InputSettings.vue";
 import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
 
 const props = defineProps({
+  sectionName: { type: String, required: true },
   title: { type: String, required: true },
   inputsArray: { type: Array, required: true },
   submit: { type: String, required: true },
@@ -38,27 +47,62 @@ const props = defineProps({
   showProfilPicture: { type: Boolean, required: true },
 });
 
+const canSaveChanges = ref(false);
+const resetInput = ref(false);
 const imageBlop = ref(null);
-const imageFile = ref(null);
+const canCancel = ref(false);
 
+const newInputValues = ref({
+  imageFile: ref(null),
+  firstname: ref(null),
+  lastname: ref(null),
+  email: ref(null),
+});
+
+const updateValue = (inputValue, inputName) => {
+  for (const [key, value] of Object.entries(newInputValues)) {
+    if (key === inputName) {
+      value.value = inputValue;
+      console.log(`${key}: ${value.value}`);
+      !canSaveChanges.value ? (canSaveChanges.value = true) : null;
+    }
+  }
+};
 const profilPictureUrl = computed(() => {
   return imageBlop.value ? imageBlop.value : props.profilPicture;
 });
 
-const getImageInfos = (blop, file) => {
-  imageBlop.value = blop;
-  imageFile.value = file;
+const profilPictureFunctions = {
+  get: (blop, file) => {
+    imageBlop.value = blop;
+    newInputValues.value.imageFile = file;
+    canCancel.value = true;
+  },
+  remove: () => {
+    imageBlop.value = null;
+    newInputValues.value.imageFile = null;
+    canCancel.value = false;
+  },
 };
 
-console.log(profilPictureUrl.value);
 const submit = (type) => {
-  console.log("coucou");
   if (type === "saveUser") {
     // save user
   } else if (type === "savePassword") {
     // save password
   }
 };
+
+watch(
+  () => newInputValues.value,
+  (newValue) => {
+    const values = Object.values(newValue);
+    values.every((el) => el === null)
+      ? (canSaveChanges.value = false)
+      : (canSaveChanges.value = true);
+  },
+  { deep: true }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -81,6 +125,10 @@ section {
       height: 80px;
       border-radius: 50%;
       object-fit: cover;
+      border: 1px solid rgba(182, 179, 179, 0.219);
+    }
+    .cancelButton {
+      cursor: pointer;
     }
   }
   .inputs {
@@ -90,9 +138,10 @@ section {
     align-items: center;
     width: 100%;
     row-gap: 10px;
-    & > button {
-      margin: auto;
-      margin-top: 20px;
+    .formButtons {
+      @include jcCt-aiCt;
+      position: relative;
+      width: 100%;
     }
   }
 }

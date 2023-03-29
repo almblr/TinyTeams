@@ -3,7 +3,7 @@ import axios from "axios";
 
 const useUserStore = defineStore("user", {
   state: () => ({
-    token: JSON.parse(sessionStorage.getItem(`user`))?.user.token,
+    token: null,
     users: [],
   }),
   actions: {
@@ -43,6 +43,7 @@ const useUserStore = defineStore("user", {
           user: res.data,
         })
       );
+      this.token = res.data.token;
       return res.data;
     },
     async getOne(username) {

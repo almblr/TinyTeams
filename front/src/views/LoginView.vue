@@ -21,10 +21,7 @@
         @switchInputType="showHidePassword"
       ></PasswordSwitcherButton>
     </div>
-    <SubmitFormButton
-      buttonType="submit"
-      text="Se connecter"
-    ></SubmitFormButton>
+    <SubmitFormButton text="Se connecter"></SubmitFormButton>
   </UserForm>
 </template>
 

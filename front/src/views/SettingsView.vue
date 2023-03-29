@@ -4,6 +4,7 @@
     <main id="settings">
       <sectionSettings
         v-for="section in sections"
+        :sectionName="section.name"
         :title="section.title"
         :inputsArray="section.inputs"
         :submit="section.function"
@@ -16,13 +17,11 @@
 </template>
 
 <script setup>
-import useUserStore from "@/stores/userStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import sectionSettings from "@/components/settings/sectionSettings.vue";
 
-let userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
+const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
 
-const userStore = useUserStore();
 const sections = [
   {
     name: "user",

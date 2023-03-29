@@ -10,20 +10,38 @@
     <input
       :name="props.name"
       :type="props.type"
-      :value="props.value"
       :readonly="!props.canBeModified"
       required
+      v-model="content"
+      @input="sendInputValue"
+      ref="input"
     />
   </div>
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from "vue";
 const props = defineProps({
   name: { type: String, required: true },
   type: { type: String, required: true },
   value: { type: String, required: true },
   label: { type: String, required: true },
   canBeModified: { type: Boolean, required: true },
+  showValue: { type: Boolean },
+  resetInput: { type: Boolean },
+});
+
+const emit = defineEmits(["getInputValue"]);
+const input = ref(null);
+const sendInputValue = () => emit("getInputValue", input.value, props.name);
+
+const content = computed({
+  get() {
+    return props.value;
+  },
+  set(value) {
+    input.value = value;
+  },
 });
 </script>
 
