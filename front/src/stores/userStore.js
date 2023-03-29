@@ -71,8 +71,24 @@ const useUserStore = defineStore("user", {
       }
       this.users = res.data;
     },
+    async update(data, userId, username) {
+      await axios({
+        url: `http://localhost:3000/api/users/update/${userId}`,
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+        data,
+      });
+      const newUser = await useUserStore().getOne(username);
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({
+          user: newUser,
+        })
+      );
+    },
   },
-  persist: true,
 });
 
 export default useUserStore;

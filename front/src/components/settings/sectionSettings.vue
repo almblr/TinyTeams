@@ -7,7 +7,7 @@
       <img :src="profilPictureUrl" alt="userProfilPicture" />
       <AddMediaButton
         @showUploadedImg="profilPictureFunctions.get"
-        v-if="!canCancel"
+        v-if="!canRemoveNewPicture"
         ><template v-slot:icon> Changer votre photo </template>
       </AddMediaButton>
       <span v-else class="cancelButton" @click="profilPictureFunctions.remove"
@@ -23,7 +23,7 @@
         :value="input.value"
         :label="input.label"
         :canBeModified="input.canBeModified"
-        :resetInput="resetInput"
+        @getInputValue="updateValue"
       />
       <div class="formButtons">
         <SubmitFormButton text="Valider" :isDisabled="!canSaveChanges" />
@@ -33,7 +33,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, reactive } from "vue";
+import { ref, computed, watch } from "vue";
+import useUserStore from "@/stores/userStore";
 import InputSettings from "@/components/settings/InputSettings.vue";
 import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
@@ -47,57 +48,76 @@ const props = defineProps({
   showProfilPicture: { type: Boolean, required: true },
 });
 
+const userStore = useUserStore();
+const userLS = JSON.parse(sessionStorage.getItem(`user`)).user;
 const canSaveChanges = ref(false);
-const resetInput = ref(false);
 const imageBlop = ref(null);
-const canCancel = ref(false);
+const canRemoveNewPicture = ref(false);
 
-const newInputValues = ref({
-  imageFile: ref(null),
-  firstname: ref(null),
-  lastname: ref(null),
-  email: ref(null),
+const updatedUser = ref({
+  profilPicture: ref(userLS.profilPicture),
+  email: ref(userLS.email),
+  job: ref(userLS.job),
 });
 
-const updateValue = (inputValue, inputName) => {
-  for (const [key, value] of Object.entries(newInputValues)) {
-    if (key === inputName) {
-      value.value = inputValue;
-      console.log(`${key}: ${value.value}`);
-      !canSaveChanges.value ? (canSaveChanges.value = true) : null;
-    }
-  }
-};
-const profilPictureUrl = computed(() => {
-  return imageBlop.value ? imageBlop.value : props.profilPicture;
+const updatedPassword = ref({
+  oldPassword: ref(null),
+  newPassword: ref(null),
+  confirmPassword: ref(null),
 });
 
 const profilPictureFunctions = {
   get: (blop, file) => {
     imageBlop.value = blop;
-    newInputValues.value.imageFile = file;
-    canCancel.value = true;
+    updatedUser.value.profilPicture = file;
+    canRemoveNewPicture.value = true;
   },
   remove: () => {
     imageBlop.value = null;
-    newInputValues.value.imageFile = null;
-    canCancel.value = false;
+    updatedUser.value.profilPicture = userLS.profilPicture;
+    canRemoveNewPicture.value = false;
   },
 };
 
-const submit = (type) => {
+const profilPictureUrl = computed(() => {
+  return imageBlop.value ? imageBlop.value : props.profilPicture;
+});
+
+const updateValue = (inputValue, inputName) => {
+  const userKeys = Object.keys(updatedUser.value);
+  for (const key of userKeys) {
+    if (inputName === key) {
+      updatedUser.value[key] = inputValue;
+    }
+  }
+};
+
+const submit = async (type) => {
   if (type === "saveUser") {
-    // save user
+    const formData = new FormData();
+    const commonKeys = Object.keys(updatedUser.value).filter(
+      (key) => key in userLS
+    );
+    for (const key of commonKeys) {
+      if (updatedUser.value[key] !== userLS[key]) {
+        console.log(key + " " + updatedUser.value[key]);
+        formData.append(key, updatedUser.value[key]);
+      }
+    }
+    await userStore.update(formData, userLS.id, userLS.username);
   } else if (type === "savePassword") {
     // save password
   }
 };
 
 watch(
-  () => newInputValues.value,
+  () => updatedUser.value,
   (newValue) => {
-    const values = Object.values(newValue);
-    values.every((el) => el === null)
+    const commonKeys = Object.keys(newValue).filter((key) => key in userLS);
+    const areValuesEqual = commonKeys.every(
+      (key) => newValue[key] === userLS[key]
+    );
+    areValuesEqual
       ? (canSaveChanges.value = false)
       : (canSaveChanges.value = true);
   },

@@ -48,7 +48,7 @@ const userController = {
         { expiresIn: "3h" }
       );
       res.status(200).json({
-        userId: User.id,
+        id: User.id,
         isAdmin: User.isAdmin,
         firstname: User.firstname,
         lastname: User.lastname,
@@ -154,7 +154,7 @@ const userController = {
       }
     }
     const updatedUser = {
-      email: req.body.newEmail || User.email,
+      email: req.body.email || User.email,
       password: req.body.newPassword
         ? await bcrypt.hash(req.body.newPassword, 10)
         : User.password,
