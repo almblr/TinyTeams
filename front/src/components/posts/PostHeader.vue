@@ -45,8 +45,8 @@ const props = defineProps({
   createdAt: { type: String, required: true },
 });
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`)).user;
-const userId = userLS.userId;
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const userId = userLS.id;
 const userIsAdmin = userLS.isAdmin;
 const username = (props.firstname + props.lastname).toLowerCase();
 

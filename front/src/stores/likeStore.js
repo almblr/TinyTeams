@@ -4,7 +4,7 @@ import usePostStore from "./postStore";
 
 const useLikeStore = defineStore("like", {
   state: () => ({
-    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
+    token: JSON.parse(sessionStorage.getItem(`token`)),
   }),
   actions: {
     async likePost(postId) {

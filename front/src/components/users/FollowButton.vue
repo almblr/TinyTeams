@@ -28,7 +28,7 @@ const props = defineProps({
   loggedInUserProfile: Boolean,
 });
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const followStore = useFollowStore();
 const isHovered = ref(false);
 const isSubscribed = ref(null);
@@ -38,14 +38,14 @@ const updateFollow = async (type) => {
     await followStore.sendFollow(props.userId);
 
     socket.emit("sendFollow", {
-      author: userLS.userId,
+      author: userLS.id,
       isFollowing: props.userId,
     });
     isHovered.value = false;
   } else {
     const followId = followStore.follows.find(
       (follow) =>
-        follow.author === userLS.userId && follow.isFollowing === props.userId
+        follow.author === userLS.id && follow.isFollowing === props.userId
     ).id;
     await followStore.unfollow(followId);
     isHovered.value = true;
@@ -57,7 +57,7 @@ onMounted(async () => {
   await followStore.getOne(props.userId);
   const follow = followStore.follows.find(
     (follow) =>
-      follow.author === userLS.userId && follow.isFollowing === props.userId
+      follow.author === userLS.id && follow.isFollowing === props.userId
   );
   follow ? (isSubscribed.value = true) : (isSubscribed.value = false);
 });

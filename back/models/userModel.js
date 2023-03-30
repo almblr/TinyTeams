@@ -38,14 +38,11 @@ const userModel = (sequelize, DataTypes) => {
     },
     job: {
       type: DataTypes.STRING,
+      defaultValue: "N/A",
     },
     profilPicture: {
       type: DataTypes.TEXT,
       defaultValue: "http://localhost:3000/images/defaultPicture.png",
-    },
-    followers: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
     },
   });
 };

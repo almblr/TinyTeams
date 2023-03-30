@@ -3,7 +3,7 @@ import axios from "axios";
 
 const useUserStore = defineStore("user", {
   state: () => ({
-    token: null,
+    token: JSON.parse(sessionStorage.getItem(`token`)),
     users: [],
   }),
   actions: {
@@ -37,12 +37,8 @@ const useUserStore = defineStore("user", {
           "Content-Type": "application/json",
         },
       });
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({
-          user: res.data,
-        })
-      );
+      sessionStorage.setItem("user", JSON.stringify(res.data.loggedUser));
+      sessionStorage.setItem("token", JSON.stringify(res.data.token));
       this.token = res.data.token;
       return res.data;
     },
@@ -71,22 +67,16 @@ const useUserStore = defineStore("user", {
       }
       this.users = res.data;
     },
-    async update(data, userId, username) {
+    async update(data, userId) {
       await axios({
         url: `http://localhost:3000/api/users/update/${userId}`,
         method: "PUT",
         headers: {
+          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
         data,
       });
-      const newUser = await useUserStore().getOne(username);
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({
-          user: newUser,
-        })
-      );
     },
   },
 });

@@ -43,7 +43,7 @@ import { vOnClickOutside } from "@vueuse/components";
 import SwitchThemeButton from "@/components/buttons/SwitchThemeButton.vue";
 
 const showTooltip = ref(null);
-const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const profilPictureUrl = userLS.profilPicture;
 const username = userLS.username;
 

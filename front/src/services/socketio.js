@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user || null;
+const userLS = JSON.parse(sessionStorage.getItem(`user`)) || null;
 
 const socket = io("http://localhost:3000");
 
@@ -8,9 +8,9 @@ if (!userLS) {
   console.log("no user");
 } else {
   const sendUserId = () => {
-    if (userLS.userId) {
+    if (userLS.id) {
       socket.on("askForUserId", () => {
-        socket.emit("sendUserId", userLS.userId);
+        socket.emit("sendUserId", userLS.id);
       });
     }
   };

@@ -22,7 +22,7 @@ import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardProfil from "@/components/users/UserCardProfil.vue";
 import PostContainer from "@/components/posts/PostContainer.vue";
 
-let userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
+let userLS = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
 const postStore = usePostStore();
 const route = useRoute();

@@ -47,17 +47,17 @@ const userController = {
         process.env.TOKEN,
         { expiresIn: "3h" }
       );
-      res.status(200).json({
+      const loggedUser = {
         id: User.id,
         isAdmin: User.isAdmin,
         firstname: User.firstname,
         lastname: User.lastname,
         username: User.username,
         profilPicture: User.profilPicture,
-        token: token,
         job: User.job,
         email: User.email,
-      });
+      };
+      res.status(200).json({ loggedUser, token });
     } catch {
       res.status(500).send();
     }
@@ -136,33 +136,39 @@ const userController = {
     }
   },
   update: async (req, res) => {
-    const User = await user.findByPk(req.params.userId);
-    if (req.body.newPassword && req.body.oldPassword) {
-      const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      if (!passwordRegex.test(req.body.newPassword)) {
-        return res
-          .status(400)
-          .json({ message: "The new password is not strong enough" });
+    try {
+      const User = await user.findByPk(req.params.userId);
+      if (req.body.newPassword && req.body.oldPassword) {
+        const passwordRegex =
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(req.body.newPassword)) {
+          return res
+            .status(400)
+            .json({ message: "The new password is not strong enough" });
+        }
+        const isPasswordValid = await bcrypt.compare(
+          req.body.oldPassword,
+          User.password
+        );
+        if (!isPasswordValid) {
+          return res.status(401).json({ message: "Wrong password" });
+        }
       }
-      const isPasswordValid = await bcrypt.compare(
-        req.body.oldPassword,
-        User.password
-      );
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: "Wrong password" });
-      }
+      const updatedUser = {
+        email: req.body.email || User.email,
+        password: req.body.newPassword
+          ? await bcrypt.hash(req.body.newPassword, 10)
+          : User.password,
+        profilPicture: req.file?.filename
+          ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+          : User.profilPicture,
+        job: req.body.job || User.job,
+      };
+      await User.update(updatedUser);
+      res.status(200).json({ message: "User updated successfully" });
+    } catch {
+      res.status(500).json();
     }
-    const updatedUser = {
-      email: req.body.email || User.email,
-      password: req.body.newPassword
-        ? await bcrypt.hash(req.body.newPassword, 10)
-        : User.password,
-      profilPicture: req.body.profilPicture || User.profilPicture,
-      job: req.body.job || User.job,
-    };
-    await User.update(updatedUser);
-    res.status(200).json({ message: "User updated successfully" });
   },
 };
 

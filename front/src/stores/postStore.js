@@ -3,7 +3,7 @@ import axios from "axios";
 
 const usePostStore = defineStore("post", {
   state: () => ({
-    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
+    token: JSON.parse(sessionStorage.getItem(`token`)),
     posts: [],
   }),
   actions: {

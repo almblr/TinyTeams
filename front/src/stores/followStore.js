@@ -3,7 +3,7 @@ import axios from "axios";
 
 const useFollowStore = defineStore("follow", {
   state: () => ({
-    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
+    token: JSON.parse(sessionStorage.getItem(`token`)),
     follows: [],
   }),
   actions: {

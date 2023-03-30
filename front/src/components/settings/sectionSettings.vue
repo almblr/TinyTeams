@@ -49,15 +49,15 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
-const userLS = JSON.parse(sessionStorage.getItem(`user`)).user;
+const userLS = ref(JSON.parse(sessionStorage.getItem(`user`)));
 const canSaveChanges = ref(false);
 const imageBlop = ref(null);
 const canRemoveNewPicture = ref(false);
 
 const updatedUser = ref({
-  profilPicture: ref(userLS.profilPicture),
-  email: ref(userLS.email),
-  job: ref(userLS.job),
+  profilPicture: ref(userLS.value.profilPicture),
+  email: ref(userLS.value.email),
+  job: ref(userLS.value.job),
 });
 
 const updatedPassword = ref({
@@ -74,7 +74,7 @@ const profilPictureFunctions = {
   },
   remove: () => {
     imageBlop.value = null;
-    updatedUser.value.profilPicture = userLS.profilPicture;
+    updatedUser.value.profilPicture = userLS.value.profilPicture;
     canRemoveNewPicture.value = false;
   },
 };
@@ -96,15 +96,18 @@ const submit = async (type) => {
   if (type === "saveUser") {
     const formData = new FormData();
     const commonKeys = Object.keys(updatedUser.value).filter(
-      (key) => key in userLS
+      (key) => key in userLS.value
     );
     for (const key of commonKeys) {
-      if (updatedUser.value[key] !== userLS[key]) {
-        console.log(key + " " + updatedUser.value[key]);
+      if (updatedUser.value[key] !== userLS.value[key]) {
+        console.log(updatedUser.value[key]);
         formData.append(key, updatedUser.value[key]);
       }
     }
-    await userStore.update(formData, userLS.id, userLS.username);
+    await userStore.update(formData, userLS.value.id);
+    userLS.value = await userStore.getOne(userLS.value.username);
+    sessionStorage.setItem("user", JSON.stringify(userLS.value));
+    canSaveChanges.value = false;
   } else if (type === "savePassword") {
     // save password
   }
@@ -113,9 +116,13 @@ const submit = async (type) => {
 watch(
   () => updatedUser.value,
   (newValue) => {
-    const commonKeys = Object.keys(newValue).filter((key) => key in userLS);
+    console.log(newValue);
+    console.log(userLS.value);
+    const commonKeys = Object.keys(newValue).filter(
+      (key) => key in userLS.value
+    );
     const areValuesEqual = commonKeys.every(
-      (key) => newValue[key] === userLS[key]
+      (key) => newValue[key] === userLS.value[key]
     );
     areValuesEqual
       ? (canSaveChanges.value = false)

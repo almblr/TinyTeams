@@ -53,8 +53,8 @@ import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
 const postStore = usePostStore();
 const likeStore = useLikeStore();
-const userLS = JSON.parse(sessionStorage.getItem(`user`)).user;
-const userId = userLS.userId;
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const userId = userLS.id;
 const likeBtn = ref(null);
 const editingMode = ref(false);
 

@@ -4,7 +4,7 @@ import axios from "axios";
 
 const useCommentStore = defineStore("comment", {
   state: () => ({
-    token: JSON.parse(sessionStorage.getItem(`user`)).user.token,
+    token: JSON.parse(sessionStorage.getItem(`token`)),
     comments: [],
   }),
   actions: {

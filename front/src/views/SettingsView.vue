@@ -2,7 +2,7 @@
   <div id="container">
     <TheHeader />
     <main id="settings">
-      <sectionSettings
+      <SectionSettings
         v-for="section in sections"
         :sectionName="section.name"
         :title="section.title"
@@ -18,9 +18,9 @@
 
 <script setup>
 import TheHeader from "@//components/layout/TheHeader.vue";
-import sectionSettings from "@/components/settings/sectionSettings.vue";
+import SectionSettings from "@/components/settings/SectionSettings.vue";
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`))?.user;
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
 
 const sections = [
   {
