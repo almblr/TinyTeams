@@ -1,8 +1,8 @@
 <template>
   <footer class="footer">
     <div class="footer__writeComment">
-      <ProfilPicture
-        :url="props.profilPicture"
+      <profilePicture
+        :url="props.profilePicture"
         alt="Profil picture"
         width="35px"
         height="35px"
@@ -14,13 +14,13 @@
 </template>
 
 <script setup>
-import ProfilPicture from "@/components/layout/ProfilPicture.vue";
+import profilePicture from "@/components/layout/profilePicture.vue";
 import TextareaComponent from "@/components/posts/TextareaComponent.vue";
 import CommentSection from "@/components/posts/CommentSection.vue";
 
 const props = defineProps({
   postId: Number,
-  profilPicture: String,
+  profilePicture: String,
   postComments: Array,
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
   <article v-for="user in props.users" :key="user.id" v-if="props.users">
-    <img :src="user.profilPicture" alt="profilPicture" class="userPicture" />
+    <img :src="user.profilePicture" alt="profilePicture" class="userPicture" />
     <div class="userInfos">
       <router-link :to="`/users/${user.username}`">
         <h2>{{ user.firstname }} {{ user.lastname }}</h2>

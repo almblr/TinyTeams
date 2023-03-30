@@ -6,7 +6,7 @@
     <PostHeader
       :author="post.author"
       :postId="post.id"
-      :imageUrl="post.user.profilPicture"
+      :imageUrl="post.user.profilePicture"
       :firstname="post.user.firstname"
       :lastname="post.user.lastname"
       :createdAt="post.createdAt"
@@ -24,7 +24,7 @@
     <BlockDivider width="98%" height="1px" />
     <PostFooter
       :postId="post.id"
-      :profilPicture="post.user.profilPicture"
+      :profilePicture="post.user.profilePicture"
       :postComments="[...post.comments]"
     />
   </article>

@@ -53,7 +53,7 @@ const userController = {
         firstname: User.firstname,
         lastname: User.lastname,
         username: User.username,
-        profilPicture: User.profilPicture,
+        profilePicture: User.profilePicture,
         job: User.job,
         email: User.email,
       };
@@ -107,7 +107,7 @@ const userController = {
           "lastname",
           "username",
           "job",
-          "profilPicture",
+          "profilePicture",
           "isAdmin",
         ],
       });
@@ -159,9 +159,11 @@ const userController = {
         password: req.body.newPassword
           ? await bcrypt.hash(req.body.newPassword, 10)
           : User.password,
-        profilPicture: req.file?.filename
-          ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-          : User.profilPicture,
+        profilePicture: req.files?.profilePicture
+          ? `${req.protocol}://${req.get("host")}/images/${
+              req.files.profilePicture[0].filename
+            }`
+          : User.profilePicture,
         job: req.body.job || User.job,
       };
       await User.update(updatedUser);

@@ -3,14 +3,14 @@
     <h3>
       {{ props.title }}
     </h3>
-    <div class="profilPicture" v-if="props.showProfilPicture">
-      <img :src="profilPictureUrl" alt="userProfilPicture" />
+    <div class="profilePicture" v-if="props.showprofilePicture">
+      <img :src="profilePictureUrl" alt="userprofilePicture" />
       <AddMediaButton
-        @showUploadedImg="profilPictureFunctions.get"
+        @showUploadedImg="profilePictureFunctions.get"
         v-if="!canRemoveNewPicture"
         ><template v-slot:icon> Changer votre photo </template>
       </AddMediaButton>
-      <span v-else class="cancelButton" @click="profilPictureFunctions.remove"
+      <span v-else class="cancelButton" @click="profilePictureFunctions.remove"
         >Annuler</span
       >
     </div>
@@ -44,8 +44,8 @@ const props = defineProps({
   title: { type: String, required: true },
   inputsArray: { type: Array, required: true },
   submit: { type: String, required: true },
-  profilPicture: { type: String, required: false },
-  showProfilPicture: { type: Boolean, required: true },
+  profilePicture: { type: String, required: false },
+  showprofilePicture: { type: Boolean, required: true },
 });
 
 const userStore = useUserStore();
@@ -55,7 +55,7 @@ const imageBlop = ref(null);
 const canRemoveNewPicture = ref(false);
 
 const updatedUser = ref({
-  profilPicture: ref(userLS.value.profilPicture),
+  profilePicture: ref(userLS.value.profilePicture),
   email: ref(userLS.value.email),
   job: ref(userLS.value.job),
 });
@@ -66,21 +66,21 @@ const updatedPassword = ref({
   confirmPassword: ref(null),
 });
 
-const profilPictureFunctions = {
+const profilePictureFunctions = {
   get: (blop, file) => {
     imageBlop.value = blop;
-    updatedUser.value.profilPicture = file;
+    updatedUser.value.profilePicture = file;
     canRemoveNewPicture.value = true;
   },
   remove: () => {
     imageBlop.value = null;
-    updatedUser.value.profilPicture = userLS.value.profilPicture;
+    updatedUser.value.profilePicture = userLS.value.profilePicture;
     canRemoveNewPicture.value = false;
   },
 };
 
-const profilPictureUrl = computed(() => {
-  return imageBlop.value ? imageBlop.value : props.profilPicture;
+const profilePictureUrl = computed(() => {
+  return imageBlop.value ? imageBlop.value : props.profilePicture;
 });
 
 const updateValue = (inputValue, inputName) => {
@@ -144,7 +144,7 @@ section {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05), 0 2px 1px rgba(0, 0, 0, 0.05),
     0 1px 3px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
-  .profilPicture {
+  .profilePicture {
     @include jcCt-aiCt;
     gap: 20px;
     & img {

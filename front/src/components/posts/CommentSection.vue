@@ -7,8 +7,8 @@
       :key="comment.id"
       :id="comment.id"
     >
-      <ProfilPicture
-        :url="comment.user.profilPicture"
+      <profilePicture
+        :url="comment.user.profilePicture"
         width="35px"
         height="35px"
       />
@@ -28,7 +28,7 @@
 
 <script setup>
 import { ref } from "vue";
-import ProfilPicture from "@/components/layout/ProfilPicture.vue";
+import profilePicture from "@/components/layout/profilePicture.vue";
 import CommentPost from "@/components/posts/CommentPost.vue";
 
 const props = defineProps({

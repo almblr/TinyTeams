@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="band"></div>
-    <img class="profilPicture" :src="props.user.profilPicture" />
+    <img class="profilePicture" :src="props.user.profilePicture" />
     <div class="userInfo">
       <h2 class="userInfo__name">
         {{ props.user.firstname }} {{ props.user.lastname }}
@@ -55,7 +55,7 @@ const props = defineProps({
   background-color: rgb(36, 51, 100);
 }
 
-.profilPicture {
+.profilePicture {
   position: absolute;
   top: 10px;
   width: 110px;
@@ -121,7 +121,7 @@ const props = defineProps({
   .band {
     height: 90px;
   }
-  .profilPicture {
+  .profilePicture {
     top: 40px;
   }
 }

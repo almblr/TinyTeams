@@ -40,7 +40,7 @@ const userModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: "N/A",
     },
-    profilPicture: {
+    profilePicture: {
       type: DataTypes.TEXT,
       defaultValue: "http://localhost:3000/images/defaultPicture.png",
     },

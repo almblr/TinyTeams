@@ -7,65 +7,65 @@ import commentModel from "../models/commentModel.js";
 import followModel from "../models/followModel.js";
 import notificationModel from "../models/notificationModel.js";
 
-export const user = userModel(sequelize, DataTypes);
-export const post = postModel(sequelize, DataTypes);
-export const react = reactionModel(sequelize, DataTypes);
-export const comment = commentModel(sequelize, DataTypes);
-export const follow = followModel(sequelize, DataTypes);
-export const notification = notificationModel(sequelize, DataTypes);
+export const User = userModel(sequelize, DataTypes);
+export const Post = postModel(sequelize, DataTypes);
+export const React = reactionModel(sequelize, DataTypes);
+export const Comment = commentModel(sequelize, DataTypes);
+export const Follow = followModel(sequelize, DataTypes);
+export const Notification = notificationModel(sequelize, DataTypes);
 
 /* Création des associations entre les tables */
 // Créer la foreignKey "author" sur la table notifications
 
-user.hasMany(notification, {
+User.hasMany(Notification, {
   foreignKey: "author",
   onDelete: "CASCADE",
 });
-notification.belongsTo(user, {
+Notification.belongsTo(User, {
   foreignKey: "author",
 });
 
 // Créer la foreignKey "author" sur la table follows
-user.hasMany(follow, {
+User.hasMany(Follow, {
   foreignKey: "author",
   onDelete: "CASCADE",
 });
-follow.belongsTo(user, {
+Follow.belongsTo(User, {
   foreignKey: "author",
 });
 
 // Créer la foreignKey "author" sur la table posts
-user.hasMany(post, {
+User.hasMany(Post, {
   foreignKey: "author",
   onDelete: "CASCADE",
 });
-post.belongsTo(user, {
+Post.belongsTo(User, {
   foreignKey: "author",
 });
 
 // Créer la foreignKey "postId" sur la table reactions
-post.hasMany(react, {
+Post.hasMany(React, {
   onDelete: "CASCADE",
 });
-react.belongsTo(post);
+React.belongsTo(Post);
 
 // Créer la foreignKey "userId" sur la table reactions
-user.hasMany(react, {
+User.hasMany(React, {
   onDelete: "CASCADE",
 });
-react.belongsTo(user);
+React.belongsTo(User);
 
 // Créer la foreignKey "postId" sur la table comments
-post.hasMany(comment, {
+Post.hasMany(Comment, {
   onDelete: "CASCADE",
 });
-comment.belongsTo(post);
+Comment.belongsTo(Post);
 
 // Créer la foreignKey "userId" sur la table comments
-user.hasMany(comment, {
+User.hasMany(Comment, {
   foreignKey: "author",
   onDelete: "CASCADE",
 });
-comment.belongsTo(user, {
+Comment.belongsTo(User, {
   foreignKey: "author",
 });

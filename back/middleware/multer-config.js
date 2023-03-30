@@ -18,5 +18,8 @@ const storage = multer.diskStorage({
   },
 });
 
-export default multer({ storage: storage }).single("imageUrl");
+export default multer({ storage: storage }).fields([
+  { name: "profilePicture", maxCount: 1 },
+  { name: "imageUrl", maxCount: 1 },
+]);
 // .single pour dire qu'il s'agit d'un fichier unique

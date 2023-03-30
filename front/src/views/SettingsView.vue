@@ -8,8 +8,8 @@
         :title="section.title"
         :inputsArray="section.inputs"
         :submit="section.function"
-        :profilPicture="userLS.profilPicture"
-        :showProfilPicture="section.showProfilPicture"
+        :profilePicture="userLS.profilePicture"
+        :showprofilePicture="section.showprofilePicture"
         :type="section.type"
       />
     </main>
@@ -27,7 +27,7 @@ const sections = [
     name: "user",
     title: "Informations personnelles",
     function: "saveUser",
-    showProfilPicture: true,
+    showprofilePicture: true,
     inputs: [
       {
         name: "firstname",
@@ -63,7 +63,7 @@ const sections = [
     name: "password",
     title: "Changer de mot de passe",
     function: "savePassword",
-    showProfilPicture: false,
+    showprofilePicture: false,
     inputs: [
       {
         name: "oldPassword",

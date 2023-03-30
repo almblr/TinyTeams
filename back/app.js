@@ -64,7 +64,7 @@ sequelize
           lastname: "TinyTeams",
           username: "modérateurtinyteams",
           isAdmin: true,
-          profilPicture: "http://localhost:3000/images/moderator.png",
+          profilePicture: "http://localhost:3000/images/moderator.png",
         });
       });
     }

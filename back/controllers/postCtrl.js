@@ -1,9 +1,9 @@
-import { post, react, user, comment } from "../db/sequelize.js";
+import { Post, React, User, Comment } from "../db/sequelize.js";
 import fs from "fs";
 import { Op } from "sequelize";
 
 const getPostComments = async (author, postId) => {
-  const userComments = await comment.findAll({
+  const userComments = await Comment.findAll({
     where: {
       author,
       postId,
@@ -11,12 +11,12 @@ const getPostComments = async (author, postId) => {
     order: [["createdAt", "DESC"]],
     include: [
       {
-        model: user,
-        attributes: ["id", "firstname", "lastname", "profilPicture"],
+        model: User,
+        attributes: ["id", "firstname", "lastname", "profilePicture"],
       },
     ],
   });
-  const othersComments = await comment.findAll({
+  const othersComments = await Comment.findAll({
     where: {
       postId,
       author: {
@@ -25,8 +25,8 @@ const getPostComments = async (author, postId) => {
     },
     include: [
       {
-        model: user,
-        attributes: ["id", "firstname", "lastname", "profilPicture"],
+        model: User,
+        attributes: ["id", "firstname", "lastname", "profilePicture"],
       },
     ],
     order: [["createdAt", "DESC"]],
@@ -39,26 +39,28 @@ const getPostComments = async (author, postId) => {
 
 const postController = {
   create: async (req, res) => {
-    if (!req.body.content && !req.file) {
+    if (!req.body.content && !req.files.imageUrl[0]) {
       return res.status(400).json({ message: "Empty post." });
     }
     try {
-      const createdPost = await post.create({
+      const createdPost = await Post.create({
         userId: req.auth.userId,
         content: req.body.content,
-        imageUrl: req.file?.filename
-          ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+        imageUrl: req.files?.imageUrl
+          ? `${req.protocol}://${req.get("host")}/images/${
+              req.files.imageUrl[0].filename
+            }`
           : null,
         author: req.auth.userId,
       });
       const Post = await post.findByPk(createdPost.id, {
         include: [
-          react,
+          React,
           {
-            model: user,
-            attributes: ["id", "firstname", "lastname", "profilPicture"],
+            model: User,
+            attributes: ["id", "firstname", "lastname", "profilePicture"],
           },
-          comment,
+          Comment,
         ],
       });
       res.status(201).send(Post);
@@ -68,12 +70,12 @@ const postController = {
   },
   getOne: async (req, res) => {
     try {
-      const Post = await post.findByPk(req.params.postId, {
+      const Post = await Post.findByPk(req.params.postId, {
         include: [
-          react,
+          React,
           {
-            model: user,
-            attributes: ["id", "firstname", "lastname", "profilPicture"],
+            model: User,
+            attributes: ["id", "firstname", "lastname", "profilePicture"],
           },
         ],
       });
@@ -89,16 +91,16 @@ const postController = {
   },
   getAll: async (req, res) => {
     try {
-      const allPosts = await post.findAll({
+      const allPosts = await Post.findAll({
         where: "userId" in req.query ? { author: req.query.userId } : {},
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
         include: [
-          react,
+          React,
           {
-            model: user,
-            attributes: ["id", "firstname", "lastname", "profilPicture"],
+            model: User,
+            attributes: ["id", "firstname", "lastname", "profilePicture"],
           },
         ],
       });
@@ -131,22 +133,22 @@ const postController = {
     }
   },
   update: async (req, res) => {
-    const Post = await post.findByPk(req.params.postId);
-    if (req.auth.userId !== Post.author) {
+    const post = await Post.findByPk(req.params.postId);
+    if (req.auth.userId !== post.author) {
       return res.status(401).json({ message: "You cannot update this post" });
     }
     try {
-      const updatedPost = await Post.update({
+      const updatedPost = await post.update({
         content: req.body.content || null,
       });
-      const postToSend = await post.findByPk(updatedPost.id, {
+      const postToSend = await Post.findByPk(updatedPost.id, {
         include: [
-          react,
+          React,
           {
-            model: user,
-            attributes: ["id", "firstname", "lastname", "profilPicture"],
+            model: User,
+            attributes: ["id", "firstname", "lastname", "profilePicture"],
           },
-          comment,
+          Comment,
         ],
       });
       res.status(201).send(postToSend);
@@ -155,16 +157,16 @@ const postController = {
     }
   },
   delete: async (req, res) => {
-    const Post = await post.findByPk(req.params.postId);
-    if (req.auth.userId !== Post.author && req.auth.isAdmin === false) {
+    const post = await Post.findByPk(req.params.postId);
+    if (req.auth.userId !== post.author && req.auth.isAdmin === false) {
       return res.status(401).json({ message: "You cannot delete this post" });
     }
     try {
-      if (Post.imageUrl) {
-        const filename = Post.imageUrl.split("/images/")[1];
+      if (post.imageUrl) {
+        const filename = post.imageUrl.split("/images/")[1];
         await fs.promises.unlink(`images/${filename}`);
       }
-      await Post.destroy();
+      await post.destroy();
       res.status(200).json({ message: "Post deleted" });
     } catch {
       res.status(500).send();
