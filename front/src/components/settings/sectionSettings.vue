@@ -108,6 +108,7 @@ const submit = async (type) => {
     userLS.value = await userStore.getOne(userLS.value.username);
     sessionStorage.setItem("user", JSON.stringify(userLS.value));
     canSaveChanges.value = false;
+    canRemoveNewPicture.value = false;
   } else if (type === "savePassword") {
     // save password
   }

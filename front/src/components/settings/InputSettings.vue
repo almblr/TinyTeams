@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 const props = defineProps({
   name: { type: String, required: true },
   type: { type: String, required: true },
@@ -32,6 +32,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["getInputValue"]);
+
 const input = ref(null);
 const sendInputValue = () => emit("getInputValue", input.value, props.name);
 

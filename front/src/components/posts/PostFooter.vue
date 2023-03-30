@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="footer__writeComment">
-      <profilePicture
+      <ProfilePicture
         :url="props.profilePicture"
         alt="Profil picture"
         width="35px"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import profilePicture from "@/components/layout/profilePicture.vue";
+import ProfilePicture from "@/components/layout/ProfilePicture.vue";
 import TextareaComponent from "@/components/posts/TextareaComponent.vue";
 import CommentSection from "@/components/posts/CommentSection.vue";
 

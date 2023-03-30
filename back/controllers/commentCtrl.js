@@ -1,28 +1,30 @@
-import { comment } from "../db/sequelize.js";
+import { Comment } from "../db/sequelize.js";
 import fs from "fs";
 
 const commentController = {
   create: async (req, res) => {
-    if (!req.body.content && !req.file && !req.body.imageUrl) {
+    if (!req.body.content && !req.files.imageUrl[0] && !req.body.imageUrl) {
       return res.status(400).json({ message: "Empty comment" });
     }
     try {
-      const Comment = await comment.create({
+      const comment = await Comment.create({
         author: req.auth.userId,
         postId: req.params.postId,
         content: req.body.content ? req.body.content : null,
-        imageUrl: req.file?.filename
-          ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+        imageUrl: req.files?.imageUrl
+          ? `${req.protocol}://${req.get("host")}/images/${
+              req.files.imageUrl[0].filename
+            }`
           : req.body.imageUrl,
       });
-      res.status(201).send(Comment);
+      res.status(201).send(comment);
     } catch {
       res.status(500).send();
     }
   },
   getAll: async (req, res) => {
     try {
-      const allComments = await comment.findAll({
+      const allComments = await Comment.findAll({
         where: {
           postId: req.params.postId,
         },
@@ -36,10 +38,10 @@ const commentController = {
     }
   },
   update: async (req, res) => {
-    const Comment = await comment.findByPk(req.params.commentId);
+    const comment = await Comment.findByPk(req.params.commentId);
     if (
-      !Comment ||
-      (req.auth.userId !== Comment.author && req.auth.isAdmin === false)
+      !comment ||
+      (req.auth.userId !== comment.author && req.auth.isAdmin === false)
     ) {
       return res
         .status(401)
@@ -47,20 +49,20 @@ const commentController = {
     }
     try {
       // update the content of the comment
-      await Comment.update({
+      await comment.update({
         content: req.body.content || null,
       });
       // send the updated comment as the response
-      res.status(201).send(Comment);
+      res.status(201).send(comment);
     } catch {
       res.status(500).send();
     }
   },
   delete: async (req, res) => {
-    const Comment = await comment.findByPk(req.params.commentId);
+    const comment = await Comment.findByPk(req.params.commentId);
     if (
-      !Comment ||
-      (req.auth.userId !== Comment.author && req.auth.isAdmin === false)
+      !comment ||
+      (req.auth.userId !== comment.author && req.auth.isAdmin === false)
     ) {
       return res
         .status(401)
@@ -68,12 +70,12 @@ const commentController = {
     }
     try {
       // Si le Comment contenait une image
-      if (Comment.imageUrl) {
-        const filename = Comment.imageUrl.split("/images/")[1];
+      if (comment.imageUrl) {
+        const filename = comment.imageUrl.split("/images/")[1];
         // On vérifie que filename existe car imageUrl peut-être un gif donc un lien
         filename ? await fs.promises.unlink(`images/${filename}`) : null;
       }
-      await Comment.destroy();
+      await comment.destroy();
       res.status(200).json({ message: "Comment removed" });
     } catch {
       res.status(500).send();

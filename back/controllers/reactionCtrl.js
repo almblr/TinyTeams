@@ -1,11 +1,11 @@
-import { react } from "../db/sequelize.js";
+import { React } from "../db/sequelize.js";
 
 const reactionController = {
   react: async (req, res) => {
     const userId = req.auth.userId;
     const postId = req.params.postId;
     try {
-      const reaction = await react.findOne({
+      const reaction = await React.findOne({
         where: {
           userId,
           postId,
@@ -13,7 +13,7 @@ const reactionController = {
       });
       if (!reaction) {
         // User didn't react to the post
-        const newReaction = await react.create({
+        const newReaction = await React.create({
           userId,
           postId,
         });

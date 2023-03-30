@@ -53,7 +53,7 @@ const postController = {
           : null,
         author: req.auth.userId,
       });
-      const Post = await post.findByPk(createdPost.id, {
+      const post = await Post.findByPk(createdPost.id, {
         include: [
           React,
           {
@@ -63,14 +63,14 @@ const postController = {
           Comment,
         ],
       });
-      res.status(201).send(Post);
+      res.status(201).send(post);
     } catch {
       res.status(500).send();
     }
   },
   getOne: async (req, res) => {
     try {
-      const Post = await Post.findByPk(req.params.postId, {
+      const post = await Post.findByPk(req.params.postId, {
         include: [
           React,
           {
@@ -83,8 +83,8 @@ const postController = {
         req.auth.userId,
         req.params.postId
       );
-      Post.setDataValue("comments", PostComments);
-      res.status(200).send(Post);
+      post.setDataValue("comments", PostComments);
+      res.status(200).send(post);
     } catch {
       res.status(500).send();
     }

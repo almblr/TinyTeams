@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { user } from "../db/sequelize.js";
+import { User } from "../db/sequelize.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -15,7 +15,7 @@ const userController = {
     }
     try {
       const hash = await bcrypt.hash(req.body.password, 10);
-      await user.create({
+      await User.create({
         email: req.body.email,
         password: hash,
         firstname: req.body.firstname,
@@ -30,32 +30,32 @@ const userController = {
   },
   login: async (req, res) => {
     try {
-      const User = await user.findOne({
+      const user = await User.findOne({
         where: {
           email: req.body.email,
         },
       });
       const isPasswordValid = await bcrypt.compare(
         req.body.password,
-        User.password
+        user.password
       );
-      if (!isPasswordValid && !User) {
+      if (!isPasswordValid && !user) {
         return res.status(404).json({ message: "User not found" });
       }
       const token = jwt.sign(
-        { userId: User.id, isAdmin: User.isAdmin },
+        { userId: user.id, isAdmin: user.isAdmin },
         process.env.TOKEN,
         { expiresIn: "3h" }
       );
       const loggedUser = {
-        id: User.id,
-        isAdmin: User.isAdmin,
-        firstname: User.firstname,
-        lastname: User.lastname,
-        username: User.username,
-        profilePicture: User.profilePicture,
-        job: User.job,
-        email: User.email,
+        id: user.id,
+        isAdmin: user.isAdmin,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        username: user.username,
+        profilePicture: user.profilePicture,
+        job: user.job,
+        email: user.email,
       };
       res.status(200).json({ loggedUser, token });
     } catch {
@@ -64,7 +64,7 @@ const userController = {
   },
   getOne: async (req, res) => {
     try {
-      const User = await user.findOne({
+      const user = await User.findOne({
         where: {
           username: req.params.username,
         },
@@ -72,8 +72,8 @@ const userController = {
           exclude: ["password"],
         },
       });
-      if (User) {
-        res.status(201).send(User);
+      if (user) {
+        res.status(201).send(user);
       } else {
         res.status(404).json({ eror: "User not found" });
       }
@@ -83,7 +83,7 @@ const userController = {
   },
   getAll: async (req, res) => {
     try {
-      const Users = await user.findAll({
+      const users = await User.findAll({
         where: req.query.search
           ? {
               [Op.or]: [
@@ -112,7 +112,7 @@ const userController = {
         ],
       });
       if ("lastUserId" in req.query) {
-        const lastUser = Users.findIndex(
+        const lastUser = users.findIndex(
           (user) => user.id === parseInt(req.query.lastUserId)
         );
         if (lastUser === -1) {
@@ -121,23 +121,23 @@ const userController = {
         }
         const start = lastUser + 1;
         const end = start + 10;
-        const nextUsers = Users.slice(start, end);
+        const nextUsers = users.slice(start, end);
         if (nextUsers.length === 0) {
           return res.status(200).send({ message: "No more users" });
         }
-        if (start + 1 === Users.length) {
-          return res.status(200).send(Users.slice(start, Users.length));
+        if (start + 1 === users.length) {
+          return res.status(200).send(users.slice(start, users.length));
         }
         return res.status(200).send(nextUsers);
       }
-      res.status(200).send(Users.slice(0, 10));
+      res.status(200).send(users.slice(0, 10));
     } catch {
       res.status(500).send();
     }
   },
   update: async (req, res) => {
     try {
-      const User = await user.findByPk(req.params.userId);
+      const user = await User.findByPk(req.params.userId);
       if (req.body.newPassword && req.body.oldPassword) {
         const passwordRegex =
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -148,25 +148,25 @@ const userController = {
         }
         const isPasswordValid = await bcrypt.compare(
           req.body.oldPassword,
-          User.password
+          user.password
         );
         if (!isPasswordValid) {
           return res.status(401).json({ message: "Wrong password" });
         }
       }
       const updatedUser = {
-        email: req.body.email || User.email,
+        email: req.body.email || user.email,
         password: req.body.newPassword
           ? await bcrypt.hash(req.body.newPassword, 10)
-          : User.password,
+          : user.password,
         profilePicture: req.files?.profilePicture
           ? `${req.protocol}://${req.get("host")}/images/${
               req.files.profilePicture[0].filename
             }`
-          : User.profilePicture,
-        job: req.body.job || User.job,
+          : user.profilePicture,
+        job: req.body.job || user.job,
       };
-      await User.update(updatedUser);
+      await user.update(updatedUser);
       res.status(200).json({ message: "User updated successfully" });
     } catch {
       res.status(500).json();

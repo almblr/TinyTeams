@@ -1,14 +1,14 @@
-import { follow, user } from "../db/sequelize.js";
+import { Follow, User } from "../db/sequelize.js";
 
 const followController = {
   create: async (req, res) => {
     try {
-      const userToFollow = await user.findByPk(req.params.userId);
+      const userToFollow = await User.findByPk(req.params.userId);
       if (!userToFollow)
         return res.status(400).send({ error: "Non existant user" });
       if (userToFollow.id === req.auth.userId)
         return res.status(400).send({ error: "You can't follow yourself" });
-      const isAlreadyFollow = await follow.findOne({
+      const isAlreadyFollow = await Follow.findOne({
         where: {
           author: req.auth.userId,
           isFollowing: parseInt(req.params.userId),
@@ -17,7 +17,7 @@ const followController = {
       if (isAlreadyFollow) {
         return res.status(400).send({ error: "User already followed" });
       }
-      const newFollow = await follow.create({
+      const newFollow = await Follow.create({
         author: req.auth.userId,
         isFollowing: parseInt(req.params.userId),
       });
@@ -28,30 +28,30 @@ const followController = {
   },
   getOne: async (req, res) => {
     try {
-      const Follow = await follow.findOne({
+      const follow = await Follow.findOne({
         where: {
           author: req.auth.userId,
           isFollowing: parseInt(req.params.userId),
         },
       });
-      if (!Follow) {
+      if (!follow) {
         return res.status(200).send({
           message: "Follow not found",
         });
       }
-      res.status(200).send(Follow);
+      res.status(200).send(follow);
     } catch {
       res.status(500).send();
     }
   },
   delete: async (req, res) => {
     try {
-      const Follow = await follow.findOne({
+      const follow = await Follow.findOne({
         where: {
           id: parseInt(req.params.followId),
         },
       });
-      await Follow.destroy();
+      await follow.destroy();
       res.status(201).send({ message: "User unfollowed" });
     } catch {
       res.status(500).send();

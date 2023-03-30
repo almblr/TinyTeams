@@ -8,7 +8,7 @@ import url from "url";
 import bcrypt from "bcrypt";
 import "dotenv/config";
 import { sequelize } from "./db/db_init.js";
-import { user, post } from "./db/sequelize.js";
+import { User } from "./db/sequelize.js";
 import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import reactionRoutes from "./routes/reactionRoutes.js";
@@ -49,7 +49,7 @@ sequelize
   .sync()
   .then(async () => {
     console.log("Connexion à la BDD réussie");
-    const findUserAdmin = await user.findOne({
+    const findUserAdmin = await User.findOne({
       where: {
         isAdmin: true,
       },
@@ -57,7 +57,7 @@ sequelize
     if (!findUserAdmin) {
       // Pour éviter de recréer un user admin s'il y en a déjà un
       bcrypt.hash(process.env.ADMINPASSWORD, 10).then((hash) => {
-        user.create({
+        User.create({
           email: "admin@gmail.com",
           password: hash,
           firstname: "Modérateur",
@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
   });
   socket.on("sendFollow", async (followInfos) => {
     const receiver = followInfos.isFollowing;
-    const author = await user.findOne({
+    const author = await User.findOne({
       where: {
         id: followInfos.author,
       },
