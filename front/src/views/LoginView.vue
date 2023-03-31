@@ -18,7 +18,7 @@
       />
       <PasswordSwitcherButton
         :type="inputType"
-        @switchInputType="showHidePassword"
+        @switchInputType="(newType) => (inputType = newType)"
       ></PasswordSwitcherButton>
     </div>
     <SubmitFormButton text="Se connecter"></SubmitFormButton>
@@ -38,20 +38,17 @@ const inputType = ref("password");
 const showErrorMsg = ref(false);
 const data = ref({});
 
-const showHidePassword = (e) => {
-  inputType.value = e;
+const initErrorMsg = () => {
+  showErrorMsg.value = true;
+  setTimeout(() => {
+    showErrorMsg.value = false;
+  }, 7000);
+  return;
 };
-/* Fonction de connexion */
+
 const login = async () => {
   const user = await userStore.login(data.value);
-  if (Object.values(user).includes("User not found.")) {
-    showErrorMsg.value = true;
-    setTimeout(() => {
-      showErrorMsg.value = false;
-    }, 7000);
-    return;
-  }
-  router.push("/feed");
+  !user ? initErrorMsg() : router.push("/feed");
 };
 </script>
 

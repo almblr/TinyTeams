@@ -25,22 +25,28 @@ const useUserStore = defineStore("user", {
       useUserStore().login(data);
     },
     async login(data) {
-      const res = await axios({
-        url: "http://localhost:3000/api/users/login",
-        method: "POST",
-        data: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      sessionStorage.setItem("user", JSON.stringify(res.data.loggedUser));
-      sessionStorage.setItem("token", JSON.stringify(res.data.token));
-      this.token = res.data.token;
-      return res.data;
+      try {
+        const res = await axios({
+          url: "http://localhost:3000/api/users/login",
+          method: "POST",
+          data: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        sessionStorage.setItem("user", JSON.stringify(res.data.loggedUser));
+        sessionStorage.setItem("token", JSON.stringify(res.data.token));
+        this.token = res.data.token;
+        console.log(res.data);
+        return res.data;
+      } catch (err) {
+        console.log(err.response);
+        return false;
+      }
     },
     async getOne(username) {
       const res = await axios({

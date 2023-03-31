@@ -103,8 +103,8 @@ const updateValue = (inputValue, inputName) => {
 };
 
 const submit = async (type) => {
+  const formData = new FormData();
   if (type === "saveUser") {
-    const formData = new FormData();
     const commonKeys = Object.keys(updatedUser.value).filter(
       (key) => key in userLS.value
     );
@@ -119,28 +119,12 @@ const submit = async (type) => {
     canSaveChanges.value = false;
     canRemoveNewPicture.value = false;
   } else if (type === "savePassword") {
-    const formData = new FormData();
-    for (const key in updatedPassword.value) {
-      formData.append(key, updatedPassword.value[key]);
-    }
-    await userStore.update(formData, userLS.value.id);
-    canSaveChanges.value = false;
+    formData.append("oldPassword", updatedPassword.value.oldPassword);
+    formData.append("newPassword", updatedPassword.value.newPassword);
   }
+  await userStore.update(formData, userLS.value.id);
+  canSaveChanges.value = false;
 };
-watch(
-  () => updatedPassword.value,
-  (newValue) => {
-    const allNull = Object.values(newValue).every((value) =>
-      value ? true : false
-    );
-    if (allNull && newValue.newPassword === newValue.confirmPassword) {
-      return (canSaveChanges.value = true);
-    }
-    canSaveChanges.value = false;
-  },
-  { deep: true }
-);
-
 watch(
   () => updatedUser.value,
   (newValue) => {
@@ -153,6 +137,20 @@ watch(
     areValuesEqual
       ? (canSaveChanges.value = false)
       : (canSaveChanges.value = true);
+  },
+  { deep: true }
+);
+
+watch(
+  () => updatedPassword.value,
+  (newValue) => {
+    const allNull = Object.values(newValue).every((value) =>
+      value ? true : false
+    );
+    if (allNull && newValue.newPassword === newValue.confirmPassword) {
+      return (canSaveChanges.value = true);
+    }
+    canSaveChanges.value = false;
   },
   { deep: true }
 );

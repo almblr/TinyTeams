@@ -39,20 +39,15 @@ const commentController = {
   },
   update: async (req, res) => {
     const comment = await Comment.findByPk(req.params.commentId);
-    if (
-      !comment ||
-      (req.auth.userId !== comment.author && req.auth.isAdmin === false)
-    ) {
+    if (!comment || req.auth.userId !== comment.author) {
       return res
         .status(401)
         .json({ message: "You cannot update this comment" });
     }
     try {
-      // update the content of the comment
       await comment.update({
         content: req.body.content || null,
       });
-      // send the updated comment as the response
       res.status(201).send(comment);
     } catch {
       res.status(500).send();
@@ -60,19 +55,14 @@ const commentController = {
   },
   delete: async (req, res) => {
     const comment = await Comment.findByPk(req.params.commentId);
-    if (
-      !comment ||
-      (req.auth.userId !== comment.author && req.auth.isAdmin === false)
-    ) {
+    if (!comment || req.auth.userId !== comment.author) {
       return res
         .status(401)
         .json({ message: "You cannot delete this comment" });
     }
     try {
-      // Si le Comment contenait une image
       if (comment.imageUrl) {
         const filename = comment.imageUrl.split("/images/")[1];
-        // On vérifie que filename existe car imageUrl peut-être un gif donc un lien
         filename ? await fs.promises.unlink(`images/${filename}`) : null;
       }
       await comment.destroy();

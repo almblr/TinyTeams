@@ -40,9 +40,9 @@ const switchInputType = () => {
 }
 
 .red-first {
-  color: rgba(218, 67, 67, 0.534);
+  color: rgba(182, 174, 174, 0.726);
 }
 .red-snd {
-  color: rgba(218, 67, 67, 0.999);
+  color: rgba(116, 111, 111, 0.999);
 }
 </style>

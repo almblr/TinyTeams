@@ -16,6 +16,10 @@
       @input="sendInputValue"
       ref="input"
     />
+    <span class="passwordInfos" v-if="props.name === 'confirmPassword'">
+      Doit contenir une majuscule, un chiffre et un caractère spécial (8
+      caractères min.)
+    </span>
   </div>
 </template>
 
@@ -75,5 +79,10 @@ input[readonly] {
 .firstname,
 .lastname {
   width: 49%;
+}
+
+.passwordInfos {
+  width: 100%;
+  font-size: 0.8rem;
 }
 </style>

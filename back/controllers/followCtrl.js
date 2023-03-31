@@ -4,19 +4,22 @@ const followController = {
   create: async (req, res) => {
     try {
       const userToFollow = await User.findByPk(req.params.userId);
-      if (!userToFollow)
-        return res.status(400).send({ error: "Non existant user" });
-      if (userToFollow.id === req.auth.userId)
-        return res.status(400).send({ error: "You can't follow yourself" });
-      const isAlreadyFollow = await Follow.findOne({
+      !userToFollow
+        ? res.status(400).send({ error: "Non existant user" })
+        : null;
+      userToFollow.id === req.auth.userId
+        ? res.status(400).send({ error: "You can't follow yourself" })
+        : null;
+      const isAlreadyFollowing = await Follow.findOne({
         where: {
           author: req.auth.userId,
           isFollowing: parseInt(req.params.userId),
         },
       });
-      if (isAlreadyFollow) {
-        return res.status(400).send({ error: "User already followed" });
-      }
+      isAlreadyFollowing
+        ? res.status(400).send({ error: "User already followed" })
+        : null;
+
       const newFollow = await Follow.create({
         author: req.auth.userId,
         isFollowing: parseInt(req.params.userId),
@@ -34,12 +37,11 @@ const followController = {
           isFollowing: parseInt(req.params.userId),
         },
       });
-      if (!follow) {
-        return res.status(200).send({
-          message: "Follow not found",
-        });
-      }
-      res.status(200).send(follow);
+      !follow
+        ? res.status(200).send({
+            message: "Follow not found",
+          })
+        : res.status(200).send(follow);
     } catch {
       res.status(500).send();
     }

@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 
 const userController = {
   create: async (req, res) => {
-    // Check if password matches the required RegExp
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(req.body.password)) {
@@ -39,9 +38,9 @@ const userController = {
         req.body.password,
         user.password
       );
-      if (!isPasswordValid && !user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+      !isPasswordValid
+        ? res.status(404).json({ message: "User not found" })
+        : null;
       const token = jwt.sign(
         { userId: user.id, isAdmin: user.isAdmin },
         process.env.TOKEN,
@@ -72,11 +71,9 @@ const userController = {
           exclude: ["password"],
         },
       });
-      if (user) {
-        res.status(201).send(user);
-      } else {
-        res.status(404).json({ eror: "User not found" });
-      }
+      user
+        ? res.status(201).send(user)
+        : res.status(404).json({ eror: "User not found" });
     } catch {
       res.status(500).send();
     }
@@ -150,9 +147,9 @@ const userController = {
           req.body.oldPassword,
           user.password
         );
-        if (!isPasswordValid) {
-          return res.status(401).json({ message: "Wrong password" });
-        }
+        !isPasswordValid
+          ? res.status(404).json({ message: "Wrong password" })
+          : null;
       }
       const updatedUser = {
         email: req.body.email || user.email,
