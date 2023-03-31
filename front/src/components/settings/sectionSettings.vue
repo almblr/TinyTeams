@@ -55,15 +55,15 @@ const imageBlop = ref(null);
 const canRemoveNewPicture = ref(false);
 
 const updatedUser = ref({
-  profilePicture: ref(userLS.value.profilePicture),
-  email: ref(userLS.value.email),
-  job: ref(userLS.value.job),
+  profilePicture: userLS.value.profilePicture,
+  email: userLS.value.email,
+  job: userLS.value.job,
 });
 
 const updatedPassword = ref({
-  oldPassword: ref(null),
-  newPassword: ref(null),
-  confirmPassword: ref(null),
+  oldPassword: null,
+  newPassword: null,
+  confirmPassword: null,
 });
 
 const profilePictureFunctions = {
@@ -84,10 +84,20 @@ const profilePictureUrl = computed(() => {
 });
 
 const updateValue = (inputValue, inputName) => {
-  const userKeys = Object.keys(updatedUser.value);
-  for (const key of userKeys) {
-    if (inputName === key) {
-      updatedUser.value[key] = inputValue;
+  if (props.sectionName === "user") {
+    const userKeys = Object.keys(updatedUser.value);
+    for (const key of userKeys) {
+      if (inputName === key) {
+        updatedUser.value[key] = inputValue;
+      }
+    }
+  }
+  if (props.sectionName === "password") {
+    const passwordKeys = Object.keys(updatedPassword.value);
+    for (const key of passwordKeys) {
+      if (inputName === key) {
+        updatedPassword.value[key] = inputValue;
+      }
     }
   }
 };
@@ -100,7 +110,6 @@ const submit = async (type) => {
     );
     for (const key of commonKeys) {
       if (updatedUser.value[key] !== userLS.value[key]) {
-        console.log(updatedUser.value[key]);
         formData.append(key, updatedUser.value[key]);
       }
     }
@@ -110,15 +119,31 @@ const submit = async (type) => {
     canSaveChanges.value = false;
     canRemoveNewPicture.value = false;
   } else if (type === "savePassword") {
-    // save password
+    const formData = new FormData();
+    for (const key in updatedPassword.value) {
+      formData.append(key, updatedPassword.value[key]);
+    }
+    await userStore.update(formData, userLS.value.id);
+    canSaveChanges.value = false;
   }
 };
+watch(
+  () => updatedPassword.value,
+  (newValue) => {
+    const allNull = Object.values(newValue).every((value) =>
+      value ? true : false
+    );
+    if (allNull && newValue.newPassword === newValue.confirmPassword) {
+      return (canSaveChanges.value = true);
+    }
+    canSaveChanges.value = false;
+  },
+  { deep: true }
+);
 
 watch(
   () => updatedUser.value,
   (newValue) => {
-    console.log(newValue);
-    console.log(userLS.value);
     const commonKeys = Object.keys(newValue).filter(
       (key) => key in userLS.value
     );
