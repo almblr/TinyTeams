@@ -41,10 +41,8 @@ const useUserStore = defineStore("user", {
         sessionStorage.setItem("user", JSON.stringify(res.data.loggedUser));
         sessionStorage.setItem("token", JSON.stringify(res.data.token));
         this.token = res.data.token;
-        console.log(res.data);
         return res.data;
       } catch (err) {
-        console.log(err.response);
         return false;
       }
     },
