@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post("/follow/:userId", auth, followController.create);
 router.get("/follow/getOne/:userId", auth, followController.getOne);
+router.get("/follow/getAll/:userId", auth, followController.getAll);
 router.delete("/unfollow/:followId", auth, followController.delete);
 
 export default router;

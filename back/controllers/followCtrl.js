@@ -46,6 +46,18 @@ const followController = {
       res.status(500).send();
     }
   },
+  getAll: async (req, res) => {
+    try {
+      const followers = await Follow.findAll({
+        where: {
+          isFollowing: req.params.userId,
+        },
+      });
+      res.status(200).send(followers);
+    } catch {
+      res.status(500).send();
+    }
+  },
   delete: async (req, res) => {
     try {
       const follow = await Follow.findOne({

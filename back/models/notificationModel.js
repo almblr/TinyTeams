@@ -6,12 +6,20 @@ const notificationModel = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    type: {
+    notifiableType: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    content: {
+    notifiable_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    sender: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    isRead: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
   });

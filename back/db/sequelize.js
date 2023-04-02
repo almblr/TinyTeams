@@ -69,3 +69,12 @@ User.hasMany(Comment, {
 Comment.belongsTo(User, {
   foreignKey: "author",
 });
+
+// Créer la foreignKey "userId" sur la table notification
+User.hasMany(Notification, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+});
+Notification.belongsTo(User, {
+  foreignKey: "userId",
+});

@@ -133,7 +133,7 @@ footer {
     opacity: 0.9;
   }
   90% {
-    opacity: 0.9;
+    opacity: 1;
   }
   95% {
     opacity: 0;

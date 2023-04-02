@@ -90,7 +90,7 @@ const sendPost = async () => {
     emptyPost.value === true ? (emptyPost.value = false) : null;
     resetPost();
     emit("close");
-    socket.emit("newPost", "Un nouveau post a été publié.");
+    socket.emit("newPost", userLS.id);
   }
 };
 </script>

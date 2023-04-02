@@ -14,6 +14,7 @@ import userRoutes from "./routes/userRoutes.js";
 import reactionRoutes from "./routes/reactionRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import followRoutes from "./routes/followRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -76,6 +77,7 @@ app.use("/api/posts/", postRoutes);
 app.use("/api/posts/", reactionRoutes);
 app.use("/api/posts/", commentRoutes);
 app.use("/api/users/", followRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 const sessionsMap = {};
 const io = new Server(httpServer, {
@@ -97,8 +99,19 @@ io.on("connection", (socket) => {
   socket.on("newFollow", (arg) => {
     console.log(arg);
   });
-  socket.on("newPost", (arg) => {
-    console.log(arg);
+  socket.on("newPost", async (postAuthor) => {
+    // A terminer
+    const follows = await fetch(
+      `http://localhost:3000/api/users/follow/getAll/${postAuthor}`
+    );
+    for (const follow of follows) {
+      io.to(
+        sessionsMap[follow.author].emit(
+          "notifPost",
+          `${postAuthor} a publié un nouveau post !`
+        )
+      );
+    }
   });
   socket.on("sendLike", (postInfos) => {
     const receiver = postInfos.author;
