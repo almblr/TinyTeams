@@ -7,6 +7,7 @@ import path from "path";
 import url from "url";
 import bcrypt from "bcrypt";
 import "dotenv/config";
+import axios from "axios";
 import { sequelize } from "./db/db_init.js";
 import { User } from "./db/sequelize.js";
 import postRoutes from "./routes/postRoutes.js";
@@ -16,8 +17,8 @@ import commentRoutes from "./routes/commentRoutes.js";
 import followRoutes from "./routes/followRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 
-const app = express();
-const httpServer = createServer(app);
+export const app = express();
+export const httpServer = createServer(app);
 
 /* Ces deux lignes sont obligatoires car la syntaxe ES6 est utilisée.*/
 const __filename = url.fileURLToPath(import.meta.url);
@@ -99,18 +100,37 @@ io.on("connection", (socket) => {
   socket.on("newFollow", (arg) => {
     console.log(arg);
   });
-  socket.on("newPost", async (postAuthor) => {
+  socket.on("newPost", async (arg) => {
     // A terminer
-    const follows = await fetch(
-      `http://localhost:3000/api/users/follow/getAll/${postAuthor}`
-    );
-    for (const follow of follows) {
-      io.to(
-        sessionsMap[follow.author].emit(
-          "notifPost",
-          `${postAuthor} a publié un nouveau post !`
-        )
-      );
+    const authorFollowers = await axios({
+      url: `http://localhost:3000/api/users/follow/getAll/${arg.post.author}`,
+      headers: {
+        Authorization: `Bearer ${arg.token}`,
+      },
+    });
+    for (const follower of authorFollowers.data) {
+      try {
+        await axios({
+          url: "http://localhost:3000/api/notifications/create",
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${arg.token}`,
+          },
+          data: JSON.stringify({
+            sender: arg.post.author,
+            notifiableType: "newPost",
+            notifiableId: arg.post.id,
+            userId: follower.author,
+            isRead: false,
+          }),
+        });
+      } catch (error) {
+        console.log(error.response.data);
+      }
+      // io.to(sessionsMap[follower.author]).emit(
+      //   "notifPost",
+      //   `${arg.post.author} a publié un nouveau post !`
+      // );
     }
   });
   socket.on("sendLike", (postInfos) => {
@@ -133,5 +153,6 @@ io.on("connection", (socket) => {
     );
   });
 });
+
 httpServer.listen(process.env.PORT || 3000);
 // app.listen(process.env.PORT || 3000);

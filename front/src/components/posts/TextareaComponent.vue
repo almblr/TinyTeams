@@ -63,13 +63,20 @@ const getUrls = (path, file) => {
 const sendComment = async (postId) => {
   const formData = new FormData();
   // Check if string contains only spaces
-  // if (!input.value.trim()) {
-  //   return;
-  // }
-  formData.append("content", input.value);
-  formData.append("imageUrl", mediaToSend.value);
-  input.value = "";
+  if (
+    (!input.value || input.value.trim().length === 0) &&
+    mediaToSend.value === ""
+  ) {
+    return;
+  }
+  if ((!input.value || input.value.trim().length === 0) && mediaToSend !== "") {
+    formData.append("imageUrl", mediaToSend.value);
+  }
+  if (input.value && mediaToSend === "") {
+    formData.append("content", input.value);
+  }
   await commentStore.create(postId, formData);
+  input.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
 };

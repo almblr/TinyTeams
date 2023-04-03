@@ -3,7 +3,11 @@ import fs from "fs";
 
 const commentController = {
   create: async (req, res) => {
-    if (!req.body.content && !req.files.imageUrl[0] && !req.body.imageUrl) {
+    if (
+      !req.body.content &&
+      Object.keys(req.files).length === 0 &&
+      !req.body.imageUrl
+    ) {
       return res.status(400).json({ message: "Empty comment" });
     }
     try {

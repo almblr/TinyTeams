@@ -10,12 +10,12 @@ const notificationModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    notifiable_id: {
+    notifiableId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
     sender: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     isRead: {

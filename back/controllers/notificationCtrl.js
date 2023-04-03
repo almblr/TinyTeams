@@ -4,8 +4,8 @@ const notificationController = {
   create: async (req, res) => {
     try {
       const notification = await Notification.create({
-        sender: req.auth.userId,
-        notifiableType: req.body.notificationType,
+        sender: req.auth.userId || req.body.sender,
+        notifiableType: req.body.notifiableType,
         notifiableId: req.body.notifiableId,
         userId: req.body.userId,
         isRead: false,

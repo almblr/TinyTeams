@@ -17,10 +17,6 @@ const useUserStore = defineStore("user", {
           firstname: data.firstname,
           lastname: data.lastname,
         }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
       });
       useUserStore().login(data);
     },
@@ -29,13 +25,9 @@ const useUserStore = defineStore("user", {
         const res = await axios({
           url: "http://localhost:3000/api/users/login",
           method: "POST",
-          data: JSON.stringify({
+          data: {
             email: data.email,
             password: data.password,
-          }),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
           },
         });
         sessionStorage.setItem("user", JSON.stringify(res.data.loggedUser));
@@ -76,7 +68,6 @@ const useUserStore = defineStore("user", {
         url: `http://localhost:3000/api/users/update/${userId}`,
         method: "PUT",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
         data,

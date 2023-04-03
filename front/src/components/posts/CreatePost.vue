@@ -51,6 +51,7 @@ const props = defineProps({
 const { textarea, input } = useTextareaAutosize();
 const socket = io("http://localhost:3000");
 const postStore = usePostStore();
+const token = JSON.parse(sessionStorage.getItem(`token`));
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const firstname = userLS.firstname;
 const emptyPost = ref(null);
@@ -86,11 +87,11 @@ const sendPost = async () => {
     if (imageFile.value) {
       formData.append("imageUrl", imageFile.value);
     }
-    await postStore.create(formData);
+    const post = await postStore.create(formData);
     emptyPost.value === true ? (emptyPost.value = false) : null;
     resetPost();
     emit("close");
-    socket.emit("newPost", userLS.id);
+    socket.emit("newPost", { post, token });
   }
 };
 </script>

@@ -12,7 +12,6 @@ const useFollowStore = defineStore("follow", {
         url: `http://localhost:3000/api/users/follow/${userId}`,
         method: "POST",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
       });
@@ -22,7 +21,6 @@ const useFollowStore = defineStore("follow", {
       const res = await axios({
         url: `http://localhost:3000/api/users/follow/getOne/${userId}`,
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
       });
@@ -35,7 +33,6 @@ const useFollowStore = defineStore("follow", {
         url: `http://localhost:3000/api/users/unfollow/${followId}`,
         method: "DELETE",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
       });

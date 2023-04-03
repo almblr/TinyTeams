@@ -22,7 +22,7 @@ const useCommentStore = defineStore("comment", {
         url: `http://localhost:3000/api/posts/${postId}/comments/create`,
         method: "POST",
         headers: {
-          Accept: "application/json",
+          "content-type": "application/json",
           Authorization: `Bearer ${this.token}`,
         },
         data,
@@ -34,7 +34,6 @@ const useCommentStore = defineStore("comment", {
         url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/update`,
         method: "PUT",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
         data,
@@ -46,7 +45,6 @@ const useCommentStore = defineStore("comment", {
         url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/delete`,
         method: "DELETE",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
       });

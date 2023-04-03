@@ -41,19 +41,18 @@ const usePostStore = defineStore("post", {
         url: "http://localhost:3000/api/posts/create",
         method: "POST",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
         data,
       });
       this.posts.unshift(res.data);
+      return res.data;
     },
     async update(postId, data) {
       const res = await axios({
         url: `http://localhost:3000/api/posts/update/${postId}`,
         method: "PUT",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
         data,
@@ -68,7 +67,6 @@ const usePostStore = defineStore("post", {
         url: `http://localhost:3000/api/posts/delete/${postId}`,
         method: "DELETE",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
       });
