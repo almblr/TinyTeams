@@ -127,10 +127,10 @@ io.on("connection", (socket) => {
       } catch (error) {
         console.log(error.response.data);
       }
-      // io.to(sessionsMap[follower.author]).emit(
-      //   "notifPost",
-      //   `${arg.post.author} a publié un nouveau post !`
-      // );
+      io.to(sessionsMap[follower.author]).emit(
+        "notifPost",
+        `${arg.post.author} a publié un nouveau post !`
+      );
     }
   });
   socket.on("sendLike", (postInfos) => {

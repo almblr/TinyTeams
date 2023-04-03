@@ -22,7 +22,6 @@ const useCommentStore = defineStore("comment", {
         url: `http://localhost:3000/api/posts/${postId}/comments/create`,
         method: "POST",
         headers: {
-          "content-type": "application/json",
           Authorization: `Bearer ${this.token}`,
         },
         data,

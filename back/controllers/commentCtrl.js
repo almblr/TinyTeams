@@ -3,6 +3,7 @@ import fs from "fs";
 
 const commentController = {
   create: async (req, res) => {
+    console.log(req.files);
     if (
       !req.body.content &&
       Object.keys(req.files).length === 0 &&
@@ -59,7 +60,10 @@ const commentController = {
   },
   delete: async (req, res) => {
     const comment = await Comment.findByPk(req.params.commentId);
-    if (!comment || req.auth.userId !== comment.author) {
+    if (
+      !comment ||
+      (req.auth.userId !== comment.author && req.auth.role === true)
+    ) {
       return res
         .status(401)
         .json({ message: "You cannot delete this comment" });

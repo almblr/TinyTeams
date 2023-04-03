@@ -25,6 +25,14 @@ if (!userLS) {
     sound.play();
   });
 
+  socket.on("notifPost", (arg) => {
+    console.log(arg);
+    const sound = new Audio("../../public/notificationSound.mp3");
+    sound.muted = false;
+    sound.volume = 0;
+    sound.play();
+  });
+
   sendUserId();
 }
 

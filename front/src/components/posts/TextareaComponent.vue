@@ -43,7 +43,7 @@ const commentStore = useCommentStore();
 const showing = ref(false);
 const containerTextarea = ref(null);
 const container = ref(null);
-const mediaToSend = ref("");
+const mediaToSend = ref(null);
 const mediaPreview = ref(null);
 
 const deleteImagePreview = () => {
@@ -62,17 +62,14 @@ const getUrls = (path, file) => {
 
 const sendComment = async (postId) => {
   const formData = new FormData();
-  // Check if string contains only spaces
-  if (
-    (!input.value || input.value.trim().length === 0) &&
-    mediaToSend.value === ""
-  ) {
+  const contentIsOnlySpaces = !input.value || input.value.trim().length === 0;
+  if (contentIsOnlySpaces && !mediaToSend.value) {
     return;
   }
-  if ((!input.value || input.value.trim().length === 0) && mediaToSend !== "") {
+  if (contentIsOnlySpaces && mediaToSend.value) {
     formData.append("imageUrl", mediaToSend.value);
   }
-  if (input.value && mediaToSend === "") {
+  if (!contentIsOnlySpaces && !mediaToSend.value) {
     formData.append("content", input.value);
   }
   await commentStore.create(postId, formData);
@@ -93,6 +90,7 @@ const sendComment = async (postId) => {
     flex-wrap: wrap;
     flex: 1;
     max-width: 630px;
+    min-height: 35px;
     background-color: var(--textarea);
     border: 1px solid var(--textareaBorder);
     border-radius: 20px;
@@ -132,7 +130,6 @@ const sendComment = async (postId) => {
 }
 
 .imagePreview {
-  position: relative;
   width: 50%;
 }
 </style>
