@@ -114,7 +114,6 @@ const sendNotification = async (data, followerId) => {
 };
 
 io.on("connection", (socket) => {
-  io.to(socket.id).emit("askForUserId");
   socket.on("sendUserId", (userId) => {
     if (userId) {
       sessionsMap[userId] = socket.id;
