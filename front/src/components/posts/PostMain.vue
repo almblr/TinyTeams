@@ -15,15 +15,7 @@
     </div>
     <div class="main__stats">
       <span>{{ postReactions.length }}</span>
-      <span
-        ref="likeBtn"
-        :class="{
-          emptyHeart: checkLikeState(postId) === true,
-          coloredHeart: checkLikeState(postId) === false,
-        }"
-      >
-        ❤
-      </span>
+      <span ref="likeBtn" class="likeBtn"> ❤ </span>
       <span class="main__stats__coms"
         >{{ postComments.length }} commentaire(s)</span
       >
@@ -32,31 +24,18 @@
       class="main__reactBtn"
       @click="updateLike(postId, props.author, userId)"
     >
-      <fa
-        icon="fa-solid fa-thumbs-up"
-        :class="{
-          emptylikeBtn: checkLikeState(postId) === true,
-          coloredLikeBtn: checkLikeState(postId) === false,
-        }"
-      />
+      <ion-icon name="thumbs-up"></ion-icon>
       <span>J'aime</span>
     </div>
   </main>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import usePostStore from "@/stores/postStore.js";
 import useLikeStore from "@/stores/likeStore.js";
 import { socket } from "@/socket.js";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
-
-const postStore = usePostStore();
-const likeStore = useLikeStore();
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const userId = userLS.id;
-const likeBtn = ref(null);
-const editingMode = ref(false);
 
 const emit = defineEmits(["update:postToEdit"]);
 const props = defineProps({
@@ -69,9 +48,16 @@ const props = defineProps({
   postToEdit: Number,
 });
 
-/* Permet de vérifier l'état du like (exploiter dans le changement de style de l'icone like) */
-const checkLikeState = (postId) => {
-  const thisPost = postStore.posts.find((post) => post.id === postId);
+const postStore = usePostStore();
+const likeStore = useLikeStore();
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const userId = userLS.id;
+const likeBtn = ref(null);
+const editingMode = ref(false);
+const thumbColor = ref("null");
+
+const doesUserLike = computed(() => {
+  const thisPost = postStore.posts.find((post) => post.id === props.postId);
   const postReactions = thisPost.reactions;
   const doesUserLike = postReactions.find((react) => react.userId === userId);
   if (doesUserLike === undefined) {
@@ -79,27 +65,23 @@ const checkLikeState = (postId) => {
   } else {
     return false;
   }
-};
+});
 
 /* Met à jour le like d'un post et l'affichage des posts */
-const updateLike = async (postId, author, liker) => {
-  const thisPost = postStore.posts.find((post) => post.id === postId);
-  const postReactions = thisPost.reactions;
-  const doesUserLike = postReactions.find((react) => react.userId === userId);
-  if (doesUserLike === undefined) {
-    await likeStore.likePost(postId);
-    if (liker !== author) {
-      socket.emit("sendLike", {
-        postId: postId,
-        author: author,
-        likerId: userId,
-        likerName: userLS.userName,
-      });
-    }
-
+const updateLike = async () => {
+  if (doesUserLike.value === true) {
+    await likeStore.likePost(props.postId);
+    // socket.emit("sendLike", {
+    //   postId: props.postId,
+    //   author: props.author,
+    //   likerId: userId,
+    //   likerName: userLS.userName,
+    // });
+    thumbColor.value = "#2374e1";
     return true;
   } else {
-    await likeStore.likePost(postId);
+    thumbColor.value = "rgba(133, 133, 133, 0.5)";
+    await likeStore.likePost(props.postId);
     return false;
   }
 };
@@ -115,6 +97,12 @@ watch(
 
 watch(editingMode, () => {
   emit("update:postToEdit", null);
+});
+
+onMounted(() => {
+  doesUserLike.value
+    ? (thumbColor.value = "rgba(133, 133, 133, 0.5)")
+    : (thumbColor.value = "#2374e1");
 });
 </script>
 
@@ -151,6 +139,13 @@ watch(editingMode, () => {
     & span {
       font-size: 16px;
     }
+    & .likeBtn {
+      font-size: 18px;
+      transition: 0.3s;
+      color: v-bind("thumbColor");
+      transition: 0.3s;
+      cursor: pointer;
+    }
   }
   &__reactBtn {
     display: flex;
@@ -176,32 +171,7 @@ watch(editingMode, () => {
     }
   }
 }
-
-.emptylikeBtn,
-.emptyHeart {
-  font-size: 18px;
-  transition: 0.3s;
-  color: rgba(133, 133, 133, 0.507);
-  &:hover {
-    transition: 0.3s;
-    cursor: pointer;
-  }
-}
-.coloredLikeBtn,
-.coloredHeart {
-  font-size: 18px;
-  transition: 0.3s;
-  color: #2374e1;
-  &:hover {
-    transition: 0.3s;
-    cursor: pointer;
-  }
-}
-
-.emptyHeart,
-.coloredHeart {
-  &:hover {
-    cursor: initial !important;
-  }
+ion-icon {
+  fill: v-bind("thumbColor");
 }
 </style>

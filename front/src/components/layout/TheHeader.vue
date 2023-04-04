@@ -6,19 +6,17 @@
       </router-link>
     </div>
     <nav>
-      <router-link to="/feed"><fa icon="fa-solid fa-house" /></router-link>
-      <router-link to="/users"
-        ><fa icon="fa-solid fa-user-group"
-      /></router-link>
+      <router-link to="/feed"><ion-icon name="home"></ion-icon></router-link>
+      <router-link to="/users"><ion-icon name="people"></ion-icon></router-link>
     </nav>
     <div class="buttons">
       <SwitchThemeButton />
       <router-link to="/" class="btn"
-        ><fa icon="fa-brands fa-facebook-messenger"
-      /></router-link>
+        ><ion-icon name="chatbubble-ellipses"></ion-icon
+      ></router-link>
       <router-link to="/" class="btn"
-        ><fa icon="fa-solid fa-bell"
-      /></router-link>
+        ><ion-icon name="notifications"></ion-icon
+      ></router-link>
       <div class="btn tooltip" v-on-click-outside="closeTooltip" title="Compte">
         <img
           class="tooltip_button profilePicture"
@@ -106,7 +104,7 @@ header {
     height: 100%;
     & a {
       @include button;
-      font-size: 19px;
+      font-size: 23px;
     }
   }
   .buttons {

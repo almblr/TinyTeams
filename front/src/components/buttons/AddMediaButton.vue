@@ -30,6 +30,7 @@ input[type="file"] {
   display: none;
 }
 label {
+  @include jcCt-aiCt;
   font-size: v-bind("props.iconSize");
   color: var(--addMediaColor);
   cursor: pointer;

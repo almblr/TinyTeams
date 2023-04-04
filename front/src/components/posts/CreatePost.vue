@@ -19,7 +19,7 @@
       <footer>
         <div class="file">
           <AddMediaButton iconSize="24px" @showUploadedImg="displayImagePreview"
-            ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
+            ><template v-slot:icon><ion-icon name="camera"></ion-icon></template
           ></AddMediaButton>
         </div>
         <button @click="sendPost">Publier</button>
@@ -34,7 +34,6 @@
 <script setup>
 import { ref } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
-import { io } from "socket.io-client";
 import { socket } from "@/socket.js";
 import usePostStore from "@/stores/postStore.js";
 import ModalLayer from "@/components/layout/ModalLayer.vue";

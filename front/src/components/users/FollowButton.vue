@@ -8,12 +8,12 @@
     @mouseleave="isHovered = false"
   >
     <span v-if="!isSubscribed">
-      <fa icon="fa-solid fa-user-plus icon" />
+      <ion-icon name="person-add"></ion-icon>
       S'abonner
     </span>
     <span v-if="isSubscribed">
-      <fa icon="fa-solid fa-check icon" v-if="!isHovered" />
-      <fa icon="fa-solid fa-xmark icon" v-if="isHovered" />Abonné
+      <ion-icon name="checkmark" v-if="!isHovered"></ion-icon>
+      <ion-icon name="checkmark" v-else></ion-icon>Abonné
     </span>
   </button>
 </template>

@@ -6,7 +6,7 @@
     @click="calculateAvailableSpace"
   >
     <div class="icon" @click="openGifPanel">
-      <fa icon="fa-solid fa-image" />
+      <ion-icon name="image"></ion-icon>
     </div>
     <div :class="tooltipClass" v-show="isGifPanelOpen === true">
       <input
@@ -43,14 +43,6 @@ const tooltipClass = computed(() => {
   const direction = spaceUp.value ? "up" : "down";
   return `tooltip-${direction} tooltip`;
 });
-
-// const tooltipClass = computed(() => {
-//   return {
-//     "tooltip-up": spaceUp.value === true,
-//     "tooltip-down": spaceUp.value === false,
-//     tooltip: true, // default class
-//   };
-// });
 
 const calculateAvailableSpace = () => {
   const clientHeight = document.documentElement.clientHeight;
@@ -128,8 +120,9 @@ onMounted(() => {
   color: var(--addMediaColor);
   cursor: pointer;
   & > .icon {
+    @include jcCt-aiCt;
     position: relative;
-    font-size: 19px;
+    font-size: 23px;
   }
 }
 

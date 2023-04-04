@@ -5,7 +5,7 @@
       <PostContainer />
     </main>
     <button class="createPost" @click="showCreateModal = true">
-      <fa icon="fa-solid fa-feather" class="show-modal icon" />
+      <ion-icon name="create"></ion-icon>
     </button>
     <Teleport to="body">
       <CreatePost
@@ -20,8 +20,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { socket } from "@/socket.js";
+import { ref } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import usePostStore from "@//stores/postStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
@@ -78,8 +77,10 @@ useInfiniteScroll(
     cursor: pointer;
     box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.562);
   }
-  & .icon {
-    font-size: 25px;
+  & > * {
+    position: relative;
+    left: 1px;
+    font-size: 30px;
     color: white;
   }
 }
@@ -89,9 +90,6 @@ useInfiniteScroll(
     right: 25px;
     width: 60px;
     height: 60px;
-    & .icon {
-      font-size: 30px;
-    }
   }
 }
 </style>

@@ -11,8 +11,7 @@
         to="/settings"
         v-if="loggedInUserProfile"
         class="userInfo__btn edit"
-      >
-        <fa icon="fa-solid fa-gear" />Modifier votre profil
+        >Modifier votre profil
       </router-link>
       <FollowButton
         :userId="props.user.id"

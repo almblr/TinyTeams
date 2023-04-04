@@ -10,8 +10,8 @@
       ></textarea>
       <div class="container__buttons">
         <div title="Insérez une image" @click="!showing">
-          <AddMediaButton iconSize="19px" @showUploadedImg="getUrls"
-            ><template v-slot:icon><fa icon="fa-solid fa-camera" /></template
+          <AddMediaButton iconSize="23px" @showUploadedImg="getUrls"
+            ><template v-slot:icon><ion-icon name="camera"></ion-icon></template
           ></AddMediaButton>
         </div>
         <div title="Insérer un gif">

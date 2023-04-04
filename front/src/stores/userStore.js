@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { socket } from "../socket.js";
 import axios from "axios";
 
 const useUserStore = defineStore("user", {
@@ -30,6 +31,7 @@ const useUserStore = defineStore("user", {
             password: data.password,
           },
         });
+        socket.emit("sendUserId", res.data.loggedUser.id);
         sessionStorage.setItem("user", JSON.stringify(res.data.loggedUser));
         sessionStorage.setItem("token", JSON.stringify(res.data.token));
         this.token = res.data.token;

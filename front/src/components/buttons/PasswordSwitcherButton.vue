@@ -1,16 +1,9 @@
 <template>
-  <fa
-    icon="fa-solid fa-eye"
-    class="eye"
-    :class="{
-      'red-first': props.type === 'password',
-      'red-snd': props.type === 'text',
-    }"
-    @click="switchInputType"
-  />
+  <ion-icon name="eye" @click="switchInputType"></ion-icon>
 </template>
 
 <script setup>
+import { ref } from "vue";
 const emit = defineEmits(["switchInputType"]);
 const props = defineProps({
   type: {
@@ -19,30 +12,28 @@ const props = defineProps({
   },
 });
 
+const color = ref("rgb(141, 141, 141)");
+
 const switchInputType = () => {
   const newType = props.type === "password" ? "text" : "password";
   emit("switchInputType", newType);
+  color.value === "rgb(141, 141, 141)"
+    ? (color.value = "rgb(95, 92, 92)")
+    : (color.value = "rgb(141, 141, 141)");
 };
 </script>
 
 <style lang="scss" scoped>
-.eye {
+ion-icon {
   position: absolute;
-  width: 30px;
-  height: 23px;
-  top: 12px;
+  top: 9px;
   right: 7px;
   transition: 150ms;
+  font-size: 29px;
+  fill: v-bind("color");
   &:hover {
     transition: 150ms;
     cursor: pointer;
   }
-}
-
-.red-first {
-  color: rgba(182, 174, 174, 0.726);
-}
-.red-snd {
-  color: rgba(116, 111, 111, 0.999);
 }
 </style>

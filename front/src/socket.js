@@ -2,6 +2,7 @@ import { reactive } from "vue";
 import { io } from "socket.io-client";
 
 export const state = reactive({
+  connected: false,
   newPost: [],
   newFollow: [],
 });
@@ -12,8 +13,8 @@ const URL =
 
 export const socket = io(URL);
 
-socket.on("askForUserId", () => {
-  socket.emit("sendUserId", userLS.id);
+socket.on("connection", () => {
+  state.connected = true;
 });
 
 socket.on("notifPost", (...args) => {
