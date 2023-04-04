@@ -88,69 +88,55 @@ const io = new Server(httpServer, {
   },
 });
 
+const getFollowers = async (userId, token) => {
+  return await axios({
+    url: `http://localhost:3000/api/users/follow/getAll/${userId}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+const sendNotification = async (data, followerId) => {
+  await axios({
+    url: "http://localhost:3000/api/notifications/create",
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${data.token}`,
+    },
+    data: JSON.stringify({
+      sender: data.sender,
+      notifiableType: data.type,
+      notifiableId: data.notifiableId || null,
+      userId: followerId,
+      isRead: false,
+    }),
+  });
+};
+
 io.on("connection", (socket) => {
   io.to(socket.id).emit("askForUserId");
   socket.on("sendUserId", (userId) => {
-    console.log(`User ${socket.id} is connected and their ID is ${userId}`);
     if (userId) {
       sessionsMap[userId] = socket.id;
       console.log(sessionsMap);
     }
   });
-  socket.on("newFollow", (arg) => {
-    console.log(arg);
+  socket.on("newFollow", async (data) => {
+    sendNotification(data, data.userId);
+    io.to(sessionsMap[data.userId]).emit(
+      "notifFollow",
+      `${data.sender} vous suit.`
+    );
   });
-  socket.on("newPost", async (arg) => {
-    // A terminer
-    const authorFollowers = await axios({
-      url: `http://localhost:3000/api/users/follow/getAll/${arg.post.author}`,
-      headers: {
-        Authorization: `Bearer ${arg.token}`,
-      },
-    });
+  socket.on("newPost", async (infos) => {
+    const authorFollowers = getFollowers(infos.post.author, infos.token);
     for (const follower of authorFollowers.data) {
-      try {
-        await axios({
-          url: "http://localhost:3000/api/notifications/create",
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${arg.token}`,
-          },
-          data: JSON.stringify({
-            sender: arg.post.author,
-            notifiableType: "newPost",
-            notifiableId: arg.post.id,
-            userId: follower.author,
-            isRead: false,
-          }),
-        });
-      } catch (error) {
-        console.log(error.response.data);
-      }
+      sendNotification(infos, "newPost", follower.author);
       io.to(sessionsMap[follower.author]).emit(
         "notifPost",
-        `${arg.post.author} a publié un nouveau post !`
+        `${infos.post.author} a publié un nouveau post !`
       );
     }
-  });
-  socket.on("sendLike", (postInfos) => {
-    const receiver = postInfos.author;
-    io.to(sessionsMap[receiver]).emit(
-      "message",
-      "Quelqu'un a aimé votre post !"
-    );
-  });
-  socket.on("sendFollow", async (followInfos) => {
-    const receiver = followInfos.isFollowing;
-    const author = await User.findOne({
-      where: {
-        id: followInfos.author,
-      },
-    });
-    io.to(sessionsMap[receiver]).emit(
-      "followNotification",
-      `${author.firstname} ${author.lastname} vous suit !`
-    );
   });
 });
 

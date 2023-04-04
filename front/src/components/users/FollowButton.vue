@@ -21,7 +21,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import useFollowStore from "@/stores/followStore.js";
-import socket from "@/services/socketio.js";
+import { socket } from "@/socket.js";
 
 const props = defineProps({
   userId: Number,
@@ -29,17 +29,20 @@ const props = defineProps({
 });
 
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const token = JSON.parse(sessionStorage.getItem(`token`));
 const followStore = useFollowStore();
 const isHovered = ref(false);
 const isSubscribed = ref(null);
 
 const updateFollow = async (type) => {
   if (type === "follow") {
-    await followStore.sendFollow(props.userId);
-
+    const follow = await followStore.sendFollow(props.userId);
     socket.emit("sendFollow", {
-      author: userLS.id,
-      isFollowing: props.userId,
+      sender: userLS.id,
+      type: "newFollow",
+      notifiableId: follow.id,
+      userId: follow.isFollowing,
+      token,
     });
     isHovered.value = false;
   } else {

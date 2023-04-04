@@ -48,7 +48,7 @@
 import { ref, watch } from "vue";
 import usePostStore from "@/stores/postStore.js";
 import useLikeStore from "@/stores/likeStore.js";
-import socket from "@/services/socketio.js";
+import { socket } from "@/socket.js";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
 const postStore = usePostStore();

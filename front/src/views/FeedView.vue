@@ -20,7 +20,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { socket } from "@/socket.js";
 import { useInfiniteScroll } from "@vueuse/core";
 import usePostStore from "@//stores/postStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";

@@ -35,6 +35,7 @@
 import { ref } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
 import { io } from "socket.io-client";
+import { socket } from "@/socket.js";
 import usePostStore from "@/stores/postStore.js";
 import ModalLayer from "@/components/layout/ModalLayer.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
@@ -49,7 +50,6 @@ const props = defineProps({
 });
 
 const { textarea, input } = useTextareaAutosize();
-const socket = io("http://localhost:3000");
 const postStore = usePostStore();
 const token = JSON.parse(sessionStorage.getItem(`token`));
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
@@ -71,6 +71,8 @@ const deleteImagePreview = () => {
 const resetPost = () => {
   deleteImagePreview();
   input.value = "";
+  emptyPost.value === true ? (emptyPost.value = false) : null;
+  emit("close");
 };
 
 const sendPost = async () => {
@@ -88,10 +90,13 @@ const sendPost = async () => {
       formData.append("imageUrl", imageFile.value);
     }
     const post = await postStore.create(formData);
-    emptyPost.value === true ? (emptyPost.value = false) : null;
     resetPost();
-    emit("close");
-    socket.emit("newPost", { post, token });
+    socket.emit("newPost", {
+      sender: post.author,
+      type: "newPost",
+      notifiableId: post.id,
+      token: token,
+    });
   }
 };
 </script>
