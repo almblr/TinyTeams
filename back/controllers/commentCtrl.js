@@ -37,7 +37,27 @@ const commentController = {
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
       });
-      res.status(200).send(allComments);
+      if ("lastCommentId" in req.query) {
+        const lastComment = allComments.findIndex(
+          (comment) => comment.id === parseInt(req.query.lastCommentId)
+        );
+        if (lastComment === -1) {
+          return res.status(400).send({ message: "Comment not found" });
+        }
+        const start = lastComment + 1;
+        const end = start + 10;
+        const nextComments = allComments.slice(start, end);
+        if (nextComments.length === 0) {
+          return res.status(200).send({ message: "No more comments" });
+        }
+        if (start + 1 === allComments.length) {
+          return res
+            .status(200)
+            .send(allComments.slice(start, allComments.length));
+        }
+        return res.status(200).send(nextComments);
+      }
+      res.status(200).send(allComments.slice(0, 10));
     } catch {
       res.status(500).send();
     }

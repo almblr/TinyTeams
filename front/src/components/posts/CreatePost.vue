@@ -9,7 +9,6 @@
         <textarea
           :placeholder="`Quoi de neuf, ${firstname} ?`"
           v-model="input"
-          maxlength="560"
           ref="textarea"
         ></textarea>
         <div class="imagePreview" v-if="imageBlop">
@@ -137,7 +136,7 @@ main {
   textarea {
     width: 100%;
     min-height: 150px;
-    max-height: 2000px;
+    max-height: 350px;
     resize: none;
     padding: 10px 0 0 10px;
     font-size: 19px;
@@ -146,6 +145,7 @@ main {
     background-color: var(--textarea);
     caret-color: var(--textColorMain);
     color: var(--textColorMain);
+    overflow-y: auto;
     &::placeholder {
       opacity: 0.7;
       top: 10px;

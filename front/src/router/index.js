@@ -25,7 +25,7 @@ const routes = [
   {
     path: "/feed",
     name: "Feed",
-    component: Feed,
+    component: () => import("@/views/FeedView.vue"),
     beforeEnter: (_, _2, next) => {
       window.sessionStorage.getItem("user") ? next() : next("/login");
     },
@@ -33,22 +33,22 @@ const routes = [
   {
     path: "/post/:postId",
     name: "Post",
-    component: PostView,
+    component: () => import("@/views/PostView.vue"),
   },
   {
     path: "/users",
     name: "User",
-    component: UsersList,
+    component: () => import("@/views/UsersListView.vue"),
   },
   {
     path: "/users/:username",
     name: "UserProfil",
-    component: UserProfil,
+    component: () => import("@/views/UserProfilView.vue"),
   },
   {
     path: "/settings",
     name: "Settings",
-    component: Settings,
+    component: () => import("@/views/SettingsView.vue"),
   },
 ];
 

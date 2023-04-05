@@ -1,7 +1,8 @@
 <template>
   <main class="main">
     <p class="main__text" v-if="postContent !== null && editingMode === false">
-      {{ postContent }}
+      {{ displayedContent }}
+      <button @click="showMore" v-if="showMoreButton">Voir plus</button>
     </p>
     <TextareaEditing
       v-else
@@ -32,6 +33,8 @@
 
 <script setup>
 import { ref, watch, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import router from "@/router/index.js";
 import usePostStore from "@/stores/postStore.js";
 import useLikeStore from "@/stores/likeStore.js";
 import { socket, state } from "../../socket.js";
@@ -48,13 +51,25 @@ const props = defineProps({
   postToEdit: Number,
 });
 
+const route = useRoute();
 const postStore = usePostStore();
 const likeStore = useLikeStore();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const token = JSON.parse(sessionStorage.getItem(`token`));
+const postContent = ref(props.postContent);
 const likeBtn = ref(null);
 const editingMode = ref(false);
 const thumbColor = ref("null");
+const displayedContent = ref("");
+const showMoreButton = ref(false);
+
+const showMore = () => {
+  if (route.name === "Feed") {
+    router.push(`/post/${props.postId}`);
+  }
+  displayedContent.value = postContent.value;
+  showMoreButton.value = false;
+};
 
 const doesUserLike = computed(() => {
   const thisPost = postStore.posts.find((post) => post.id === props.postId);
@@ -114,6 +129,17 @@ onMounted(() => {
     ? (thumbColor.value = "rgba(133, 133, 133, 0.5)")
     : (thumbColor.value = "#2374e1");
 });
+
+onMounted(() => {
+  if (router.options.history.state.back === "/feed") {
+    return (displayedContent.value = postContent.value);
+  }
+  if (postContent.value.length > 500) {
+    showMoreButton.value = true;
+    return (displayedContent.value = postContent.value.slice(0, 500) + "...");
+  }
+  displayedContent.value = postContent.value.slice(0, 500);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -128,6 +154,16 @@ onMounted(() => {
     overflow-wrap: break-word;
     padding: 10px 15px;
     color: var(--textColorMain);
+    & > button {
+      border: none;
+      background: none;
+      color: var(--textColorMain);
+      font-weight: bold;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
   &__image {
     width: 100%;
