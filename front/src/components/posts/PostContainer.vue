@@ -24,6 +24,7 @@
     <BlockDivider width="98%" height="1px" />
     <PostFooter
       :postId="post.id"
+      :author="post.author"
       :profilePicture="post.user.profilePicture"
       :postComments="[...post.comments]"
     />
@@ -66,6 +67,10 @@ onMounted(async () => {
     postStore.posts.length = 0;
     return await postStore.getAll(user.id);
   }
+  if (route.params.postId) {
+    postStore.posts.length = 0;
+    return await postStore.getOne(route.params.postId);
+  }
   await postStore.getAll();
   isLoading.value = false;
 });
@@ -77,6 +82,16 @@ watch(
       const user = await userStore.getOne(route.params.username);
       postStore.posts.length = 0;
       return await postStore.getAll(user.id);
+    }
+  }
+);
+watch(
+  () => route.params.postId,
+  async (newValue) => {
+    if (newValue) {
+      postStore.posts.length = 0;
+      const post = await postStore.getOne(route.params.postId);
+      return await postStore.getOne(post.id);
     }
   }
 );

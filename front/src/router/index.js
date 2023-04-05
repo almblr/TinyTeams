@@ -5,6 +5,7 @@ import Signup from "@/views/SignupView.vue";
 import UserProfil from "@/views/UserProfilView.vue";
 import UsersList from "@/views/UsersListView.vue";
 import Settings from "@/views/SettingsView.vue";
+import PostView from "@/views/PostView.vue";
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
     beforeEnter: (_, _2, next) => {
       window.sessionStorage.getItem("user") ? next() : next("/login");
     },
+  },
+  {
+    path: "/post/:postId",
+    name: "Post",
+    component: PostView,
   },
   {
     path: "/users",

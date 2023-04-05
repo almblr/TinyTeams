@@ -25,6 +25,7 @@ const useLikeStore = defineStore("like", {
       } else {
         foundPost.reactions.push(res.data);
       }
+      return res.data;
     },
   },
 });

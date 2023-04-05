@@ -7,7 +7,7 @@
         width="35px"
         height="35px"
       />
-      <TextareaComponent :postId="props.postId" />
+      <TextareaComponent :postId="props.postId" :author="props.author" />
     </div>
     <CommentSection :comments="props.postComments" />
   </footer>
@@ -20,6 +20,7 @@ import CommentSection from "@/components/posts/CommentSection.vue";
 
 const props = defineProps({
   postId: Number,
+  author: Number,
   profilePicture: String,
   postComments: Array,
 });

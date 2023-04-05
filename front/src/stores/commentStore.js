@@ -18,7 +18,7 @@ const useCommentStore = defineStore("comment", {
       this.comments = await res.data;
     },
     async create(postId, data) {
-      await axios({
+      const res = await axios({
         url: `http://localhost:3000/api/posts/${postId}/comments/create`,
         method: "POST",
         headers: {
@@ -27,6 +27,7 @@ const useCommentStore = defineStore("comment", {
         data,
       });
       await usePostStore().getOne(postId);
+      return res.data;
     },
     async update(postId, commentId, data) {
       await axios({

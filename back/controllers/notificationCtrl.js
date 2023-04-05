@@ -6,8 +6,8 @@ const notificationController = {
       const notification = await Notification.create({
         sender: req.auth.userId || req.body.sender,
         notifiableType: req.body.notifiableType,
-        notifiableId: req.body.notifiableId,
-        userId: req.body.userId,
+        notifiableId: req.body.notifiableId || null,
+        receiver: req.body.receiver,
         isRead: false,
       });
       res.status(201).send(notification);
@@ -24,10 +24,11 @@ const notificationController = {
     }
   },
   getAll: async (req, res) => {
+    console.log(req.params);
     try {
       const allNotifications = await Notification.findAll({
         where: {
-          userId: req.body.userId,
+          receiver: req.params.userId,
         },
         order: [
           ["createdAt", "DESC"], // Du plus récent au moins récent

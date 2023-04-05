@@ -21,7 +21,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import useFollowStore from "@/stores/followStore.js";
-import { socket } from "@/socket.js";
+import { socket } from "../../socket.js";
 
 const props = defineProps({
   userId: Number,
@@ -37,11 +37,12 @@ const isSubscribed = ref(null);
 const updateFollow = async (type) => {
   if (type === "follow") {
     const follow = await followStore.sendFollow(props.userId);
-    socket.emit("sendFollow", {
+    console.log(follow);
+    socket.emit("newFollow", {
       sender: userLS.id,
       type: "newFollow",
       notifiableId: follow.id,
-      userId: follow.isFollowing,
+      receiver: follow.isFollowing,
       token,
     });
     isHovered.value = false;

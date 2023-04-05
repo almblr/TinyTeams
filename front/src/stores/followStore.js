@@ -16,6 +16,7 @@ const useFollowStore = defineStore("follow", {
         },
       });
       this.follows.push(res.data);
+      return res.data;
     },
     async getOne(userId) {
       const res = await axios({

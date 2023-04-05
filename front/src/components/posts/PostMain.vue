@@ -22,7 +22,7 @@
     </div>
     <div
       class="main__reactBtn"
-      @click="updateLike(postId, props.author, userId)"
+      @click="updateLike(postId, props.author, userLS.id)"
     >
       <ion-icon name="thumbs-up"></ion-icon>
       <span>J'aime</span>
@@ -34,7 +34,7 @@
 import { ref, watch, computed, onMounted } from "vue";
 import usePostStore from "@/stores/postStore.js";
 import useLikeStore from "@/stores/likeStore.js";
-import { socket } from "@/socket.js";
+import { socket, state } from "../../socket.js";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
 const emit = defineEmits(["update:postToEdit"]);
@@ -51,7 +51,7 @@ const props = defineProps({
 const postStore = usePostStore();
 const likeStore = useLikeStore();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const userId = userLS.id;
+const token = JSON.parse(sessionStorage.getItem(`token`));
 const likeBtn = ref(null);
 const editingMode = ref(false);
 const thumbColor = ref("null");
@@ -59,7 +59,9 @@ const thumbColor = ref("null");
 const doesUserLike = computed(() => {
   const thisPost = postStore.posts.find((post) => post.id === props.postId);
   const postReactions = thisPost.reactions;
-  const doesUserLike = postReactions.find((react) => react.userId === userId);
+  const doesUserLike = postReactions.find(
+    (react) => react.userId === userLS.id
+  );
   if (doesUserLike === undefined) {
     return true;
   } else {
@@ -70,13 +72,14 @@ const doesUserLike = computed(() => {
 /* Met à jour le like d'un post et l'affichage des posts */
 const updateLike = async () => {
   if (doesUserLike.value === true) {
-    await likeStore.likePost(props.postId);
-    // socket.emit("sendLike", {
-    //   postId: props.postId,
-    //   author: props.author,
-    //   likerId: userId,
-    //   likerName: userLS.userName,
-    // });
+    const like = await likeStore.likePost(props.postId);
+    socket.emit("newLike", {
+      sender: userLS.id,
+      type: "newLike",
+      notifiableId: like.id,
+      receiver: props.author,
+      token,
+    });
     thumbColor.value = "#2374e1";
     return true;
   } else {
@@ -92,6 +95,13 @@ watch(
     if (newVar === props.postId) {
       editingMode.value = true;
     }
+  }
+);
+
+watch(
+  () => state.newLike[0],
+  async (newValue) => {
+    console.log(newValue);
   }
 );
 

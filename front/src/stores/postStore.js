@@ -18,6 +18,7 @@ const usePostStore = defineStore("post", {
       const findPost = this.posts.find((post) => post.id === Post.id);
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
+      return res.data;
     },
     async getAll(userId, lastPostViewed) {
       let url = `http://localhost:3000/api/posts/getAll/`;

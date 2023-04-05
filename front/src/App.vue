@@ -2,7 +2,12 @@
   <RouterView />
 </template>
 
-<script setup></script>
+<script setup>
+import { socket } from "./socket.js";
+
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
+userLS ? socket.emit("sendUserId", userLS.id) : null;
+</script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");

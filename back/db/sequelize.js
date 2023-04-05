@@ -17,14 +17,6 @@ export const Notification = notificationModel(sequelize, DataTypes);
 /* Création des associations entre les tables */
 // Créer la foreignKey "author" sur la table notifications
 
-User.hasMany(Notification, {
-  foreignKey: "author",
-  onDelete: "CASCADE",
-});
-Notification.belongsTo(User, {
-  foreignKey: "author",
-});
-
 // Créer la foreignKey "author" sur la table follows
 User.hasMany(Follow, {
   foreignKey: "author",
@@ -70,11 +62,11 @@ Comment.belongsTo(User, {
   foreignKey: "author",
 });
 
-// Créer la foreignKey "userId" sur la table notification
+// Créer la foreignKey "receiver" sur la table notification
 User.hasMany(Notification, {
-  foreignKey: "userId",
+  foreignKey: "receiver",
   onDelete: "CASCADE",
 });
 Notification.belongsTo(User, {
-  foreignKey: "userId",
+  foreignKey: "receiver",
 });

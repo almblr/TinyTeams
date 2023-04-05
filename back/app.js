@@ -103,13 +103,13 @@ const sendNotification = async (data, followerId) => {
     headers: {
       Authorization: `Bearer ${data.token}`,
     },
-    data: JSON.stringify({
+    data: {
       sender: data.sender,
       notifiableType: data.type,
       notifiableId: data.notifiableId || null,
-      userId: followerId,
+      receiver: followerId,
       isRead: false,
-    }),
+    },
   });
 };
 
@@ -121,21 +121,38 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("newFollow", async (data) => {
-    sendNotification(data, data.userId);
-    io.to(sessionsMap[data.userId]).emit(
+    sendNotification(data, data.receiver);
+    io.to(sessionsMap[data.receiver]).emit(
       "notifFollow",
       `${data.sender} vous suit.`
     );
   });
-  socket.on("newPost", async (infos) => {
-    const authorFollowers = getFollowers(infos.post.author, infos.token);
+  socket.on("newPost", async (data) => {
+    const authorFollowers = await getFollowers(data.sender, data.token);
     for (const follower of authorFollowers.data) {
-      sendNotification(infos, "newPost", follower.author);
+      console.log(follower);
+      sendNotification(data, follower.author);
       io.to(sessionsMap[follower.author]).emit(
         "notifPost",
-        `${infos.post.author} a publié un nouveau post !`
+        `${data.sender} a publié un nouveau post !`
       );
     }
+  });
+  socket.on("newLike", async (data) => {
+    console.log(data);
+    sendNotification(data, data.receiver);
+    io.to(sessionsMap[data.receiver]).emit(
+      "notifLike",
+      `${data.sender} a aimé votre post.`
+    );
+  });
+  socket.on("newComment", async (data) => {
+    console.log(data);
+    sendNotification(data, data.receiver);
+    io.to(sessionsMap[data.receiver]).emit(
+      "notifComment",
+      `${data.sender} a commenté votre post.`
+    );
   });
 });
 

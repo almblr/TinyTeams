@@ -27,6 +27,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { socket } from "../../socket.js";
 import useCommentStore from "@/stores/commentSTORE.js";
 import { useTextareaAutosize } from "@vueuse/core";
 import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
@@ -37,6 +38,7 @@ const { textarea, input } = useTextareaAutosize();
 
 const props = defineProps({
   postId: Number,
+  author: Number,
 });
 
 const commentStore = useCommentStore();
@@ -45,6 +47,8 @@ const containerTextarea = ref(null);
 const container = ref(null);
 const mediaToSend = ref(null);
 const mediaPreview = ref(null);
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const token = JSON.parse(sessionStorage.getItem(`token`));
 
 const deleteImagePreview = () => {
   mediaPreview.value = null;
@@ -72,10 +76,17 @@ const sendComment = async (postId) => {
   if (!contentIsOnlySpaces && !mediaToSend.value) {
     formData.append("content", input.value);
   }
-  await commentStore.create(postId, formData);
+  const comment = await commentStore.create(postId, formData);
   input.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
+  socket.emit("newComment", {
+    sender: userLS.id,
+    type: "newComment",
+    notifiableId: comment.id,
+    receiver: props.author,
+    token,
+  });
 };
 </script>
 
