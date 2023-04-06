@@ -81,7 +81,9 @@ const sendComment = async (postId) => {
   mediaPreview.value = "";
   mediaToSend.value = "";
   socket.emit("newComment", {
-    sender: userLS.id,
+    senderId: userLS.id,
+    senderUsername: userLS.username,
+    senderProfilePicture: userLS.ProfilePicture,
     type: "newComment",
     notifiableId: comment.id,
     receiver: props.author,

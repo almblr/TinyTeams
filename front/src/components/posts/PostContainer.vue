@@ -1,7 +1,5 @@
 <template>
-  <span v-if="postStore.posts.length === 0 && !isLoading">
-    {{ noPostMessage }}</span
-  >
+  <span v-if="postStore.posts.length === 0"> {{ noPostMessage }}</span>
   <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
     <PostHeader
       :author="post.author"
@@ -48,7 +46,7 @@ const isLoading = ref(true);
 const article = ref(null);
 
 const noPostMessage = computed(() => {
-  if (route.name === "News") {
+  if (route.name === "Feed") {
     return "Il n'y a aucun post à afficher";
   }
   if (route.name === "UserProfil") {

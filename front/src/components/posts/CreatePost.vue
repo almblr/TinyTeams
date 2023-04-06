@@ -90,7 +90,9 @@ const sendPost = async () => {
     const post = await postStore.create(formData);
     resetPost();
     socket.emit("newPost", {
-      sender: post.author,
+      senderId: post.author,
+      senderUsername: post.user.username,
+      senderProfilePicture: post.user.ProfilePicture,
       type: "newPost",
       notifiableId: post.id,
       token: token,

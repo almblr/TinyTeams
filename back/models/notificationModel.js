@@ -12,10 +12,20 @@ const notificationModel = (sequelize, DataTypes) => {
     },
     notifiableId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+    },
+    postId: {
+      type: DataTypes.INTEGER,
     },
     sender: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    senderUsername: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    senderProfilePicture: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     isRead: {

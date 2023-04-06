@@ -1,16 +1,19 @@
-import { Notification } from "../db/sequelize.js";
+import { Notification, User } from "../db/sequelize.js";
 
 const notificationController = {
   create: async (req, res) => {
     try {
-      const notification = await Notification.create({
-        sender: req.auth.userId || req.body.sender,
+      const createdNotif = await Notification.create({
         notifiableType: req.body.notifiableType,
         notifiableId: req.body.notifiableId || null,
+        postId: req.body.postId || null,
+        sender: req.auth.userId || req.body.sender,
+        senderUsername: req.body.senderUsername,
+        senderProfilePicture: req.body.senderProfilePicture,
         receiver: req.body.receiver,
         isRead: false,
       });
-      res.status(201).send(notification);
+      res.status(201).send(createdNotif);
     } catch {
       res.status(500).send();
     }
@@ -47,7 +50,7 @@ const notificationController = {
         const end = start + 10;
         const nextNotifications = allNotifications.slice(start, end);
         if (nextNotifications.length === 0) {
-          return res.status(200).send({ message: "No more Notifications" });
+          return res.status(200).send({ message: "No more notifications" });
         }
         if (start + 1 === allNotifications.length) {
           return res

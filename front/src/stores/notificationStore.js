@@ -4,6 +4,7 @@ import axios from "axios";
 const useNotifStore = defineStore("notif", {
   state: () => ({
     token: JSON.parse(sessionStorage.getItem(`token`)),
+    userId: JSON.parse(sessionStorage.getItem(`user`)).id,
     notifs: [],
   }),
   actions: {
@@ -19,18 +20,18 @@ const useNotifStore = defineStore("notif", {
       const index = this.notifs.indexOf(foundNotif);
       this.notifs.splice(index, 1, notif);
     },
-    async getAll(userId, lastnotifViewed) {
-      let url = `http://localhost:3000/api/notifications/getAll/${userId}`;
+    async getAll(lastNotifViewed) {
+      let url = `http://localhost:3000/api/notifications/getAll/${this.userId}`;
       const res = await axios({
         url,
         headers: {
           Authorization: `Bearer ${this.token}`,
         },
         params: {
-          lastNotifId: lastnotifViewed,
+          lastNotifId: lastNotifViewed,
         },
       });
-      if (Object.values(res.data).includes("No more notifs")) {
+      if (Object.values(res.data).includes("No more notifications")) {
         return console.log("No more notifs to load");
       }
       this.notifs = res.data;

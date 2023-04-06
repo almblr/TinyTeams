@@ -41,7 +41,7 @@ onMounted(() => getUser(route.params.username));
 useInfiniteScroll(
   posts,
   async () => {
-    if (postStore.posts !== []) {
+    if (postStore.posts.length !== 0) {
       const user = await userStore.getOne(route.params.username);
       const lastPostId = postStore.posts[postStore.posts.length - 1].id;
       await postStore.getAll(user.id, lastPostId);
@@ -55,16 +55,14 @@ useInfiniteScroll(
 
 <style lang="scss" scoped>
 #container {
-  height: 100%;
+  height: 100vh;
   overflow-y: auto;
-  position: relative;
+  background-color: var(--backgroundMain);
 }
 main {
   @include fdCol-aiCt;
   width: 100%;
-  min-height: 100%;
   row-gap: 20px;
-  background-color: var(--backgroundMain);
   transition: 200ms;
 }
 // .posts {

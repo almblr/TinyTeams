@@ -14,9 +14,7 @@
       <router-link to="/" class="btn"
         ><ion-icon name="chatbubble-ellipses"></ion-icon
       ></router-link>
-      <router-link to="/" class="btn"
-        ><ion-icon name="notifications"></ion-icon
-      ></router-link>
+      <div class="btn"><NotifPanel /></div>
       <div class="btn tooltip" v-on-click-outside="closeTooltip" title="Compte">
         <img
           class="tooltip_button profilePicture"
@@ -39,6 +37,7 @@
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import SwitchThemeButton from "@/components/buttons/SwitchThemeButton.vue";
+import NotifPanel from "@/components/layout/NotifPanel.vue";
 
 const showTooltip = ref(null);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
@@ -66,8 +65,8 @@ const logout = () => {
   font-weight: bold;
   text-decoration: none;
   color: #ffffff;
+  cursor: pointer;
   &:hover {
-    cursor: pointer;
     background-color: #ececec15;
     transition: 200ms;
   }

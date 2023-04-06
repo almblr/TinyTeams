@@ -24,7 +24,6 @@ import { ref } from "vue";
 import usePostStore from "@/stores/postStore.js";
 import useCommentStore from "@/stores/commentStore.js";
 import { vOnClickOutside } from "@vueuse/components";
-import { useRoute } from "vue-router";
 
 const postStore = usePostStore();
 const commentStore = useCommentStore();
@@ -35,7 +34,6 @@ const spaceUp = ref(null);
 const showTooltip = ref(null);
 const postToModify = ref({});
 const commentToModify = ref({});
-const userParams = useRoute().params.username || null;
 
 const emit = defineEmits(["editPost", "editComment"]);
 const props = defineProps({
@@ -63,9 +61,7 @@ const calculateAvailableSpace = () => {
 
 /* La directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
 const closeTooltip = () => {
-  if (showTooltip.value === true) {
-    showTooltip.value = false;
-  }
+  showTooltip.value === true ? (showTooltip.value = false) : null;
 };
 
 const modify = async (id) => {

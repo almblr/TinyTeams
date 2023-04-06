@@ -104,13 +104,25 @@ const sendNotification = async (data, followerId) => {
       Authorization: `Bearer ${data.token}`,
     },
     data: {
-      sender: data.sender,
       notifiableType: data.type,
       notifiableId: data.notifiableId || null,
+      postId: data.postId || null,
+      sender: data.senderId,
+      senderUsername: data.senderUsername,
+      senderProfilePicture: data.senderProfilePicture,
       receiver: followerId,
       isRead: false,
     },
   });
+};
+
+const infosToSend = (data) => {
+  return {
+    notifType: data.type,
+    senderId: data.sender,
+    senderUsername: notif.senderUsername,
+    postId: notif.postId || null,
+  };
 };
 
 io.on("connection", (socket) => {
@@ -122,37 +134,25 @@ io.on("connection", (socket) => {
   });
   socket.on("newFollow", async (data) => {
     sendNotification(data, data.receiver);
-    io.to(sessionsMap[data.receiver]).emit(
-      "notifFollow",
-      `${data.sender} vous suit.`
-    );
+    io.to(sessionsMap[data.receiver]).emit("notifFollow", infosToSend(data));
   });
   socket.on("newPost", async (data) => {
     const authorFollowers = await getFollowers(data.sender, data.token);
     for (const follower of authorFollowers.data) {
       console.log(follower);
       sendNotification(data, follower.author);
-      io.to(sessionsMap[follower.author]).emit(
-        "notifPost",
-        `${data.sender} a publié un nouveau post !`
-      );
+      io.to(sessionsMap[follower.author]).emit("notifPost", infosToSend(data));
     }
   });
   socket.on("newLike", async (data) => {
     console.log(data);
     sendNotification(data, data.receiver);
-    io.to(sessionsMap[data.receiver]).emit(
-      "notifLike",
-      `${data.sender} a aimé votre post.`
-    );
+    io.to(sessionsMap[data.receiver]).emit("notifLike", infosToSend(data));
   });
   socket.on("newComment", async (data) => {
     console.log(data);
     sendNotification(data, data.receiver);
-    io.to(sessionsMap[data.receiver]).emit(
-      "notifComment",
-      `${data.sender} a commenté votre post.`
-    );
+    io.to(sessionsMap[data.receiver]).emit("notifComment", infosToSend(data));
   });
 });
 

@@ -39,7 +39,9 @@ const updateFollow = async (type) => {
     const follow = await followStore.sendFollow(props.userId);
     console.log(follow);
     socket.emit("newFollow", {
-      sender: userLS.id,
+      senderId: userLS.id,
+      senderUsername: userLS.username,
+      senderProfilePicture: userLS.ProfilePicture,
       type: "newFollow",
       notifiableId: follow.id,
       receiver: follow.isFollowing,
