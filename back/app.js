@@ -97,31 +97,34 @@ const getFollowers = async (userId, token) => {
   });
 };
 const sendNotification = async (data, followerId) => {
-  await axios({
-    url: "http://localhost:3000/api/notifications/create",
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${data.token}`,
-    },
-    data: {
-      notifiableType: data.type,
-      notifiableId: data.notifiableId || null,
-      postId: data.postId || null,
-      sender: data.senderId,
-      senderUsername: data.senderUsername,
-      senderProfilePicture: data.senderProfilePicture,
-      receiver: followerId,
-      isRead: false,
-    },
-  });
+  try {
+    await axios({
+      url: "http://localhost:3000/api/notifications/create",
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${data.token}`,
+      },
+      data: {
+        notifiableType: data.type,
+        notifiableId: data.notifiableId ? data.notifiableId : null,
+        postId: data.postId ? data.postId : null,
+        sender: data.senderId,
+        senderUsername: data.senderUsername,
+        senderProfilePicture: data.senderProfilePicture,
+        receiver: followerId,
+      },
+    });
+  } catch (err) {
+    console.log(err.response);
+  }
 };
 
 const infosToSend = (data) => {
   return {
     notifType: data.type,
     senderId: data.sender,
-    senderUsername: notif.senderUsername,
-    postId: notif.postId || null,
+    senderUsername: data.senderUsername,
+    postId: data.postId || null,
   };
 };
 
@@ -137,9 +140,8 @@ io.on("connection", (socket) => {
     io.to(sessionsMap[data.receiver]).emit("notifFollow", infosToSend(data));
   });
   socket.on("newPost", async (data) => {
-    const authorFollowers = await getFollowers(data.sender, data.token);
+    const authorFollowers = await getFollowers(data.senderId, data.token);
     for (const follower of authorFollowers.data) {
-      console.log(follower);
       sendNotification(data, follower.author);
       io.to(sessionsMap[follower.author]).emit("notifPost", infosToSend(data));
     }

@@ -90,7 +90,7 @@ const updateLike = async () => {
     const like = await likeStore.likePost(props.postId);
     socket.emit("newLike", {
       senderId: userLS.id,
-      senderUsername: userLS.username,
+      senderUsername: `${userLS.firstname} ${userLS.lastname}`,
       senderProfilePicture: userLS.ProfilePicture,
       type: "newLike",
       notifiableId: like.id,

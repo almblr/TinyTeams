@@ -14,7 +14,7 @@
       <router-link to="/" class="btn"
         ><ion-icon name="chatbubble-ellipses"></ion-icon
       ></router-link>
-      <div class="btn"><NotifPanel /></div>
+      <NotifPanel />
       <div class="btn tooltip" v-on-click-outside="closeTooltip" title="Compte">
         <img
           class="tooltip_button profilePicture"
@@ -71,6 +71,7 @@ const logout = () => {
     transition: 200ms;
   }
 }
+
 header {
   @include jcCt-aiCt;
   position: sticky;
@@ -111,66 +112,65 @@ header {
     justify-content: flex-end;
     flex: 1;
     gap: 5px;
-  }
-}
-
-.btn {
-  @include jcCt-aiCt;
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: #333435;
-  & > * {
-    font-size: 20px;
-    color: white;
-  }
-  &:hover {
-    cursor: pointer;
-    filter: brightness(140%);
-    transition: 150ms;
-  }
-}
-.tooltip {
-  position: relative;
-  min-height: 40px;
-  max-height: 40px;
-  &:hover {
-    cursor: pointer;
-    filter: brightness(90%);
-    transition: 150ms;
-  }
-  .profilePicture {
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    object-fit: cover;
-  }
-  &__content {
-    @include fdCol-aiCt;
-    position: absolute;
-    right: 0;
-    top: 40px;
-    z-index: 9999;
-    background: rgb(44, 43, 43);
-    box-shadow: 5px 5px 20px #000000c7;
-    margin-top: 3px;
-    border-radius: 5px;
-    width: 300px;
-    overflow: hidden; // Permet de ne pas ignorer les bordures au hover
-    & a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    & .btn {
+      @include jcCt-aiCt;
+      width: 40px;
       height: 40px;
-      width: 100%;
-      text-decoration: none;
-      color: white;
-      font-size: 19px;
-      text-align: center;
-      border-bottom: none;
-      gap: 20px;
+      border-radius: 20px;
+      background-color: #333435;
+      cursor: pointer;
+      transition: 150ms;
+      & > * {
+        font-size: 20px;
+        color: white;
+      }
       &:hover {
-        background: rgb(39, 39, 39);
+        filter: brightness(140%);
+      }
+    }
+    .tooltip {
+      position: relative;
+      min-height: 40px;
+      max-height: 40px;
+      cursor: pointer;
+      &:hover {
+        filter: brightness(90%);
+        transition: 150ms;
+      }
+      .profilePicture {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        object-fit: cover;
+      }
+      &__content {
+        @include fdCol-aiCt;
+        position: absolute;
+        right: 0;
+        top: 40px;
+        z-index: 9999;
+        background: rgb(44, 43, 43);
+        box-shadow: 5px 5px 20px #000000c7;
+        margin-top: 3px;
+        border-radius: 5px;
+        width: 300px;
+        overflow: hidden; // Permet de ne pas ignorer les bordures au hover
+        & a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 40px;
+          width: 100%;
+          text-decoration: none;
+          color: white;
+          font-size: 19px;
+          text-align: center;
+          border-bottom: none;
+          gap: 20px;
+          &:hover {
+            background: rgb(39, 39, 39);
+          }
+        }
       }
     }
   }

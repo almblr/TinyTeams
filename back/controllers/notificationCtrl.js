@@ -11,7 +11,6 @@ const notificationController = {
         senderUsername: req.body.senderUsername,
         senderProfilePicture: req.body.senderProfilePicture,
         receiver: req.body.receiver,
-        isRead: false,
       });
       res.status(201).send(createdNotif);
     } catch {

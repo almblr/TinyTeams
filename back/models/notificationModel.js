@@ -30,7 +30,7 @@ const notificationModel = (sequelize, DataTypes) => {
     },
     isRead: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      defaultValue: false,
     },
   });
 };

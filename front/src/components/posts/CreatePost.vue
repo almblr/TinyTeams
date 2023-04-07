@@ -33,7 +33,7 @@
 <script setup>
 import { ref } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
-import { socket } from "@/socket.js";
+import { socket } from "../../socket.js";
 import usePostStore from "@/stores/postStore.js";
 import ModalLayer from "@/components/layout/ModalLayer.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
@@ -91,11 +91,12 @@ const sendPost = async () => {
     resetPost();
     socket.emit("newPost", {
       senderId: post.author,
-      senderUsername: post.user.username,
-      senderProfilePicture: post.user.ProfilePicture,
+      senderUsername: `${post.user.firstname} ${post.user.lastname}`,
+      senderProfilePicture: post.user.profilePicture,
       type: "newPost",
       notifiableId: post.id,
-      token: token,
+      postId: post.id,
+      token,
     });
   }
 };
