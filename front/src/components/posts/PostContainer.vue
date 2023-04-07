@@ -89,7 +89,6 @@ watch(
     if (newValue) {
       postStore.posts.length = 0;
       const post = await postStore.getOne(route.params.postId);
-      return await postStore.getOne(post.id);
     }
   }
 );

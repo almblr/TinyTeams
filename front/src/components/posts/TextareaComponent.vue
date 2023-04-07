@@ -83,10 +83,11 @@ const sendComment = async (postId) => {
   socket.emit("newComment", {
     senderId: userLS.id,
     senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-    senderProfilePicture: userLS.ProfilePicture,
+    senderProfilePicture: userLS.profilePicture,
     type: "newComment",
     notifiableId: comment.id,
     receiver: props.author,
+    postId: props.postId,
     token,
   });
 };

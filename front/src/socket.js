@@ -22,8 +22,7 @@ socket.on("connection", () => {
 });
 
 socket.on("notifFollow", (arg) => {
-  console.log(arg);
-  // sound.play();
+  state.newFollow.unshift(arg);
 });
 
 socket.on("notifPost", (arg) => {
@@ -32,15 +31,10 @@ socket.on("notifPost", (arg) => {
 });
 
 socket.on("notifLike", (arg) => {
-  const test = {
-    arg,
-  };
-  state.newLike.unshift(test);
-  console.log(state.newLike);
+  state.newLike.unshift(arg);
   // sound.play();
 });
 
 socket.on("notifComment", (arg) => {
-  console.log(arg);
-  // sound.play();
+  state.newComment.unshift(arg);
 });

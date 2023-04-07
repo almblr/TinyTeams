@@ -1,12 +1,59 @@
 <template>
   <RouterView />
+  <router-link :to="path" class="notif" v-if="newNotif">{{
+    notifContent
+  }}</router-link>
 </template>
 
 <script setup>
-import { socket } from "./socket.js";
+import { ref, watch } from "vue";
+import { state, socket } from "./socket.js";
 
+const newNotif = ref(false);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 userLS ? socket.emit("sendUserId", userLS.id) : null;
+
+const notifContent = ref(null);
+const path = ref(null);
+
+const showNotif = () => {
+  newNotif.value = true;
+  setTimeout(() => {
+    newNotif.value = false;
+  }, 4000);
+};
+
+watch(state.newPost, async (newValue) => {
+  if (newValue) {
+    path.value = `post/${newValue[0].postId}`;
+    notifContent.value = `${newValue[0].senderUsername} a publié un nouveau post !`;
+    showNotif();
+  }
+});
+
+watch(state.newLike, async (newValue) => {
+  if (newValue) {
+    path.value = `post/${newValue[0].postId}`;
+    notifContent.value = `${newValue[0].senderUsername} a aimé votre post.`;
+    showNotif();
+  }
+});
+
+watch(state.newComment, async (newValue) => {
+  if (newValue) {
+    path.value = `post/${newValue[0].postId}`;
+    notifContent.value = `${newValue[0].senderUsername} a commenté votre post !`;
+    showNotif();
+  }
+});
+
+watch(state.newFollow, async (newValue) => {
+  if (newValue) {
+    path.value = `users/${newValue[0].senderId}`;
+    notifContent.value = `${newValue[0].senderUsername} vous suit !`;
+    showNotif();
+  }
+});
 </script>
 
 <style lang="scss">
@@ -29,6 +76,42 @@ userLS ? socket.emit("sendUserId", userLS.id) : null;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.notif {
+  @include jcCt-aiCt;
+  text-align: center;
+  text-decoration: none;
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 150px);
+  background-color: var(--backgroundSecond);
+  border: 1px solid rgba(206, 205, 205, 0.075);
+  color: var(--textColorSecond);
+  width: 300px;
+  height: 75px;
+  border-radius: 5px;
+  box-shadow: 5px 0px 20px var(--shadowColor);
+  animation: notifAnimation 4s ease-in-out forwards;
+  cursor: pointer;
+}
+
+@keyframes notifAnimation {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  3% {
+    transform: translateY(-50px);
+    opacity: 1;
+  }
+  95% {
+    transform: translateY(-50px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
 /* SCROLLBAR */
 
 ::-webkit-scrollbar {

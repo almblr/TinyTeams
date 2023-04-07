@@ -157,11 +157,11 @@ const postController = {
     }
   },
   delete: async (req, res) => {
-    const post = await Post.findByPk(req.params.postId);
-    if (req.auth.userId !== post.author && req.auth.isAdmin === false) {
-      return res.status(401).json({ message: "You cannot delete this post" });
-    }
     try {
+      const post = await Post.findByPk(req.params.postId);
+      if (req.auth.userId !== post.author && req.auth.isAdmin === false) {
+        return res.status(401).json({ message: "You cannot delete this post" });
+      }
       if (post.imageUrl) {
         const filename = post.imageUrl.split("/images/")[1];
         await fs.promises.unlink(`images/${filename}`);

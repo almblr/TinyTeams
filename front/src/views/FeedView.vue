@@ -20,9 +20,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
-import { state } from "../socket.js";
 import usePostStore from "@//stores/postStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import CreatePost from "@/components/posts/CreatePost.vue";
@@ -44,14 +43,6 @@ useInfiniteScroll(
     distance: 10,
   }
 );
-
-watch(state.newPost, (newValue) => {
-  if (newValue) {
-    console.log(newValue[0]);
-    const newPost = postStore.getOne(newValue[0].postId);
-    postStore.posts.unshift(newPost);
-  }
-});
 </script>
 
 <style lang="scss" scoped>

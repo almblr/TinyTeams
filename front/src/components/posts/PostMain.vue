@@ -91,10 +91,10 @@ const updateLike = async () => {
     socket.emit("newLike", {
       senderId: userLS.id,
       senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-      senderProfilePicture: userLS.ProfilePicture,
+      senderProfilePicture: userLS.profilePicture,
       type: "newLike",
       notifiableId: like.id,
-      post: props.postId,
+      postId: props.postId,
       receiver: props.author,
       token,
     });

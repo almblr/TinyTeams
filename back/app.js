@@ -136,6 +136,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("newFollow", async (data) => {
+    console.log(data);
     sendNotification(data, data.receiver);
     io.to(sessionsMap[data.receiver]).emit("notifFollow", infosToSend(data));
   });

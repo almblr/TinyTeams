@@ -41,7 +41,7 @@ const updateFollow = async (type) => {
     socket.emit("newFollow", {
       senderId: userLS.id,
       senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-      senderProfilePicture: userLS.ProfilePicture,
+      senderProfilePicture: userLS.profilePicture,
       type: "newFollow",
       notifiableId: follow.id,
       receiver: follow.isFollowing,

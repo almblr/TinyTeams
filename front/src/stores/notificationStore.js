@@ -34,6 +34,9 @@ const useNotifStore = defineStore("notif", {
       if (Object.values(res.data).includes("No more notifications")) {
         return console.log("No more notifs to load");
       }
+      if (lastNotifViewed) {
+        return this.notifs.push(...res.data);
+      }
       this.notifs = res.data;
     },
     async create(data) {

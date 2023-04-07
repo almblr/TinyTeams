@@ -37,10 +37,9 @@ const notificationController = {
         ],
       });
       // For the infinite scroll, to display nexts posts
-      if ("lastNotificationId" in req.query) {
+      if ("lastNotifId" in req.query) {
         const lastNotification = allNotifications.findIndex(
-          (notification) =>
-            notification.id === parseInt(req.query.lastNotificationId)
+          (notification) => notification.id === parseInt(req.query.lastNotifId)
         );
         if (lastNotification === -1) {
           return res.status(400).send({ message: "Notification not found" });

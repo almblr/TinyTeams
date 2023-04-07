@@ -14,7 +14,7 @@ const usePostStore = defineStore("post", {
           Authorization: `Bearer ${this.token}`,
         },
       });
-      const Post = await res.data;
+      const Post = res.data;
       const findPost = this.posts.find((post) => post.id === Post.id);
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
@@ -58,10 +58,11 @@ const usePostStore = defineStore("post", {
         },
         data,
       });
-      const Post = await res.data;
+      const Post = res.data;
       const findPost = this.posts.find((post) => post.id === Post.id);
       const index = this.posts.indexOf(findPost);
       this.posts.splice(index, 1, Post);
+      usePostStore().getOne(Post.id);
     },
     async delete(postId) {
       await axios({
