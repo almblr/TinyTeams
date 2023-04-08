@@ -1,29 +1,29 @@
 <template>
   <main class="main">
-    <p class="main__text" v-if="postContent !== null && editingMode === false">
-      {{ displayedContent }}
+    <p class="main__text" v-if="post.content !== null && editingMode === false">
+      {{ post.content }}
       <button @click="showMore" v-if="showMoreButton">Voir plus</button>
     </p>
     <TextareaEditing
       v-else
-      :postId="props.postId"
-      :content="props.postContent"
+      :postId="post.id"
+      :content="post.content"
       v-model:show="editingMode"
       textareaType="post"
     />
     <div class="main__image">
-      <img :src="postImage" v-if="postImage !== null" />
+      <img :src="post.imageUrl" v-if="post.imageUrl !== null" />
     </div>
     <div class="main__stats">
-      <span>{{ postReactions.length }}</span>
-      <span ref="likeBtn" class="likeBtn"> ❤ </span>
+      <span>{{ post.reactions.length }}</span>
+      <span class="likeBtn"> ❤ </span>
       <span class="main__stats__coms"
-        >{{ postComments.length }} commentaire(s)</span
+        >{{ post.comments.length }} commentaire(s)</span
       >
     </div>
     <div
       class="main__reactBtn"
-      @click="updateLike(postId, props.author, userLS.id)"
+      @click="updateLike(post.id, post.author, userLS.id)"
     >
       <ion-icon name="thumbs-up"></ion-icon>
       <span>J'aime</span>
@@ -33,21 +33,16 @@
 
 <script setup>
 import { ref, watch, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import { socket, state } from "../../socket.js";
 import router from "@/router/index.js";
 import usePostStore from "@/stores/postStore.js";
 import useLikeStore from "@/stores/likeStore.js";
-import { socket, state } from "../../socket.js";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
 const emit = defineEmits(["update:postToEdit"]);
 const props = defineProps({
-  postId: Number,
-  author: Number,
-  postContent: String,
-  postImage: String,
-  postReactions: Array,
-  postComments: Array,
+  post: { type: Object, required: true },
   postToEdit: Number,
 });
 
@@ -56,23 +51,21 @@ const postStore = usePostStore();
 const likeStore = useLikeStore();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const token = JSON.parse(sessionStorage.getItem(`token`));
-const postContent = ref(props.postContent);
-const likeBtn = ref(null);
 const editingMode = ref(false);
-const thumbColor = ref("null");
-const displayedContent = ref("");
 const showMoreButton = ref(false);
+const thumbColor = ref(null);
+const displayedContent = ref("");
 
 const showMore = () => {
   if (route.name === "Feed") {
-    router.push(`/post/${props.postId}`);
+    router.push(`/post/${props.post.id}`);
   }
-  displayedContent.value = postContent.value;
+  displayedContent.value = props.post.content;
   showMoreButton.value = false;
 };
 
 const doesUserLike = computed(() => {
-  const thisPost = postStore.posts.find((post) => post.id === props.postId);
+  const thisPost = postStore.posts.find((post) => post.id === props.post.id);
   const postReactions = thisPost.reactions;
   const doesUserLike = postReactions.find(
     (react) => react.userId === userLS.id
@@ -87,14 +80,14 @@ const doesUserLike = computed(() => {
 /* Met à jour le like d'un post et l'affichage des posts */
 const updateLike = async () => {
   if (doesUserLike.value === true) {
-    const like = await likeStore.likePost(props.postId);
+    const like = await likeStore.likePost(props.post.id);
     socket.emit("newLike", {
       senderId: userLS.id,
       senderUsername: `${userLS.firstname} ${userLS.lastname}`,
       senderProfilePicture: userLS.profilePicture,
       type: "newLike",
       notifiableId: like.id,
-      postId: props.postId,
+      postId: props.post.id,
       receiver: props.author,
       token,
     });
@@ -102,15 +95,23 @@ const updateLike = async () => {
     return true;
   } else {
     thumbColor.value = "rgba(133, 133, 133, 0.5)";
-    await likeStore.likePost(props.postId);
+    await likeStore.likePost(props.post.id);
     return false;
   }
 };
 
+// watch(
+//   () => postInStore.content,
+//   async (newVar) => {
+//     console.log(newVar);
+//     displayedContent.value = newVar;
+//   }
+// );
+
 watch(
   () => props.postToEdit,
   async (newVar) => {
-    if (newVar === props.postId) {
+    if (newVar === props.post.id) {
       editingMode.value = true;
     }
   }
@@ -135,13 +136,13 @@ onMounted(() => {
 
 onMounted(() => {
   if (router.options.history.state.back === "/feed") {
-    return (displayedContent.value = postContent.value);
+    return (displayedContent.value = props.post.content);
   }
-  if (postContent.value.length > 500) {
+  if (props.post.content.length > 500) {
     showMoreButton.value = true;
-    return (displayedContent.value = postContent.value.slice(0, 500) + "...");
+    return (displayedContent.value = props.post.content.slice(0, 500) + "...");
   }
-  displayedContent.value = postContent.value.slice(0, 500);
+  displayedContent.value = props.post.content.slice(0, 500);
 });
 </script>
 

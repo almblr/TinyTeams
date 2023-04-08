@@ -2,15 +2,7 @@
   <span v-if="postStore.posts === 0"> {{ noPostMessage }}</span>
   <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
     <PostHeader :post="post" @editPost="modifyPost" />
-    <PostMain
-      :postId="post.id"
-      :author="post.author"
-      :postContent="post.content"
-      :postImage="post.imageUrl"
-      :postReactions="post.reactions"
-      :postComments="post.comments"
-      v-model:postToEdit="getPostId"
-    />
+    <PostMain :post="post" v-model:postToEdit="getPostId" />
     <BlockDivider width="98%" height="1px" />
     <PostFooter
       :postId="post.id"

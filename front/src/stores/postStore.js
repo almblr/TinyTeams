@@ -58,11 +58,8 @@ const usePostStore = defineStore("posts", () => {
     });
     const updatedPost = res.data;
     const findPost = posts.value.find((post) => post.id === updatedPost.id);
-    console.log(updatedPost);
-    console.log(findPost);
     const index = posts.value.indexOf(findPost);
-    console.log(index);
-    posts.value = posts.value.splice(index, 1, updatedPost);
+    posts.value[index] = updatedPost;
   };
   const deletePost = async (postId) => {
     await axios({
