@@ -1,15 +1,7 @@
 <template>
-  <span v-if="postStore.posts.length === 0"> {{ noPostMessage }}</span>
+  <span v-if="postStore.posts === 0"> {{ noPostMessage }}</span>
   <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
-    <PostHeader
-      :author="post.author"
-      :postId="post.id"
-      :imageUrl="post.user.profilePicture"
-      :firstname="post.user.firstname"
-      :lastname="post.user.lastname"
-      :createdAt="post.createdAt"
-      @editPost="modifyPost"
-    />
+    <PostHeader :post="post" @editPost="modifyPost" />
     <PostMain
       :postId="post.id"
       :author="post.author"
@@ -44,16 +36,16 @@ const userStore = useUserStore();
 const route = useRoute();
 const isLoading = ref(true);
 const article = ref(null);
+const getPostId = ref(null);
 
 const noPostMessage = computed(() => {
   if (route.name === "Feed") {
     return "Il n'y a aucun post à afficher";
   }
   if (route.name === "UserProfil") {
-    return "Cet utilisateur n'a pas encore posté de post";
+    return "Cet utilisateur n'a pas encore publié de post";
   }
 });
-const getPostId = ref(null);
 
 const modifyPost = (postId) => {
   getPostId.value = postId;

@@ -12,7 +12,13 @@ const getPostComments = async (author, postId) => {
     include: [
       {
         model: User,
-        attributes: ["id", "firstname", "lastname", "profilePicture"],
+        attributes: [
+          "id",
+          "firstname",
+          "lastname",
+          "username",
+          "profilePicture",
+        ],
       },
     ],
   });
@@ -26,7 +32,13 @@ const getPostComments = async (author, postId) => {
     include: [
       {
         model: User,
-        attributes: ["id", "firstname", "lastname", "profilePicture"],
+        attributes: [
+          "id",
+          "firstname",
+          "lastname",
+          "username",
+          "profilePicture",
+        ],
       },
     ],
     order: [["createdAt", "DESC"]],
@@ -58,7 +70,13 @@ const postController = {
           React,
           {
             model: User,
-            attributes: ["id", "firstname", "lastname", "profilePicture"],
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "username",
+              "profilePicture",
+            ],
           },
           Comment,
         ],
@@ -75,7 +93,13 @@ const postController = {
           React,
           {
             model: User,
-            attributes: ["id", "firstname", "lastname", "profilePicture"],
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "username",
+              "profilePicture",
+            ],
           },
         ],
       });
@@ -100,7 +124,13 @@ const postController = {
           React,
           {
             model: User,
-            attributes: ["id", "firstname", "lastname", "profilePicture"],
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "username",
+              "profilePicture",
+            ],
           },
         ],
       });
@@ -146,7 +176,13 @@ const postController = {
           React,
           {
             model: User,
-            attributes: ["id", "firstname", "lastname", "profilePicture"],
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "username",
+              "profilePicture",
+            ],
           },
           Comment,
         ],

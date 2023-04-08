@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from "vue";
+import { onMounted, computed, nextTick } from "vue";
 import usePostStore from "@/stores/postStore.js";
 import useCommentStore from "@/stores/commentStore.js";
 import { useTextareaAutosize } from "@vueuse/core";

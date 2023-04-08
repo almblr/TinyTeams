@@ -1,27 +1,30 @@
 <template>
-  <header class="post__header" :id="props.postId">
+  <header class="post__header" :id="post.id">
     <div class="post__header__user">
-      <router-link :to="`/users/${username}`" class="post__header__user__pic">
-        <img :src="props.imageUrl" alt="Photo de profil" />
+      <router-link
+        :to="`/users/${post.user.username}`"
+        class="post__header__user__pic"
+      >
+        <img :src="post.user.profilePicture" alt="Photo de profil" />
       </router-link>
       <div class="post__header__user__title">
         <router-link
-          :to="`/users/${username}`"
+          :to="`/users/${post.user.username}`"
           class="post__header__user__title__name"
         >
-          <h2>{{ props.firstname }} {{ props.lastname }}</h2>
+          <h2>{{ post.user.firstname }} {{ post.user.lastname }}</h2>
         </router-link>
 
-        <span>Posté {{ dayjs().to(dayjs(props.createdAt)) }}</span>
+        <span>Posté {{ dayjs().to(dayjs(post.createdAt)) }}</span>
       </div>
     </div>
     <PostTooltip
-      :postId="props.postId"
-      :author="props.author"
+      :postId="post.id"
+      :author="post.author"
       type="post"
       top="7px"
       dotSize="4px"
-      v-if="props.author === userId || userIsAdmin"
+      v-if="post.author === userLS.id || userLS.isAdmin"
       @editPost="edit"
     />
   </header>
@@ -37,18 +40,10 @@ dayjs.extend(relativeTime);
 
 const emit = defineEmits(["editPost"]);
 const props = defineProps({
-  author: { type: Number, required: true },
-  postId: { type: Number, required: true },
-  imageUrl: { type: String, required: true },
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
-  createdAt: { type: String, required: true },
+  post: { type: Object, required: true },
 });
 
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const userId = userLS.id;
-const userIsAdmin = userLS.isAdmin;
-const username = (props.firstname + props.lastname).toLowerCase();
 
 const edit = (postId) => {
   emit("editPost", postId);
