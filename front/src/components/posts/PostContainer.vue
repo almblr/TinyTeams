@@ -4,12 +4,7 @@
     <PostHeader :post="post" @editPost="modifyPost" />
     <PostMain :post="post" v-model:postToEdit="getPostId" />
     <BlockDivider width="98%" height="1px" />
-    <PostFooter
-      :postId="post.id"
-      :author="post.author"
-      :profilePicture="post.user.profilePicture"
-      :postComments="[...post.comments]"
-    />
+    <PostFooter :post="post" />
   </article>
 </template>
 

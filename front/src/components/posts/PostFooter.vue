@@ -2,14 +2,14 @@
   <footer class="footer">
     <div class="footer__writeComment">
       <ProfilePicture
-        :url="props.profilePicture"
+        :url="post.user.profilePicture"
         alt="Profil picture"
         width="35px"
         height="35px"
       />
-      <TextareaComponent :postId="props.postId" :author="props.author" />
+      <TextareaComponent :postId="post.id" :author="post.author" />
     </div>
-    <CommentSection :comments="props.postComments" />
+    <CommentSection :comments="post.comments" />
   </footer>
 </template>
 
@@ -19,10 +19,7 @@ import TextareaComponent from "@/components/posts/TextareaComponent.vue";
 import CommentSection from "@/components/posts/CommentSection.vue";
 
 const props = defineProps({
-  postId: Number,
-  author: Number,
-  profilePicture: String,
-  postComments: Array,
+  post: { type: Object, required: true },
 });
 </script>
 
