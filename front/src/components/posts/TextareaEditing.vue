@@ -16,7 +16,6 @@
 <script setup>
 import { onMounted, computed, nextTick } from "vue";
 import usePostStore from "@/stores/postStore.js";
-import useCommentStore from "@/stores/commentStore.js";
 import { useTextareaAutosize } from "@vueuse/core";
 
 const { textarea, input } = useTextareaAutosize();
@@ -31,7 +30,6 @@ const props = defineProps({
 });
 
 const postStore = usePostStore();
-const commentStore = useCommentStore();
 
 const content = computed({
   get() {
@@ -49,9 +47,9 @@ const update = async () => {
   }
   formData.append("content", input.value);
   if (props.textareaType === "comment") {
-    await commentStore.update(props.postId, props.commentId, formData);
+    await postStore.updateComment(props.postId, props.commentId, formData);
   } else if (props.textareaType === "post") {
-    await postStore.update(props.postId, formData);
+    await postStore.updatePost(props.postId, formData);
   }
   emit("update:show", false);
 };

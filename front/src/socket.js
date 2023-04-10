@@ -31,6 +31,7 @@ socket.on("notifPost", (arg) => {
 });
 
 socket.on("notifLike", (arg) => {
+  console.log(arg);
   state.newLike.unshift(arg);
   // sound.play();
 });

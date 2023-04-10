@@ -87,7 +87,7 @@ const sendPost = async () => {
     if (imageFile.value) {
       formData.append("imageUrl", imageFile.value);
     }
-    const post = await postStore.create(formData);
+    const post = await postStore.createPost(formData);
     resetPost();
     socket.emit("newPost", {
       senderId: post.author,

@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
 import { ref } from "vue";
+import { defineStore } from "pinia";
 import axios from "axios";
 
 const usePostStore = defineStore("posts", () => {
@@ -39,7 +39,7 @@ const usePostStore = defineStore("posts", () => {
     }
     posts.value = res.data;
   };
-  const create = async (data) => {
+  const createPost = async (data) => {
     const res = await axios({
       url: "http://localhost:3000/api/posts/create",
       method: "POST",
@@ -51,7 +51,7 @@ const usePostStore = defineStore("posts", () => {
     posts.value.unshift(res.data);
     return res.data;
   };
-  const update = async (postId, data) => {
+  const updatePost = async (postId, data) => {
     const res = await axios({
       url: `http://localhost:3000/api/posts/update/${postId}`,
       method: "PUT",
@@ -77,14 +77,80 @@ const usePostStore = defineStore("posts", () => {
     const postToDelete = posts.value.findIndex((post) => post.id === postId);
     posts.value.splice(postToDelete, 1);
   };
+  const likePost = async (postId) => {
+    const res = await axios({
+      url: `http://localhost:3000/api/posts/${postId}/react`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const foundPost = posts.value.find((post) => post.id === postId);
+    if ("removedLikeId" in res.data) {
+      const existingLike = foundPost.reactions.findIndex(
+        (like) => (like.id = res.data.likeId)
+      );
+      foundPost.reactions.splice(existingLike, 1);
+    } else {
+      foundPost.reactions.unshift(res.data);
+    }
+    return res.data;
+  };
+  const createComment = async (postId, data) => {
+    const res = await axios({
+      url: `http://localhost:3000/api/posts/${postId}/comments/create`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data,
+    });
+    const foundPost = posts.value.find((post) => post.id === res.data.postId);
+    foundPost.comments.unshift(res.data);
+    return res.data;
+  };
+  const updateComment = async (postId, commentId, data) => {
+    const res = await axios({
+      url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/update`,
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data,
+    });
+    const foundPost = posts.value.find((post) => post.id === postId);
+    const indexComment = foundPost.comments.findIndex(
+      (comment) => comment.id === res.data.id
+    );
+    foundPost.comments.splice(indexComment, 1, res.data);
+    console.log(res.data);
+  };
+  const deleteComment = async (postId, commentId) => {
+    await axios({
+      url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/delete`,
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const foundPost = posts.value.find((post) => post.id === postId);
+    const foundComment = posts.value.find(
+      (comment) => comment.id === commentId
+    );
+    foundPost.comments.splice(foundComment, 1);
+  };
 
   return {
     posts,
     getOne,
     getAll,
-    create,
-    update,
+    createPost,
+    updatePost,
+    likePost,
     deletePost,
+    createComment,
+    updateComment,
+    deleteComment,
   };
 });
 

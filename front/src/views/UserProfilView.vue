@@ -16,7 +16,7 @@
 import { ref, watch, onMounted } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import { useRoute } from "vue-router";
-import useUserStore from "@/stores/userStore.js";
+import { useUserStore } from "@/stores/userStore.js";
 import usePostStore from "@/stores/postStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardProfil from "@/components/users/UserCardProfil.vue";

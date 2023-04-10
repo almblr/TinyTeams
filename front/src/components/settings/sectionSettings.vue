@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import useUserStore from "@/stores/userStore";
+import { useUserStore } from "@/stores/userStore";
 import InputSettings from "@/components/settings/InputSettings.vue";
 import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";

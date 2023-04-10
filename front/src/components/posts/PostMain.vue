@@ -41,7 +41,6 @@ import { useRoute } from "vue-router";
 import { socket, state } from "../../socket.js";
 import router from "@/router/index.js";
 import usePostStore from "@/stores/postStore.js";
-import useLikeStore from "@/stores/likeStore.js";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
 const emit = defineEmits(["update:postToEdit"]);
@@ -52,7 +51,6 @@ const props = defineProps({
 
 const route = useRoute();
 const postStore = usePostStore();
-const likeStore = useLikeStore();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const token = JSON.parse(sessionStorage.getItem(`token`));
 const editingMode = ref(false);
@@ -92,7 +90,7 @@ const doesUserLike = computed(() => {
 /* Met à jour le like d'un post et l'affichage des posts */
 const updateLike = async () => {
   if (doesUserLike.value === true) {
-    const like = await likeStore.likePost(props.post.id);
+    const like = await postStore.likePost(props.post.id);
     socket.emit("newLike", {
       senderId: userLS.id,
       senderUsername: `${userLS.firstname} ${userLS.lastname}`,
@@ -107,7 +105,7 @@ const updateLike = async () => {
     return true;
   } else {
     thumbColor.value = "rgba(133, 133, 133, 0.5)";
-    await likeStore.likePost(props.post.id);
+    await postStore.likePost(props.post.id);
     return false;
   }
 };
@@ -118,13 +116,6 @@ watch(
     if (newVar === props.post.id) {
       editingMode.value = true;
     }
-  }
-);
-
-watch(
-  () => state.newLike[0],
-  async (newValue) => {
-    console.log(newValue);
   }
 );
 

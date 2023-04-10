@@ -28,7 +28,7 @@
 <script setup>
 import { ref } from "vue";
 import { socket } from "../../socket.js";
-import useCommentStore from "@/stores/commentSTORE.js";
+import usePostStore from "@/stores/postStore.js";
 import { useTextareaAutosize } from "@vueuse/core";
 import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
 import GifPanel from "@/components/posts/GifPanel.vue";
@@ -41,7 +41,7 @@ const props = defineProps({
   author: Number,
 });
 
-const commentStore = useCommentStore();
+const postStore = usePostStore();
 const showing = ref(false);
 const containerTextarea = ref(null);
 const container = ref(null);
@@ -76,7 +76,7 @@ const sendComment = async (postId) => {
   if (!contentIsOnlySpaces && !mediaToSend.value) {
     formData.append("content", input.value);
   }
-  const comment = await commentStore.create(postId, formData);
+  const comment = await postStore.createComment(postId, formData);
   input.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";

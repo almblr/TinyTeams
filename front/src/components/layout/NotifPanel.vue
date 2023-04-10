@@ -7,7 +7,7 @@
       @click="openTooltip"
     >
       <ion-icon name="notifications"></ion-icon>
-      <div v-if="notifStore.nonViewedNotifs !== 0">
+      <div v-if="notifStore.nonViewedNotifs > 0">
         {{ notifStore.nonViewedNotifs }}
       </div>
     </div>
@@ -23,8 +23,7 @@
         <img :src="notif.senderProfilePicture" alt="ProfilePicture" />
         <div class="text">
           <p>
-            {{ notif.senderUsername }}
-            {{ notifDescription(notif.notifiableType) }}
+            {{ notif.senderUsername + notifDescription(notif.notifiableType) }}
           </p>
           <span>{{ dayjs().to(dayjs(notif.createdAt)) }}</span>
         </div>
@@ -35,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useInfiniteScroll } from "@vueuse/core";
 import useNotifStore from "@/stores/notificationStore.js";
@@ -45,15 +44,18 @@ import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
+const token = JSON.parse(sessionStorage.getItem(`token`));
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const notifStore = useNotifStore();
 const firstload = ref(true);
 const showTooltip = ref(null);
 const notifs = ref(null);
+const canInfiniteScroll = ref(true);
 
 const openTooltip = async () => {
   showTooltip.value = !showTooltip.value;
   // firstload.value === false ? null :
-  await notifStore.getAll();
+  await notifStore.getAll(token, userLS.id);
   // await notifStore.updateAll();
   firstload.value = false;
 };
@@ -63,7 +65,7 @@ const closeTooltip = () => {
 
 const updateNotif = async (notifId) => {
   const notif = notifStore.notifs.find((notif) => notif.id === notifId);
-  !notif.isRead ? await notifStore.update(notifId) : null;
+  !notif.isRead ? await notifStore.update(token, notifId) : null;
 };
 const notifLink = (notif) => {
   return notif.postId
@@ -72,38 +74,36 @@ const notifLink = (notif) => {
 };
 
 const notifDescription = (notifType) => {
-  switch (notifType) {
-    case "newPost": {
-      return "a publié un nouveau post";
-    }
-    case "newlike": {
-      return "a aimé votre post";
-    }
-    case "newFollow": {
-      return "vous suit !";
-    }
-    case "newComment": {
-      return "a commenté votre post";
-    }
+  if (notifType === "newLike") {
+    return "a aimé votre post";
+  } else if (notifType === "newPost") {
+    return "a publié un nouveau post";
+  } else if (notifType === "newFollow") {
+    return "vous suit !";
+  } else {
+    return "a commenté votre post";
   }
 };
 
 useInfiniteScroll(
   notifs,
   async () => {
-    const lastNotif = notifStore.notifs[notifStore.notifs.length - 1];
-    const lastNotifId = lastNotif.id;
-    console.log(lastNotifId);
-    await notifStore.getAll(lastNotifId);
+    if (canInfiniteScroll.value) {
+      const lastNotif = notifStore.notifs[notifStore.notifs.length - 1];
+      const lastNotifId = lastNotif.id;
+      const nextNotifs = await notifStore.getAll(lastNotifId);
+      return !nextNotifs ? null : (canInfiniteScroll.value = false);
+    }
+    return;
   },
   {
     distance: 10,
   }
 );
 
-onMounted(async () => {
-  await notifStore.getAll();
-});
+// onMounted(async () => {
+//   await notifStore.getAll();
+// });
 </script>
 
 <style lang="scss" scoped>

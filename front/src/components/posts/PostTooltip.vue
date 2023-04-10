@@ -22,11 +22,9 @@
 <script setup>
 import { ref } from "vue";
 import usePostStore from "@/stores/postStore.js";
-import useCommentStore from "@/stores/commentStore.js";
 import { vOnClickOutside } from "@vueuse/components";
 
 const postStore = usePostStore();
-const commentStore = useCommentStore();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const userId = userLS.id;
 const btn = ref(null);
@@ -68,15 +66,14 @@ const modify = async (id) => {
   if (props.type === "post") {
     postToModify.value = postStore.posts.find((post) => post.id === id);
     emit("editPost", props.postId);
-    closeTooltip();
   }
   if (props.type === "comment") {
-    commentToModify.value = commentStore.comments.find(
-      (comment) => comment.id === id
-    );
+    const post = postStore.posts.find((post) => post.id === props.postId);
+    commentToModify.value = post.comments.find((comment) => comment.id === id);
     showTooltip.value = false;
     emit("editComment");
   }
+  closeTooltip();
 };
 
 const remove = async (postId, commentId) => {
@@ -84,7 +81,7 @@ const remove = async (postId, commentId) => {
     await postStore.deletePost(postId);
   }
   if (props.type === "comment") {
-    await commentStore.delete(postId, commentId);
+    await postStore.deleteComment(postId, commentId);
   }
 };
 </script>

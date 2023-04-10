@@ -1,4 +1,4 @@
-import { Comment } from "../db/sequelize.js";
+import { Comment, User } from "../db/sequelize.js";
 import fs from "fs";
 
 const commentController = {
@@ -12,15 +12,29 @@ const commentController = {
       return res.status(400).json({ message: "Empty comment" });
     }
     try {
-      const comment = await Comment.create({
+      const createdComment = await Comment.create({
         author: req.auth.userId,
-        postId: req.params.postId,
+        postId: parseInt(req.params.postId),
         content: req.body.content ? req.body.content : null,
         imageUrl: req.files?.imageUrl
           ? `${req.protocol}://${req.get("host")}/images/${
               req.files.imageUrl[0].filename
             }`
           : req.body.imageUrl,
+      });
+      const comment = await Comment.findByPk(createdComment.id, {
+        include: [
+          {
+            model: User,
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "username",
+              "profilePicture",
+            ],
+          },
+        ],
       });
       res.status(201).send(comment);
     } catch {
@@ -70,10 +84,24 @@ const commentController = {
         .json({ message: "You cannot update this comment" });
     }
     try {
-      await comment.update({
+      const updatedComment = await comment.update({
         content: req.body.content || null,
       });
-      res.status(201).send(comment);
+      const commentToSend = await Comment.findByPk(updatedComment.id, {
+        include: [
+          {
+            model: User,
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "username",
+              "profilePicture",
+            ],
+          },
+        ],
+      });
+      res.status(201).send(commentToSend);
     } catch {
       res.status(500).send();
     }

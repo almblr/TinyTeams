@@ -1,34 +1,39 @@
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 
-const useGiphyStore = defineStore("gif", {
-  state: () => ({
-    gifs: [],
-    GIPHY_KEY: "lcUOyzUQjkn8d8MZbdFTekgbf0kD25vt",
-    offset_trends: 0,
-    offset_search: 0,
-  }),
-  actions: {
-    resetGifs() {
-      this.gifs = [];
-      this.offset_trends = 0;
-      this.offset_search = 0;
-    },
-    async getTrendsGif() {
-      const res = await axios(
-        `https://api.giphy.com/v1/gifs/trending?api_key=${this.GIPHY_KEY}&offset=${this.offset_trends}&limit=5`
-      );
-      this.offset_trends += 5;
-      this.gifs.push(...res.data.data);
-    },
-    async searchGif(q) {
-      const res = await axios(
-        `https://api.giphy.com/v1/gifs/search?api_key=${this.GIPHY_KEY}&offset=${this.offset_search}&q=${q}&limit=5`
-      );
-      this.offset_search += 5;
-      this.gifs.push(...res.data.data);
-    },
-  },
+const useGiphyStore = defineStore("gif", () => {
+  const gifs = ref([]);
+  const GIPHY_KEY = "lcUOyzUQjkn8d8MZbdFTekgbf0kD25vt";
+  const offset_trends = ref(0);
+  const offset_search = ref(0);
+
+  const resetGifs = () => {
+    gifs.value = [];
+    offset_trends.value = 0;
+    offset_search.value = 0;
+  };
+  const getTrendsGif = async () => {
+    const res = await axios(
+      `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&offset=${offset_trends.value}&limit=5`
+    );
+    offset_trends.value += 5;
+    gifs.value.push(...res.data.data);
+    console.log(gifs.value);
+  };
+  const searchGif = async (q) => {
+    const res = await axios(
+      `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&offset=${offset_search.value}&q=${q}&limit=5`
+    );
+    offset_search.value += 5;
+    gifs.value.push(...res.data.data);
+  };
+  return {
+    gifs,
+    resetGifs,
+    getTrendsGif,
+    searchGif,
+  };
 });
 
 export default useGiphyStore;

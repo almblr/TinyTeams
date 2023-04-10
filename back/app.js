@@ -16,6 +16,7 @@ import reactionRoutes from "./routes/reactionRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import followRoutes from "./routes/followRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import { log } from "console";
 
 export const app = express();
 export const httpServer = createServer(app);
@@ -96,9 +97,12 @@ const getFollowers = async (userId, token) => {
     },
   });
 };
-const createNotification = async (data, followerId) => {
+const createNotification = async (data, receiver, eventName) => {
+  if (data.senderId === receiver) {
+    return;
+  }
   try {
-    await axios({
+    const res = await axios({
       url: "http://localhost:3000/api/notifications/create",
       method: "POST",
       headers: {
@@ -111,25 +115,13 @@ const createNotification = async (data, followerId) => {
         sender: data.senderId,
         senderUsername: data.senderUsername,
         senderProfilePicture: data.senderProfilePicture,
-        receiver: followerId,
+        receiver,
       },
     });
+    io.to(sessionsMap[receiver]).emit(eventName, res.data);
   } catch (err) {
     console.log(err.response);
   }
-};
-
-const sendNotification = (data, receiver, eventName) => {
-  if (receiver === data.senderId) {
-    console.log(receiver === data.senderId);
-    return;
-  }
-  io.to(sessionsMap[receiver]).emit(eventName, {
-    notifType: data.type,
-    senderId: data.sender,
-    senderUsername: data.senderUsername,
-    postId: data.postId || null,
-  });
 };
 
 io.on("connection", (socket) => {
@@ -140,26 +132,19 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("newFollow", async (data) => {
-    console.log(data);
-    createNotification(data, data.receiver);
-    sendNotification(data, data.receiver, "notifFollow");
+    await createNotification(data, data.receiver, "notifFollow");
   });
   socket.on("newPost", async (data) => {
     const authorFollowers = await getFollowers(data.senderId, data.token);
     for (const follower of authorFollowers.data) {
-      createNotification(data, follower.author);
-      sendNotification(data, follower.author, "notifPost");
+      await createNotification(data, follower.author, "notifPost");
     }
   });
   socket.on("newLike", async (data) => {
-    console.log(data);
-    createNotification(data, data.receiver);
-    sendNotification(data, data.receiver, "notifLike");
+    await createNotification(data, data.receiver, "notifLike");
   });
   socket.on("newComment", async (data) => {
-    console.log(data);
-    createNotification(data, data.receiver);
-    sendNotification(data, data.receiver, "notifComment");
+    await createNotification(data, data.receiver, "notifComment");
   });
 });
 

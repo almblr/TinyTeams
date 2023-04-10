@@ -13,7 +13,6 @@ import useNotifStore from "@/stores/notificationStore.js";
 const newNotif = ref(false);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const notifStore = useNotifStore();
-
 const notifContent = ref(null);
 const path = ref(null);
 
@@ -35,6 +34,7 @@ watch(state.newPost, async (newValue) => {
 
 watch(state.newLike, async (newValue) => {
   if (newValue) {
+    console.log(newValue);
     path.value = `post/${newValue[0].postId}`;
     notifContent.value = `${newValue[0].senderUsername} a aimé votre post.`;
     showNotif();
