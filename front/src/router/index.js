@@ -6,6 +6,7 @@ import UserProfil from "@/views/UserProfilView.vue";
 import UsersList from "@/views/UsersListView.vue";
 import Settings from "@/views/SettingsView.vue";
 import PostView from "@/views/PostView.vue";
+import NotFound from "@/views/NotFoundView.vue";
 
 const routes = [
   {
@@ -49,6 +50,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: () => import("@/views/SettingsView.vue"),
+  },
+  {
+    path: "/notfound/:type/:typeid",
+    name: "Notfound",
+    component: NotFound,
   },
 ];
 

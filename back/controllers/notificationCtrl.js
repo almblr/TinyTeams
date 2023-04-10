@@ -26,7 +26,6 @@ const notificationController = {
     }
   },
   getAll: async (req, res) => {
-    console.log(req.params);
     try {
       const allNotifications = await Notification.findAll({
         where: {
@@ -36,6 +35,12 @@ const notificationController = {
           ["createdAt", "DESC"], // Du plus récent au moins récent
         ],
       });
+      const nonViewedNotifs = allNotifications.reduce((acc, curr) => {
+        if (!curr.isRead) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
       // For the infinite scroll, to display nexts posts
       if ("lastNotifId" in req.query) {
         const lastNotification = allNotifications.findIndex(
@@ -57,7 +62,9 @@ const notificationController = {
         }
         return res.status(200).send(nextNotifications);
       }
-      res.status(200).send(allNotifications.slice(0, 10));
+      res
+        .status(200)
+        .send({ notifs: allNotifications.slice(0, 10), nonViewedNotifs });
     } catch {
       res.status(500).send();
     }
@@ -65,10 +72,10 @@ const notificationController = {
   update: async (req, res) => {
     const notification = await Notification.findByPk(req.params.notifId);
     try {
-      const updatedNotification = await Notification.update({
+      await notification.update({
         isRead: true,
       });
-      res.status(201).send(updatedNotification);
+      res.status(201).send(notification);
     } catch {
       res.status(500).send();
     }

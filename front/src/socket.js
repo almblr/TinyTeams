@@ -15,7 +15,7 @@ const URL =
 
 export const socket = io(URL);
 
-const sound = new Audio("../../public/notificationSound.mp3");
+// const sound = new Audio("../../public/notificationSound.mp3");
 
 socket.on("connection", () => {
   state.connected = true;

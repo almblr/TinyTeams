@@ -11,6 +11,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
+import router from "@/router/index.js";
 import usePostStore from "@/stores/postStore.js";
 import useUserStore from "@/stores/userStore.js";
 import BlockDivider from "@//components/layout/BlockDivider.vue";
@@ -21,7 +22,6 @@ import PostFooter from "@/components/posts/PostFooter.vue";
 const postStore = usePostStore();
 const userStore = useUserStore();
 const route = useRoute();
-const isLoading = ref(true);
 const article = ref(null);
 const getPostId = ref(null);
 
@@ -45,11 +45,14 @@ onMounted(async () => {
     return await postStore.getAll(user.id);
   }
   if (route.params.postId) {
-    postStore.posts.length = 0;
-    return await postStore.getOne(route.params.postId);
+    const post = await postStore.getOne(route.params.postId);
+    if (!post) {
+      router.push(`/notfound/post/${route.params.postId}`);
+    }
+    // postStore.posts.length = 0;
+    // return postStore.posts.push(post);
   }
   await postStore.getAll();
-  isLoading.value = false;
 });
 
 watch(
@@ -66,8 +69,10 @@ watch(
   () => route.params.postId,
   async (newValue) => {
     if (newValue) {
-      postStore.posts.length = 0;
       const post = await postStore.getOne(route.params.postId);
+      console.log(post);
+      // postStore.posts.length = 0;
+      // postStore.posts.push(post);
     }
   }
 );

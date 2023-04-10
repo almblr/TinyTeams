@@ -6,12 +6,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { state, socket } from "./socket.js";
 
 const newNotif = ref(false);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
-userLS ? socket.emit("sendUserId", userLS.id) : null;
 
 const notifContent = ref(null);
 const path = ref(null);
@@ -33,6 +32,7 @@ watch(state.newPost, async (newValue) => {
 
 watch(state.newLike, async (newValue) => {
   if (newValue) {
+    console.log(newValue);
     path.value = `post/${newValue[0].postId}`;
     notifContent.value = `${newValue[0].senderUsername} a aimé votre post.`;
     showNotif();
@@ -53,6 +53,10 @@ watch(state.newFollow, async (newValue) => {
     notifContent.value = `${newValue[0].senderUsername} vous suit !`;
     showNotif();
   }
+});
+
+onMounted(() => {
+  userLS ? socket.emit("sendUserId", userLS.id) : null;
 });
 </script>
 

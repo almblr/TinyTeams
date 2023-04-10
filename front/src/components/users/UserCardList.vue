@@ -5,7 +5,7 @@
       <router-link :to="`/users/${user.username}`">
         <h2>{{ user.firstname }} {{ user.lastname }}</h2>
       </router-link>
-      <h3>Jobless</h3>
+      <h3>{{ user.job }}</h3>
     </div>
     <div>
       <FollowButton

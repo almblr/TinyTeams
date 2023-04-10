@@ -6,6 +6,7 @@ const useNotifStore = defineStore("notif", {
     token: JSON.parse(sessionStorage.getItem(`token`)),
     userId: JSON.parse(sessionStorage.getItem(`user`)).id,
     notifs: [],
+    nonViewedNotifs: 0,
   }),
   actions: {
     async getOne(notifId) {
@@ -37,7 +38,8 @@ const useNotifStore = defineStore("notif", {
       if (lastNotifViewed) {
         return this.notifs.push(...res.data);
       }
-      this.notifs = res.data;
+      this.notifs = res.data.notifs;
+      this.nonViewedNotifs = res.data.nonViewedNotifs;
     },
     async create(data) {
       const res = await axios({

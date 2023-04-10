@@ -7,13 +7,17 @@ const usePostStore = defineStore("posts", () => {
   const posts = ref([]);
 
   const getOne = async (postId) => {
-    const res = await axios({
-      url: `http://localhost:3000/api/posts/getOne/${postId}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return res.data;
+    try {
+      const res = await axios({
+        url: `http://localhost:3000/api/posts/getOne/${postId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    } catch (error) {
+      return false;
+    }
   };
   const getAll = async (userId, lastPostViewed) => {
     let url = `http://localhost:3000/api/posts/getAll/`;

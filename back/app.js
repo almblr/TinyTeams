@@ -96,7 +96,7 @@ const getFollowers = async (userId, token) => {
     },
   });
 };
-const sendNotification = async (data, followerId) => {
+const createNotification = async (data, followerId) => {
   try {
     await axios({
       url: "http://localhost:3000/api/notifications/create",
@@ -119,13 +119,17 @@ const sendNotification = async (data, followerId) => {
   }
 };
 
-const infosToSend = (data) => {
-  return {
+const sendNotification = (data, receiver, eventName) => {
+  if (receiver === data.senderId) {
+    console.log(receiver === data.senderId);
+    return;
+  }
+  io.to(sessionsMap[receiver]).emit(eventName, {
     notifType: data.type,
     senderId: data.sender,
     senderUsername: data.senderUsername,
     postId: data.postId || null,
-  };
+  });
 };
 
 io.on("connection", (socket) => {
@@ -137,25 +141,25 @@ io.on("connection", (socket) => {
   });
   socket.on("newFollow", async (data) => {
     console.log(data);
-    sendNotification(data, data.receiver);
-    io.to(sessionsMap[data.receiver]).emit("notifFollow", infosToSend(data));
+    createNotification(data, data.receiver);
+    sendNotification(data, data.receiver, "notifFollow");
   });
   socket.on("newPost", async (data) => {
     const authorFollowers = await getFollowers(data.senderId, data.token);
     for (const follower of authorFollowers.data) {
-      sendNotification(data, follower.author);
-      io.to(sessionsMap[follower.author]).emit("notifPost", infosToSend(data));
+      createNotification(data, follower.author);
+      sendNotification(data, follower.author, "notifPost");
     }
   });
   socket.on("newLike", async (data) => {
     console.log(data);
-    sendNotification(data, data.receiver);
-    io.to(sessionsMap[data.receiver]).emit("notifLike", infosToSend(data));
+    createNotification(data, data.receiver);
+    sendNotification(data, data.receiver, "notifLike");
   });
   socket.on("newComment", async (data) => {
     console.log(data);
-    sendNotification(data, data.receiver);
-    io.to(sessionsMap[data.receiver]).emit("notifComment", infosToSend(data));
+    createNotification(data, data.receiver);
+    sendNotification(data, data.receiver, "notifComment");
   });
 });
 

@@ -1,7 +1,11 @@
 <template>
   <main class="main">
-    <p class="main__text" v-if="post.content !== null && editingMode === false">
-      {{ post.content }}
+    <p
+      class="main__text"
+      v-if="post.content !== null && editingMode === false"
+      ref="postContent"
+    >
+      {{ displayedContent }}
       <button @click="showMore" v-if="showMoreButton">Voir plus</button>
     </p>
     <TextareaEditing
@@ -54,13 +58,21 @@ const token = JSON.parse(sessionStorage.getItem(`token`));
 const editingMode = ref(false);
 const showMoreButton = ref(false);
 const thumbColor = ref(null);
-const displayedContent = ref("");
+const postContent = ref(null);
+
+const displayedContent = computed(() => {
+  if (showMoreButton.value === false && props.post.content.length > 500) {
+    showMoreButton.value = true;
+    return props.post.content.substring(0, 500) + "...";
+  }
+  showMoreButton.value = false;
+  return props.post.content;
+});
 
 const showMore = () => {
   if (route.name === "Feed") {
     router.push(`/post/${props.post.id}`);
   }
-  displayedContent.value = props.post.content;
   showMoreButton.value = false;
 };
 
@@ -88,7 +100,7 @@ const updateLike = async () => {
       type: "newLike",
       notifiableId: like.id,
       postId: props.post.id,
-      receiver: props.author,
+      receiver: props.post.author,
       token,
     });
     thumbColor.value = "#2374e1";
@@ -99,14 +111,6 @@ const updateLike = async () => {
     return false;
   }
 };
-
-// watch(
-//   () => postInStore.content,
-//   async (newVar) => {
-//     console.log(newVar);
-//     displayedContent.value = newVar;
-//   }
-// );
 
 watch(
   () => props.postToEdit,
@@ -132,17 +136,6 @@ onMounted(() => {
   doesUserLike.value
     ? (thumbColor.value = "rgba(133, 133, 133, 0.5)")
     : (thumbColor.value = "#2374e1");
-});
-
-onMounted(() => {
-  if (router.options.history.state.back === "/feed") {
-    return (displayedContent.value = props.post.content);
-  }
-  if (props.post.content.length > 500) {
-    showMoreButton.value = true;
-    return (displayedContent.value = props.post.content.slice(0, 500) + "...");
-  }
-  displayedContent.value = props.post.content.slice(0, 500);
 });
 </script>
 

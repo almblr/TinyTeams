@@ -103,6 +103,9 @@ const postController = {
           },
         ],
       });
+      if (!post) {
+        res.status(404).send({ message: "Post not found" });
+      }
       const PostComments = await getPostComments(
         req.auth.userId,
         req.params.postId

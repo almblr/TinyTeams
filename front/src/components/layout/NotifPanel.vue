@@ -7,6 +7,7 @@
       @click="openTooltip"
     >
       <ion-icon name="notifications"></ion-icon>
+      <div v-if="showNotifNbr">{{ notifStore.nonViewedNotifs }}</div>
     </div>
     <div class="tooltip" v-show="showTooltip === true" ref="notifs">
       <div class="nothingToShow" v-if="notifStore.notifs.length === 0">
@@ -27,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useInfiniteScroll } from "@vueuse/core";
 import useNotifStore from "@/stores/notificationStore.js";
@@ -41,12 +42,15 @@ const notifStore = useNotifStore();
 const firstload = ref(true);
 const showTooltip = ref(null);
 const notifs = ref(null);
+const showNotifNbr = ref(true);
+const nbrNotifs = ref(null);
 
 const openTooltip = async () => {
   showTooltip.value = !showTooltip.value;
   // firstload.value === false ? null :
   await notifStore.getAll();
   firstload.value = false;
+  showNotifNbr.value = false;
 };
 const closeTooltip = () => {
   showTooltip.value === true ? (showTooltip.value = false) : null;
@@ -87,6 +91,10 @@ useInfiniteScroll(
     distance: 10,
   }
 );
+
+onMounted(async () => {
+  await notifStore.getAll();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -95,6 +103,7 @@ useInfiniteScroll(
 }
 .iconBtn {
   @include jcCt-aiCt;
+  position: relative;
   width: 40px;
   height: 40px;
   border-radius: 20px;
@@ -102,12 +111,22 @@ useInfiniteScroll(
   cursor: pointer;
   transition: 150ms;
   color: white;
-  position: relative;
   &:hover {
     filter: brightness(140%);
   }
   & > ion-icon {
     font-size: 20px;
+  }
+  & > div {
+    @include jcCt-aiCt;
+    width: 17px;
+    height: 17px;
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    font-size: 0.8rem;
+    background-color: red;
+    border-radius: 99px;
   }
 }
 .tooltip {
