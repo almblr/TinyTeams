@@ -7,13 +7,19 @@
       @click="openTooltip"
     >
       <ion-icon name="notifications"></ion-icon>
-      <div v-if="showNotifNbr">{{ notifStore.nonViewedNotifs }}</div>
+      <div v-if="notifStore.nonViewedNotifs !== 0">
+        {{ notifStore.nonViewedNotifs }}
+      </div>
     </div>
     <div class="tooltip" v-show="showTooltip === true" ref="notifs">
       <div class="nothingToShow" v-if="notifStore.notifs.length === 0">
         Aucune notification à afficher
       </div>
-      <router-link :to="notifLink(notif)" v-for="notif of notifStore.notifs">
+      <router-link
+        :to="notifLink(notif)"
+        v-for="notif of notifStore.notifs"
+        @mouseover="updateNotif(notif.id)"
+      >
         <img :src="notif.senderProfilePicture" alt="ProfilePicture" />
         <div class="text">
           <p>
@@ -22,6 +28,7 @@
           </p>
           <span>{{ dayjs().to(dayjs(notif.createdAt)) }}</span>
         </div>
+        <div v-if="notif.isRead === false" class="notificationBadge"></div>
       </router-link>
     </div>
   </div>
@@ -42,20 +49,22 @@ const notifStore = useNotifStore();
 const firstload = ref(true);
 const showTooltip = ref(null);
 const notifs = ref(null);
-const showNotifNbr = ref(true);
-const nbrNotifs = ref(null);
 
 const openTooltip = async () => {
   showTooltip.value = !showTooltip.value;
   // firstload.value === false ? null :
   await notifStore.getAll();
+  // await notifStore.updateAll();
   firstload.value = false;
-  showNotifNbr.value = false;
 };
 const closeTooltip = () => {
   showTooltip.value === true ? (showTooltip.value = false) : null;
 };
 
+const updateNotif = async (notifId) => {
+  const notif = notifStore.notifs.find((notif) => notif.id === notifId);
+  !notif.isRead ? await notifStore.update(notifId) : null;
+};
 const notifLink = (notif) => {
   return notif.postId
     ? `/post/${notif.postId}`
@@ -176,6 +185,14 @@ onMounted(async () => {
       & span {
         font-size: 0.8rem;
       }
+    }
+    & .notificationBadge {
+      position: absolute;
+      right: 16px;
+      width: 10px;
+      height: 10px;
+      border-radius: 99px;
+      background-color: #2e89ff;
     }
   }
 }

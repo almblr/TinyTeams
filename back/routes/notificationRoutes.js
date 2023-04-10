@@ -7,7 +7,8 @@ const router = express.Router();
 router.post("/create", auth, notificationController.create);
 router.get("/getOne/:userId", auth, notificationController.getOne);
 router.get("/getAll/:userId", auth, notificationController.getAll);
-router.put("/:notifId", auth, notificationController.update);
+router.put("/update/:notifId", auth, notificationController.update);
+router.put("/updateAll/:userId", auth, notificationController.updateAll);
 router.delete("/:notifId", auth, notificationController.delete);
 
 export default router;

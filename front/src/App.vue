@@ -8,15 +8,18 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { state, socket } from "./socket.js";
+import useNotifStore from "@/stores/notificationStore.js";
 
 const newNotif = ref(false);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const notifStore = useNotifStore();
 
 const notifContent = ref(null);
 const path = ref(null);
 
 const showNotif = () => {
   newNotif.value = true;
+  notifStore.nonViewedNotifs++;
   setTimeout(() => {
     newNotif.value = false;
   }, 4000);
@@ -32,7 +35,6 @@ watch(state.newPost, async (newValue) => {
 
 watch(state.newLike, async (newValue) => {
   if (newValue) {
-    console.log(newValue);
     path.value = `post/${newValue[0].postId}`;
     notifContent.value = `${newValue[0].senderUsername} a aimé votre post.`;
     showNotif();

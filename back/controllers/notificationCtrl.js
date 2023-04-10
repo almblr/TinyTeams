@@ -80,6 +80,24 @@ const notificationController = {
       res.status(500).send();
     }
   },
+  updateAll: async (req, res) => {
+    const notifications = await Notification.findAll({
+      where: {
+        receiver: req.params.userId,
+      },
+    });
+    try {
+      for (const notif of notifications)
+        if (notif.isRead === false) {
+          await notif.update({
+            isRead: true,
+          });
+        }
+      res.status(201).send(notifications);
+    } catch {
+      res.status(500).send();
+    }
+  },
   delete: async (req, res) => {
     const notification = await Notification.findByPk(req.params.notifId);
     try {
