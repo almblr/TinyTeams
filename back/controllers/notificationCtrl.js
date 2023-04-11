@@ -1,6 +1,6 @@
 import { Notification, User } from "../db/sequelize.js";
 
-const notificationController = {
+const notificationCtrl = {
   create: async (req, res) => {
     try {
       const createdNotif = await Notification.create({
@@ -109,4 +109,4 @@ const notificationController = {
   },
 };
 
-export default notificationController;
+export default notificationCtrl;

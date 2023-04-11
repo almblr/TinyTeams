@@ -1,7 +1,7 @@
 import { Comment, User } from "../db/sequelize.js";
 import fs from "fs";
 
-const commentController = {
+const commentCtrl = {
   create: async (req, res) => {
     console.log(req.files);
     if (
@@ -129,4 +129,4 @@ const commentController = {
   },
 };
 
-export default commentController;
+export default commentCtrl;

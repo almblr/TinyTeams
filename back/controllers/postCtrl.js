@@ -49,7 +49,7 @@ const getPostComments = async (author, postId) => {
 /////////////////////////////////////////
 /////////////////////////////////////////
 
-const postController = {
+const postCtrl = {
   create: async (req, res) => {
     if (!req.body.content && Object.keys(req.files).length === 0) {
       return res.status(400).json({ message: "Empty post." });
@@ -213,4 +213,4 @@ const postController = {
   },
 };
 
-export default postController;
+export default postCtrl;

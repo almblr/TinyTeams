@@ -1,6 +1,6 @@
 import { Follow, User } from "../db/sequelize.js";
 
-const followController = {
+const followCtrl = {
   create: async (req, res) => {
     try {
       const userToFollow = await User.findByPk(req.params.userId);
@@ -73,4 +73,4 @@ const followController = {
   },
 };
 
-export default followController;
+export default followCtrl;
