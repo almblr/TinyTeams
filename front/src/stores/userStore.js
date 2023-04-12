@@ -75,6 +75,7 @@ export const useUserStore = defineStore("user", () => {
   };
 
   return {
+    users,
     login,
     signup,
     getOne,

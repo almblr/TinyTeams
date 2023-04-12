@@ -1,5 +1,5 @@
 <template>
-  <span v-if="postStore.posts === 0"> {{ noPostMessage }}</span>
+  <span v-if="postStore.posts.length === 0"> {{ noPostMessage }}</span>
   <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
     <PostHeader :post="post" @editPost="modifyPost" />
     <PostMain :post="post" v-model:postToEdit="getPostId" />

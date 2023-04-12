@@ -13,7 +13,7 @@ const messageCtrl = {
     try {
       const createdMessage = await Message.create({
         author: req.auth.userId,
-        conversationId: req.body.conversationId,
+        conversationId: parseInt(req.params.conversationId),
         content: req.body.content ? req.body.content : null,
         imageUrl: req.files?.imageUrl
           ? `${req.protocol}://${req.get("host")}/images/${
@@ -62,7 +62,12 @@ const messageCtrl = {
     }
   },
   delete: async (req, res) => {
-    const message = await Message.findByPk(req.params.messageId);
+    const message = await Message.findOne({
+      where: {
+        conversationId: req.params.conversationId,
+        messageId: req.params.messageId,
+      },
+    });
     if (!message || req.auth.userId !== message.author) {
       return res
         .status(401)

@@ -11,7 +11,7 @@
     </nav>
     <div class="buttons">
       <SwitchThemeButton />
-      <router-link to="/" class="btn"
+      <router-link to="/messages" class="btn"
         ><ion-icon name="chatbubble-ellipses"></ion-icon
       ></router-link>
       <NotifPanel />
@@ -120,6 +120,7 @@ header {
       background-color: #333435;
       cursor: pointer;
       transition: 150ms;
+      border-bottom: none;
       & > * {
         font-size: 20px;
         color: white;

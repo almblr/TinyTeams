@@ -7,24 +7,29 @@ const useNotifStore = defineStore("notif", () => {
   const nonViewedNotifs = ref(0);
 
   const getAll = async (token, userId, lastNotifViewed) => {
-    const res = await axios({
-      url: `http://localhost:3000/api/notifications/getAll/${userId}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        lastNotifId: lastNotifViewed,
-      },
-    });
-    if (Object.values(res.data).includes("No more notifications")) {
-      console.log("No more notifs to load");
-      return false;
+    try {
+      const res = await axios({
+        url: `http://localhost:3000/api/notifications/getAll/${userId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          lastNotifId: lastNotifViewed,
+        },
+      });
+    } catch (error) {
+      console.log(error.response);
     }
-    if (lastNotifViewed) {
-      return notifs.value.push(...res.data);
-    }
-    notifs.value = res.data.notifs;
-    nonViewedNotifs.value = res.data.nonViewedNotifs;
+
+    // if (Object.values(res.data).includes("No more notifications")) {
+    //   console.log("No more notifs to load");
+    //   return false;
+    // }
+    // if (lastNotifViewed) {
+    //   return notifs.value.push(...res.data);
+    // }
+    // notifs.value = res.data.notifs;
+    // nonViewedNotifs.value = res.data.nonViewedNotifs;
   };
   const update = async (token, notifId) => {
     const res = await axios({

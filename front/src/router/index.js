@@ -47,6 +47,11 @@ const routes = [
     component: () => import("@/views/UserProfilView.vue"),
   },
   {
+    path: "/messages/:conversationId",
+    name: "Messages",
+    component: () => import("@/views/ChatViews.vue"),
+  },
+  {
     path: "/settings",
     name: "Settings",
     component: () => import("@/views/SettingsView.vue"),

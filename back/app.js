@@ -16,6 +16,7 @@ import reactionRoutes from "./routes/reactionRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import followRoutes from "./routes/followRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 
 export const app = express();
@@ -79,8 +80,9 @@ app.use("/api/posts/", postRoutes);
 app.use("/api/posts/", reactionRoutes);
 app.use("/api/posts/", commentRoutes);
 app.use("/api/users/", followRoutes);
-app.use("/api/conversations", conversationRoutes);
-app.use("/api/conversations/messages", messageRoutes);
+app.use("/api/conversations/", conversationRoutes);
+app.use("/api/conversations/", messageRoutes);
+app.use("/api/notifications/", notificationRoutes);
 
 const sessionsMap = {};
 const io = new Server(httpServer, {
