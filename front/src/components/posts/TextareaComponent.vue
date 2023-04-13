@@ -111,10 +111,17 @@ const sendContent = async (type) => {
 
     case "sendMessage":
       const message = await chatStore.createMessage(formData);
-      await chatStore.updateConversation(
-        props.conversationId,
-        message.createdAt
+      const conversation = chatStore.conversations.find(
+        (conversation) => conversation.id === props.conversationId
       );
+      if (conversation) {
+        await chatStore.updateConversation(
+          props.conversationId,
+          message.createdAt
+        );
+      } else {
+        await chatStore.createConversation(props.receiver);
+      }
       createNotificiation("newMessage", message.id, props.receiver);
       break;
   }

@@ -48,13 +48,13 @@ const routes = [
   },
   {
     path: "/messages/new",
-    name: "Messages",
-    component: () => import("@/views/ChatViews.vue"),
+    name: "newMessage",
+    component: () => import("@/views/ChatView.vue"),
   },
   {
     path: "/messages/:conversationId",
     name: "Messages",
-    component: () => import("@/views/ChatViews.vue"),
+    component: () => import("@/views/ChatView.vue"),
   },
   {
     path: "/settings",

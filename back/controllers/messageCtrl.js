@@ -1,29 +1,54 @@
-import { Message } from "../db/sequelize.js";
+import { Message, Conversation } from "../db/sequelize.js";
+import { Op } from "sequelize";
 import fs from "fs";
 
 const messageCtrl = {
   create: async (req, res) => {
-    if (
-      !req.body.content &&
-      Object.keys(req.files).length === 0 &&
-      !req.body.imageUrl
-    ) {
-      return res.status(400).json({ message: "Empty message" });
-    }
+    const { conversationId } = req.params;
+    const { body, auth, protocol, get } = req;
+    const { content, imageUrl } = body;
+    const { userId } = auth;
     try {
+      if (!content && Object.keys(req.files).length === 0 && !imageUrl) {
+        return res.status(400).json({ message: "Empty message" });
+      }
+      let conversation;
+      if (!conversationId) {
+        conversation = await Conversation.findOne({
+          where: {
+            [Op.or]: [
+              { user1: userId, user2: body.user2 },
+              { user1: body.user2, user2: userId },
+            ],
+          },
+        });
+        if (!conversation) {
+          conversation = await Conversation.create({
+            user1: userId,
+            user2: body.user2,
+          });
+        }
+      } else {
+        conversation = await Conversation.findByPk(conversationId);
+      }
       const createdMessage = await Message.create({
-        author: req.auth.userId,
-        conversationId: parseInt(req.params.conversationId),
-        content: req.body.content ? req.body.content : null,
-        imageUrl: req.files?.imageUrl
-          ? `${req.protocol}://${req.get("host")}/images/${
+        author: userId,
+        conversationId: conversation?.id || parseInt(conversationId),
+        content: content || null,
+        imageUrl: imageUrl
+          ? `${protocol}://${get("host")}/images/${
               req.files.imageUrl[0].filename
             }`
-          : req.body.imageUrl,
+          : imageUrl,
       });
-      res.status(201).send(createdMessage);
+      conversation.changed("updatedAt", true);
+      conversation.update({
+        updatedAt: createdMessage.createdAt,
+      });
+      console.log(conversation);
+      return res.status(201).send(createdMessage);
     } catch {
-      res.status(500).send();
+      return res.status(500).send();
     }
   },
   getAll: async (req, res) => {

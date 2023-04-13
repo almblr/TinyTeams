@@ -13,14 +13,27 @@ const getUserConversation = async (conversation) => {
 const conversationCtrl = {
   create: async (req, res) => {
     try {
+      const isConversationExists = await Conversation.findOne({
+        where: {
+          [Op.or]: [
+            { user1: req.auth.userId, user2: req.body.user2 },
+            { user1: req.body.user2, user2: req.auth.userId },
+          ],
+        },
+      });
+      if (isConversationExists) {
+        return res.status(400).send({ message: "Conversation already exists" });
+      }
       const createdConversation = await Conversation.create({
         user1: req.auth.userId,
         user2: req.body.user2,
       });
       const users = await getUserConversation(createdConversation);
-      const conversation = await Conversation.findByPk(createdConversation.id);
-      conversation.setDataValue("users", users);
-      res.status(201).send(conversation);
+      const conversationToSend = await Conversation.findByPk(
+        createdConversation.id
+      );
+      conversationToSend.setDataValue("users", users);
+      res.status(201).send(conversationToSend);
     } catch (err) {
       console.log(err);
       res.status(500).send();
@@ -35,7 +48,14 @@ const conversationCtrl = {
         return res.status(404).send({ message: "Conversation not found" });
       }
       const users = await getUserConversation(conversation);
+      const lastMessage = await Message.findOne({
+        where: {
+          conversationId: conversation.id,
+        },
+        order: [["createdAt", "DESC"]],
+      });
       conversation.setDataValue("users", users);
+      conversation.setDataValue("lastMessage", lastMessage);
       res.status(200).send(conversation);
     } catch {
       res.status(500).send();
@@ -103,12 +123,6 @@ const conversationCtrl = {
     } catch {
       res.status(500).send();
     }
-  },
-  update: async (req, res) => {
-    const conversation = await Conversation.findByPk(req.params.conversationId);
-    conversation.update({
-      updatedAt: req.body.lastMessageDate,
-    });
   },
 };
 

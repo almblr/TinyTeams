@@ -1,7 +1,7 @@
 <template>
   <div id="container">
     <main>
-      <div v-if="router.name.newMessage"></div>
+      <div v-if="route.name.newMessage"></div>
       <div v-for="(message, index) in messages" v-else>
         <div class="myMessages" v-if="message.author === userLS.id">
           <div>

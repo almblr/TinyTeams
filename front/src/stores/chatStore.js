@@ -22,20 +22,31 @@ const useConversationStore = defineStore("conversation", () => {
   };
   const getOneConversation = async (conversationId) => {
     const res = await axios({
-      url: `http://localhost:3000/api/conversations/${conversationId}`,
-      method: "GET",
+      url: `http://localhost:3000/api/conversations/getOne/${conversationId}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    const foundConversation = conversations.value.find(
-      (conversation) => conversation.id === conversationId
-    );
-    if (foundConversation) {
-      conversations.value.splice(foundConversation, 1, res.data);
-    } else {
-      conversations.value.unshift(res.data);
+    return res.data;
+  };
+  const getUserConversations = async (lastConversationViewed) => {
+    let url = `http://localhost:3000/api/conversation/getAll/`;
+    const res = await axios({
+      url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        lastConversationId: lastConversationViewed,
+      },
+    });
+    if (Object.values(res.data).includes("No more conversations")) {
+      return console.log("No more convs to load");
     }
+    if (lastConversationViewed) {
+      return conversations.value.push(...res.data);
+    }
+    conversations.value = res.data;
   };
   const updateConversation = async (conversationId, lastMessageDate) => {
     const res = await axios({
@@ -102,7 +113,7 @@ const useConversationStore = defineStore("conversation", () => {
     conversations,
     messages,
     createConversation,
-    getOneConversation,
+    getUserConversations,
     updateConversation,
     createMessage,
     getConversationMessages,
