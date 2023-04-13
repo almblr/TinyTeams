@@ -7,7 +7,12 @@
         width="35px"
         height="35px"
       />
-      <TextareaComponent :postId="post.id" :author="post.author" />
+      <TextareaComponent
+        :postId="post.id"
+        :author="post.author"
+        placeholder="Ecrivez un commentaire..."
+        type="sendComment"
+      />
     </div>
     <CommentSection :comments="post.comments" />
   </footer>

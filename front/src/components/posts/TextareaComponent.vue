@@ -3,8 +3,8 @@
     <div class="container__textarea" ref="containerTextarea">
       <textarea
         :id="props.postId"
-        placeholder="Ecrivez un commentaire..."
-        @keydown.enter.prevent="sendComment(props.postId)"
+        :placeholder="props.placeholder"
+        @keydown.enter.prevent="sendContent(type)"
         ref="textarea"
         v-model="input"
       ></textarea>
@@ -29,6 +29,7 @@
 import { ref } from "vue";
 import { socket } from "../../socket.js";
 import usePostStore from "@/stores/postStore.js";
+import useChatStore from "@/stores/chatStore.js";
 import { useTextareaAutosize } from "@vueuse/core";
 import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
 import GifPanel from "@/components/posts/GifPanel.vue";
@@ -37,11 +38,22 @@ import ImagePreview from "@//components/layout/ImagePreview.vue";
 const { textarea, input } = useTextareaAutosize();
 
 const props = defineProps({
+  type: {
+    type: String,
+    required: true,
+  },
+  placeholder: {
+    type: String,
+    required: true,
+  },
   postId: Number,
   author: Number,
+  receiver: Number,
+  conversationId: Number,
 });
 
 const postStore = usePostStore();
+const chatStore = useChatStore();
 const showing = ref(false);
 const containerTextarea = ref(null);
 const container = ref(null);
@@ -64,7 +76,22 @@ const getUrls = (path, file) => {
   mediaPreview.value = path;
 };
 
-const sendComment = async (postId) => {
+const createNotificiation = (type, notifiableId, receiver, postId) => {
+  const data = {
+    senderId: userLS.id,
+    senderUsername: `${userLS.firstname} ${userLS.lastname}`,
+    senderProfilePicture: userLS.profilePicture,
+    type: type,
+    notifiableId: notifiableId,
+    receiver,
+    token,
+  };
+  if (postId) {
+    data.postId = postId;
+  }
+  socket.emit(type, data);
+};
+const sendContent = async (type) => {
   const formData = new FormData();
   const contentIsOnlySpaces = !input.value || input.value.trim().length === 0;
   if (contentIsOnlySpaces && !mediaToSend.value) {
@@ -76,20 +103,24 @@ const sendComment = async (postId) => {
   if (!contentIsOnlySpaces && !mediaToSend.value) {
     formData.append("content", input.value);
   }
-  const comment = await postStore.createComment(postId, formData);
+  switch (type) {
+    case "sendComment":
+      const comment = await postStore.createComment(props.postId, formData);
+      createNotificiation("newComment", comment.id, props.author, props.postId);
+      break;
+
+    case "sendMessage":
+      const message = await chatStore.createMessage(formData);
+      await chatStore.updateConversation(
+        props.conversationId,
+        message.createdAt
+      );
+      createNotificiation("newMessage", message.id, props.receiver);
+      break;
+  }
   input.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
-  socket.emit("newComment", {
-    senderId: userLS.id,
-    senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-    senderProfilePicture: userLS.profilePicture,
-    type: "newComment",
-    notifiableId: comment.id,
-    receiver: props.author,
-    postId: props.postId,
-    token,
-  });
 };
 </script>
 

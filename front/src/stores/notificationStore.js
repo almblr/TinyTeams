@@ -20,7 +20,6 @@ const useNotifStore = defineStore("notif", () => {
     } catch (error) {
       console.log(error.response);
     }
-
     // if (Object.values(res.data).includes("No more notifications")) {
     //   console.log("No more notifs to load");
     //   return false;

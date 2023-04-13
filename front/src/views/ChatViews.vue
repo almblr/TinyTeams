@@ -2,50 +2,27 @@
   <div id="container">
     <TheHeader />
     <main id="chat">
-      <div class="contactList">
-        <div class="contactList__header">
-          <h2>Discussions</h2>
-          <button>New msg</button>
-        </div>
-        <router-link
-          :to="`/messages/${conversation.id}`"
-          v-for="conversation of conversations"
-        >
-          <img :src="conversation.otherUser.profilePicture" alt="" />
-          <div>
-            <h3>
-              {{ conversation.otherUser.firstname }}
-              {{ conversation.otherUser.lastName }}
-            </h3>
-            <p>
-              <span>{{
-                conversation.lastMessage.content
-                  ? conversation.lastMessage.content
-                  : "Voir pièce jointe"
-              }}</span>
-              <span>
-                {{
-                  dayjs().to(dayjs(conversation.lastMessage.createdAt))
-                }}</span
-              >
-            </p>
-          </div>
-        </router-link>
-      </div>
-      <div class="conversation" v-if="isDesktop"></div>
+      <ConvList />
+      <ChatArea v-if="route.params.conversationId" />
+      <NewMessage v-else />
     </main>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
-import TheHeader from "@/components/layout/TheHeader.vue";
 import useChatStore from "@/stores/chatStore.js";
+import TheHeader from "@/components/layout/TheHeader.vue";
+import ConvList from "@/components/chat/ConvList.vue";
+import ChatArea from "@/components/chat/ChatArea.vue";
+import NewMessage from "@/components/chat/NewMessage.vue";
+import { useRoute } from "vue-router";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
+const route = useRoute();
 const chatStore = useChatStore();
 </script>
 
