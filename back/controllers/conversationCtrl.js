@@ -6,7 +6,7 @@ const getUserConversation = async (conversation) => {
     where: {
       id: [conversation.user1, conversation.user2],
     },
-    attributes: ["id", "firstname", "lastname", "username", "profilePicture"],
+    attributes: ["id", "firstname", "lastname", "profilePicture"],
   });
 };
 
@@ -74,13 +74,7 @@ const conversationCtrl = {
       const getUserInfo = async (userId) => {
         return await User.findOne({
           where: { id: userId },
-          attributes: [
-            "id",
-            "firstname",
-            "lastname",
-            "username",
-            "profilePicture",
-          ],
+          attributes: ["id", "firstname", "lastname", "profilePicture"],
         });
       };
       for (const conversation of allConversations) {

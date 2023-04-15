@@ -31,11 +31,6 @@ const userModel = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    username: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
     job: {
       type: DataTypes.STRING,
       defaultValue: "N/A",

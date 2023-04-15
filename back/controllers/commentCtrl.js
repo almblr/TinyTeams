@@ -26,13 +26,7 @@ const commentCtrl = {
         include: [
           {
             model: User,
-            attributes: [
-              "id",
-              "firstname",
-              "lastname",
-              "username",
-              "profilePicture",
-            ],
+            attributes: ["id", "firstname", "lastname", "profilePicture"],
           },
         ],
       });
@@ -91,13 +85,7 @@ const commentCtrl = {
         include: [
           {
             model: User,
-            attributes: [
-              "id",
-              "firstname",
-              "lastname",
-              "username",
-              "profilePicture",
-            ],
+            attributes: ["id", "firstname", "lastname", "profilePicture"],
           },
         ],
       });

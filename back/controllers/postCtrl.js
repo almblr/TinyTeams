@@ -2,6 +2,7 @@ import { Post, React, User, Comment } from "../db/sequelize.js";
 import fs from "fs";
 import { Op } from "sequelize";
 
+const attributes = ["id", "firstname", "lastname", "profilePicture"];
 const getPostComments = async (author, postId) => {
   const userComments = await Comment.findAll({
     where: {
@@ -12,13 +13,7 @@ const getPostComments = async (author, postId) => {
     include: [
       {
         model: User,
-        attributes: [
-          "id",
-          "firstname",
-          "lastname",
-          "username",
-          "profilePicture",
-        ],
+        attributes,
       },
     ],
   });
@@ -32,13 +27,7 @@ const getPostComments = async (author, postId) => {
     include: [
       {
         model: User,
-        attributes: [
-          "id",
-          "firstname",
-          "lastname",
-          "username",
-          "profilePicture",
-        ],
+        attributes,
       },
     ],
     order: [["createdAt", "DESC"]],
@@ -70,13 +59,7 @@ const postCtrl = {
           React,
           {
             model: User,
-            attributes: [
-              "id",
-              "firstname",
-              "lastname",
-              "username",
-              "profilePicture",
-            ],
+            attributes,
           },
           Comment,
         ],
@@ -93,13 +76,7 @@ const postCtrl = {
           React,
           {
             model: User,
-            attributes: [
-              "id",
-              "firstname",
-              "lastname",
-              "username",
-              "profilePicture",
-            ],
+            attributes,
           },
         ],
       });
@@ -127,13 +104,7 @@ const postCtrl = {
           React,
           {
             model: User,
-            attributes: [
-              "id",
-              "firstname",
-              "lastname",
-              "username",
-              "profilePicture",
-            ],
+            attributes,
           },
         ],
       });
@@ -179,13 +150,7 @@ const postCtrl = {
           React,
           {
             model: User,
-            attributes: [
-              "id",
-              "firstname",
-              "lastname",
-              "username",
-              "profilePicture",
-            ],
+            attributes,
           },
           Comment,
         ],

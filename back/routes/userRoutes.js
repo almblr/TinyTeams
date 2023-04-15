@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/signup", userCtrl.create);
 router.post("/login", userCtrl.login);
-router.get("/getOne/:username", auth, userCtrl.getOne);
+router.get("/getOne/:userId", auth, userCtrl.getOne);
 router.get("/getAll/", auth, userCtrl.getAll);
 router.put("/update/:userId", auth, multerConfig, userCtrl.update);
 

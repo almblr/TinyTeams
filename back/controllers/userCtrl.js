@@ -19,8 +19,8 @@ const userCtrl = {
         password: hash,
         firstname: req.body.firstname,
         lastname: req.body.lastname,
-        username: (req.body.firstname + req.body.lastname).toLowerCase(),
         isAdmin: false,
+        job: req.body.job,
       });
       res.status(201).json({ message: "User created successfully!" });
     } catch {
@@ -51,7 +51,6 @@ const userCtrl = {
         isAdmin: user.isAdmin,
         firstname: user.firstname,
         lastname: user.lastname,
-        username: user.username,
         profilePicture: user.profilePicture,
         job: user.job,
         email: user.email,
@@ -65,7 +64,7 @@ const userCtrl = {
     try {
       const user = await User.findOne({
         where: {
-          username: req.params.username,
+          id: req.params.userId,
         },
         attributes: {
           exclude: ["password"],
@@ -117,7 +116,6 @@ const userCtrl = {
           "id",
           "firstname",
           "lastname",
-          "username",
           "job",
           "profilePicture",
           "isAdmin",

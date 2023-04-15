@@ -66,7 +66,6 @@ sequelize
           password: hash,
           firstname: "Modérateur",
           lastname: "TinyTeams",
-          username: "modérateurtinyteams",
           isAdmin: true,
           profilePicture: "http://localhost:3000/images/moderator.png",
         });
