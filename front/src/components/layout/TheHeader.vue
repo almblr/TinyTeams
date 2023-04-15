@@ -83,7 +83,8 @@ header {
   backdrop-filter: blur(1px);
   padding: 0px 10px 0 5px;
   gap: 10px;
-  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.7);
+  border-bottom: 1px solid #333435;
+  box-shadow: 5px 0px 20px var(--shadowHeader);
   & > .divLogo {
     @include aiCt;
     flex: 1;

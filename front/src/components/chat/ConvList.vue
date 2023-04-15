@@ -1,12 +1,21 @@
 <template>
-  <div class="contactList">
-    <div class="contactList__header">
+  <div class="contactList" v-if="!chooseContact">
+    <div class="contactList__header" v-if="isDeskop">
       <h2>Discussions</h2>
-      <button>New msg</button>
+      <button class="contactList__header__new">
+        <ion-icon
+          name="add-outline"
+          @click="$emit('openNewContact', true)"
+        ></ion-icon>
+      </button>
+    </div>
+    <div v-if="chatStore.conversations.length === 0" class="nothingToDisplay">
+      Il n'y a aucune conversation pour le moment
     </div>
     <router-link
       :to="`/messages/${conversation.id}`"
-      v-for="conversation of conversations"
+      v-else
+      v-for="conversation of chatStore.conversations"
     >
       <img :src="conversation.otherUser.profilePicture" alt="profilePicture" />
       <div>
@@ -26,19 +35,116 @@
         </p>
       </div>
     </router-link>
+    <button class="newMessage" v-if="!isDeskop">
+      <ion-icon name="add-outline" @click="chooseContact = true"></ion-icon>
+    </button>
   </div>
+  <Transition>
+    <ContactsList v-model:show="chooseContact" />
+  </Transition>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import TheHeader from "@/components/layout/TheHeader.vue";
+import { ref, onMounted, watch } from "vue";
+import { useWindowSize } from "@vueuse/core";
 import useChatStore from "@/stores/chatStore.js";
+import ContactsList from "@/components/chat/ContactsList.vue";
+import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
-const chatStore = useChatStore();
-</script>
+const emit = defineEmits(["openNewContact"]);
 
-<style lang="scss" scoped></style>
+const { width } = useWindowSize();
+const isDeskop = ref(width.value > 768);
+const chatStore = useChatStore();
+const chooseContact = ref(false);
+
+watch(
+  () => width.value,
+  (newWidth) => {
+    if (newWidth > 768) {
+      isDeskop.value = true;
+    } else {
+      isDeskop.value = false;
+    }
+  }
+);
+
+watch(
+  () => chatStore.openConversation,
+  (newValue) => {
+    newValue !== null ? (chooseContact.value = false) : null;
+  }
+);
+
+onMounted(() => {});
+</script>
+<style lang="scss" scoped>
+.contactList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%; // propriété problématique
+  color: var(--textColorMain);
+  padding: 5px;
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--textColorSecond);
+    padding: 10px 0 0 10px;
+  }
+}
+
+.nothingToDisplay {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
+}
+
+.newMessage {
+  @include jcCt-aiCt;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  background-color: #1877f2;
+  cursor: pointer;
+}
+
+@media all and (min-width: 768px) {
+  .contactList {
+    border-right: 1px solid rgba(190, 189, 189, 0.103);
+    width: 360px;
+    &__header {
+      &__new {
+        @include jcCt-aiCt;
+        width: 40px;
+        height: 40px;
+        color: var(--textColorMain);
+        border-radius: 50%;
+        border: none;
+        background-color: transparent;
+        font-size: 2rem;
+        transition: 200ms;
+        background-color: rgba(173, 171, 171, 0.1);
+        cursor: pointer;
+        &:hover {
+          background-color: rgba(173, 171, 171, 0.2);
+        }
+      }
+    }
+  }
+}
+</style>

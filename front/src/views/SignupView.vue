@@ -50,7 +50,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { useUserStore } from "@/stores/userStore.js";
+import useUserStore from "@/stores/userStore.js";
 import router from "@/router/index.js";
 import UserForm from "@/components/users/UserForm.vue";
 import PasswordSwitcherButton from "@/components/buttons/PasswordSwitcherButton.vue";

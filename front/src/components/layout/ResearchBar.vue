@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useUserStore } from "@/stores/userStore.js";
+import useUserStore from "@/stores/userStore.js";
 
 const userStore = useUserStore();
 const search = ref(null);
@@ -41,7 +41,6 @@ const props = defineProps({
 <style lang="scss" scoped>
 .container-input {
   position: relative;
-  margin-bottom: 30px;
 }
 
 input {

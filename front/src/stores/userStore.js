@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 import { socket } from "../socket.js";
 import axios from "axios";
 
-export const useUserStore = defineStore("user", () => {
-  const token = JSON.parse(sessionStorage.getItem(`token`));
+const useUserStore = defineStore("user", () => {
+  const token = ref(JSON.parse(sessionStorage.getItem(`token`)));
   const users = ref([]);
 
   const signup = async (data) => {
@@ -33,6 +33,7 @@ export const useUserStore = defineStore("user", () => {
       socket.emit("sendUserId", res.data.loggedUser.id);
       sessionStorage.setItem("user", JSON.stringify(res.data.loggedUser));
       sessionStorage.setItem("token", JSON.stringify(res.data.token));
+      token.value = res.data.token;
       return res.data;
     } catch (err) {
       return false;
@@ -42,7 +43,7 @@ export const useUserStore = defineStore("user", () => {
     const res = await axios({
       url: `http://localhost:3000/api/users/getOne/${username}`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.value}`,
       },
     });
     return res.data;
@@ -51,7 +52,7 @@ export const useUserStore = defineStore("user", () => {
     const res = await axios({
       url: `http://localhost:3000/api/users/getAll/`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.value}`,
       },
       params: {
         search: string,
@@ -68,7 +69,7 @@ export const useUserStore = defineStore("user", () => {
       url: `http://localhost:3000/api/users/update/${userId}`,
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.value}`,
       },
       data,
     });
@@ -83,3 +84,5 @@ export const useUserStore = defineStore("user", () => {
     update,
   };
 });
+
+export default useUserStore;

@@ -6,6 +6,7 @@ const useConversationStore = defineStore("conversation", () => {
   const token = JSON.parse(sessionStorage.getItem(`token`));
   const conversations = ref([]);
   const messages = ref([]);
+  const newMessage = ref(null);
 
   const createConversation = async (userId) => {
     const res = await axios({
@@ -112,6 +113,7 @@ const useConversationStore = defineStore("conversation", () => {
   return {
     conversations,
     messages,
+    newMessage,
     createConversation,
     getUserConversations,
     updateConversation,

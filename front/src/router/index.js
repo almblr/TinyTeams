@@ -47,13 +47,13 @@ const routes = [
     component: () => import("@/views/UserProfilView.vue"),
   },
   {
-    path: "/messages/new",
-    name: "newMessage",
+    path: "/messages/",
+    name: "Messages",
     component: () => import("@/views/ChatView.vue"),
   },
   {
-    path: "/messages/:conversationId",
-    name: "Messages",
+    path: "/messages/new/",
+    name: "newMessage",
     component: () => import("@/views/ChatView.vue"),
   },
   {

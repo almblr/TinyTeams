@@ -48,7 +48,7 @@ const props = defineProps({
   },
   postId: Number,
   author: Number,
-  receiver: Number,
+  receiver: Object,
   conversationId: Number,
 });
 
@@ -112,17 +112,12 @@ const sendContent = async (type) => {
     case "sendMessage":
       const message = await chatStore.createMessage(formData);
       const conversation = chatStore.conversations.find(
-        (conversation) => conversation.id === props.conversationId
+        (conv) => conv.id === props.conversationId
       );
-      if (conversation) {
-        await chatStore.updateConversation(
-          props.conversationId,
-          message.createdAt
-        );
-      } else {
-        await chatStore.createConversation(props.receiver);
+      if (!conversation) {
+        await chatStore.createConversation(props.receiver.id);
       }
-      createNotificiation("newMessage", message.id, props.receiver);
+      createNotificiation("newMessage", message.id, props.receiver.id);
       break;
   }
   input.value = "";

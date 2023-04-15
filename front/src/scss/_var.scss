@@ -13,6 +13,7 @@ html {
   --cancelButton: #4747bd;
   --cancelButtonHover: #2121e0;
   --shadowColor: rgba(0, 0, 0, 0.2);
+  --shadowHeader: rgba(0, 0, 0, 0.7);
 }
 html.dark {
   --backgroundMain: #18191a;
@@ -29,6 +30,7 @@ html.dark {
   --cancelButton: #aac8ff;
   --cancelButtonHover: #6ea0f7;
   --shadowColor: none;
+  --shadowHeader: none;
 }
 
 @mixin jcCt {

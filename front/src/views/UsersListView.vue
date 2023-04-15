@@ -1,9 +1,11 @@
 <template>
   <div id="container" ref="usersList">
     <TheHeader />
-    <main id="users">
+    <main class="users">
       <ResearchBar />
-      <UserCardList :users="userStore.users" />
+      <div class="users__list">
+        <UserCardList :users="userStore.users" />
+      </div>
     </main>
   </div>
 </template>
@@ -11,7 +13,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
-import { useUserStore } from "@/stores/userStore.js";
+import useUserStore from "@/stores/userStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardList from "@/components/users/UserCardList.vue";
 import ResearchBar from "@//components/layout/ResearchBar.vue";
@@ -45,7 +47,7 @@ onMounted(async () => {
   position: relative;
   gap: 30px;
 }
-#users {
+.users {
   @include fdCol-aiCt;
   transition: 200ms;
   min-height: 100%;
@@ -53,6 +55,10 @@ onMounted(async () => {
   max-width: 768px;
   width: 100%;
   gap: 0;
+  &__list {
+    width: 100%;
+    margin-top: 20px;
+  }
 }
 
 input {

@@ -81,22 +81,37 @@ const userCtrl = {
   getAll: async (req, res) => {
     try {
       const users = await User.findAll({
-        where: req.query.search
-          ? {
-              [Op.or]: [
-                {
-                  firstname: {
-                    [Op.like]: "%" + req.query.search + "%",
-                  },
-                },
-                {
-                  lastname: {
-                    [Op.like]: "%" + req.query.search + "%",
-                  },
-                },
-              ],
-            }
-          : {},
+        where: {
+          [Op.and]: [
+            req.query.search
+              ? {
+                  [Op.or]: [
+                    {
+                      firstname: {
+                        [Op.like]: "%" + req.query.search + "%",
+                      },
+                    },
+                    {
+                      lastname: {
+                        [Op.like]: "%" + req.query.search + "%",
+                      },
+                    },
+                    {
+                      job: {
+                        [Op.like]: "%" + req.query.search + "%",
+                      },
+                    },
+                  ],
+                }
+              : {},
+            // On exclut l'utilisateur connecté de la liste
+            {
+              id: {
+                [Op.ne]: req.auth.userId,
+              },
+            },
+          ],
+        },
         order: [["firstname", "ASC"]],
         attributes: [
           "id",

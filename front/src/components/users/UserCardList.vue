@@ -7,21 +7,26 @@
       </router-link>
       <h3>{{ user.job }}</h3>
     </div>
-    <div>
+    <div v-if="route.name === 'User'">
       <FollowButton
         :userId="user.id"
         :loggedInUserProfile="user.id === userLS.id"
       />
     </div>
+    <SendMessageBtn v-else :userId="user.id" />
   </article>
 </template>
 
 <script setup>
+import { useRoute } from "vue-router";
 import FollowButton from "@/components/users/FollowButton.vue";
+import SendMessageBtn from "@/components/buttons/SendMessage.vue";
 
 const props = defineProps({
   users: Array,
 });
+
+const route = useRoute();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 </script>
 
@@ -29,7 +34,6 @@ const userLS = JSON.parse(sessionStorage.getItem(`user`));
 article {
   @include aiCt;
   position: relative;
-  width: 95%;
   max-width: 768px;
   width: 100%;
   min-height: 130px;
@@ -67,7 +71,6 @@ article {
 
 @media all and (min-width: 768px) {
   article {
-    border-radius: 10px;
     box-shadow: 5px 0px 20px var(--shadowColor);
     padding: 15px 40px 15px 15px;
     & .userInfos {
