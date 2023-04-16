@@ -58,7 +58,7 @@ const messageCtrl = {
           conversationId: req.params.conversationId,
         },
         order: [
-          ["createdAt", "DESC"], // Du plus récent au moins récent
+          ["createdAt", "ASC"], // Du plus récent au moins récent
         ],
       });
       if ("lastMessageId" in req.query) {

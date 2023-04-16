@@ -2,7 +2,7 @@
   <div class="container">
     <img :src="props.src" />
     <button @click="$emit('removeImage')">
-      <fa icon="fa-solid fa-xmark" />
+      <ion-icon name="close-outline"></ion-icon>
     </button>
   </div>
 </template>
@@ -10,16 +10,21 @@
 <script setup>
 const props = defineProps({
   src: String,
+  size: String,
 });
 </script>
 
 <style lang="scss" scoped>
 .container {
   position: relative;
-  overflow: hidden;
+  min-width: 100%;
+  min-height: 100%;
   img {
-    object-fit: cover;
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 10px;
+    object-fit: v-bind("props.size");
+    background-color: rgb(0, 0, 0);
     &:hover {
       filter: brightness(90%);
       cursor: pointer;

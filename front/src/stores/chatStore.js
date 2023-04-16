@@ -17,10 +17,11 @@ const useConversationStore = defineStore("conversation", () => {
         Authorization: `Bearer ${token}`,
       },
       data: {
-        user2: userId,
+        user2: parseInt(userId),
       },
     });
     conversations.value.unshift(res.data);
+    return res.data;
   };
   const getOneConversation = async (conversationId) => {
     const res = await axios({
@@ -32,7 +33,7 @@ const useConversationStore = defineStore("conversation", () => {
     return res.data;
   };
   const getUserConversations = async (lastConversationViewed) => {
-    let url = `http://localhost:3000/api/conversation/getAll/`;
+    let url = `http://localhost:3000/api/conversations/getAll/`;
     const res = await axios({
       url,
       headers: {
@@ -80,8 +81,8 @@ const useConversationStore = defineStore("conversation", () => {
   };
   const getConversationMessages = async (conversationId, lastMessageViewed) => {
     const res = await axios({
-      url: `http://localhost:3000/api/conversations/${conversationId}/messages/getAll`,
-      method: "POST",
+      url: `http://localhost:3000/api/conversations/messages/${conversationId}/getAll`,
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -92,7 +93,7 @@ const useConversationStore = defineStore("conversation", () => {
     if (Object.values(res.data).includes("No more messages")) {
       return console.log("No more messages to load");
     }
-    if (lastPostViewed) {
+    if (lastMessageViewed) {
       return messages.value.push(...res.data);
     }
     messages.value = res.data;

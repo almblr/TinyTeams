@@ -19,7 +19,6 @@ const useGiphyStore = defineStore("gif", () => {
     );
     offset_trends.value += 5;
     gifs.value.push(...res.data.data);
-    console.log(gifs.value);
   };
   const searchGif = async (q) => {
     const res = await axios(

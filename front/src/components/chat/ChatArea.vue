@@ -9,18 +9,18 @@
           <span>{{ newUser.job }}</span>
         </div>
       </div>
-      <div v-for="(message, index) in chatStore.messages">
+      <div v-for="(message, index) in chatStore.messages" class="messages">
         <div class="myMessages" v-if="message.author === userLS.id">
           <div>
             <p>{{ message.content }}</p>
           </div>
         </div>
         <div class="othersMessages" v-else>
-          <img
-            :src="otherUser.profilepicture"
+          <!-- <img
+            :src="message.profilepicture"
             alt="otherUserProfilePicture"
             v-if="showProfilePicture(index)"
-          />
+          /> -->
           <div>
             <p>{{ message.content }}</p>
           </div>
@@ -51,12 +51,13 @@ const props = defineProps({
     type: Boolean,
   },
 });
+
+const userLS = JSON.parse(sessionStorage.getItem("user"));
 const { width } = useWindowSize();
 const newUser = ref(null);
 const route = useRoute();
 const chatStore = useChatStore();
 const userStore = useUserStore();
-const userLS = JSON.parse(localStorage.getItem("user"));
 const canSendMessage = ref(false);
 
 const showProfilePicture = (index) => {
@@ -81,6 +82,11 @@ watch(
     } else {
       canSendMessage.value = false;
     }
+    if ("conversationId" in route.params) {
+      await chatStore.getConversationMessages(route.params.conversationId);
+    } else {
+      chatStore.messages = [];
+    }
   }
 );
 onMounted(async () => {
@@ -92,11 +98,17 @@ onMounted(async () => {
   } else {
     canSendMessage.value = false;
   }
+  if ("conversationId" in route.params) {
+    await chatStore.getConversationMessages(route.params.conversationId);
+  } else {
+    chatStore.messages = [];
+  }
 });
 </script>
 
 <style lang="scss" scoped>
 #chatArea {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -120,23 +132,26 @@ onMounted(async () => {
 main {
   flex: 1;
 }
-.myMessages {
-  display: flex;
-  position: absolute;
-  left: 20px;
-  p {
-    background-color: #0084ff;
-    color: var(--textColorMain);
-    padding: 10px;
-    border-radius: 10px;
-    margin: 0 0 0 10px;
+
+.messages {
+  @include fdCol-jcCt-aiCt;
+  padding: 10px;
+  .myMessages {
+    align-self: flex-end;
+    right: 20px;
+    p {
+      background-color: #0084ff;
+      color: var(--textColorMain);
+      padding: 10px;
+      border-radius: 10px;
+      margin: 0 0 0 10px;
+    }
   }
 }
 
 .othersMessages {
   display: flex;
-  position: absolute;
-  right: 20px;
+  align-self: start;
   img {
     width: 30px;
     height: 30px;

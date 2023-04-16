@@ -22,7 +22,11 @@
       </div>
     </div>
     <div class="imagePreview" v-if="mediaPreview">
-      <ImagePreview :src="mediaPreview" @remove-image="deleteImagePreview" />
+      <ImagePreview
+        :src="mediaPreview"
+        size="scale-down"
+        @remove-image="deleteImagePreview"
+      />
     </div>
   </div>
 </template>
@@ -168,7 +172,8 @@ const sendContent = async (type) => {
     @include jcCt-aiCt;
   }
   .imagePreview {
-    width: 50%;
+    max-width: 40%;
+    max-height: 300px;
   }
 }
 </style>

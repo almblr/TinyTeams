@@ -2,7 +2,8 @@
   <div
     class="contactList"
     v-if="
-      (!chatStore.openModalContact && route.name !== 'newMessage') || isDeskop
+      (!chatStore.openModalContact && route.name !== 'newMessage' && notConv) ||
+      isDeskop
     "
   >
     <div class="contactList__header" v-if="isDeskop">
@@ -23,17 +24,18 @@
       <div>
         <h3>
           {{ conversation.otherUser.firstname }}
-          {{ conversation.otherUser.lastName }}
+          {{ conversation.otherUser.lastname }}
         </h3>
         <p>
-          <span>{{
+          <span class="last-message">{{
             conversation.lastMessage.content
               ? conversation.lastMessage.content
               : "Voir pièce jointe"
           }}</span>
-          <span>
-            {{ dayjs().to(dayjs(conversation.lastMessage.createdAt)) }}</span
-          >
+          ·
+          <span>{{
+            dayjs(conversation.lastMessage.createdAt).fromNow(true)
+          }}</span>
         </p>
       </div>
     </router-link>
@@ -58,10 +60,30 @@ import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import ContactsList from "@/components/chat/ContactsList.vue";
 import relativeTime from "dayjs/plugin/relativeTime";
+import UpdateLocale from "dayjs/plugin/updateLocale";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
+dayjs.extend(UpdateLocale);
+dayjs.updateLocale("fr", {
+  // Configuration des unités de temps pour les minutes
+  relativeTime: {
+    future: "dans %s",
+    past: "il y a %s",
+    s: "quelques secondes",
+    m: "1 min",
+    mm: "%d min",
+    h: "une heure",
+    hh: "%d heures",
+    d: "un jour",
+    dd: "%d jours",
+    M: "un mois",
+    MM: "%d mois",
+    y: "une année",
+    yy: "%d années",
+  },
+});
 
 const emit = defineEmits(["openNewContact"]);
 
@@ -69,6 +91,7 @@ const { width } = useWindowSize();
 const route = useRoute();
 const isDeskop = ref(width.value > 768);
 const chatStore = useChatStore();
+const notConv = ref(null);
 
 const openNewMessage = () => {
   router.push("/messages/");
@@ -93,7 +116,20 @@ watch(
   }
 );
 
-onMounted(() => {});
+watch(
+  () => route.params,
+  (newValue) => {
+    if ("conversationId" in newValue) {
+      notConv.value = false;
+    } else {
+      notConv.value = true;
+    }
+  }
+);
+
+onMounted(async () => {
+  await chatStore.getUserConversations();
+});
 </script>
 <style lang="scss" scoped>
 .contactList {
@@ -110,6 +146,43 @@ onMounted(() => {});
     width: 100%;
     color: var(--textColorSecond);
     padding: 10px 0 0 10px;
+    margin-bottom: 20px;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--textColorMain);
+    max-height: 80px;
+    border-radius: 10px;
+    padding: 10px;
+    &:hover {
+      background-color: var(--hover);
+    }
+    & img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+    & span {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+p {
+  max-width: 200px;
+  height: 50px;
+  color: red;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  .last-message {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
