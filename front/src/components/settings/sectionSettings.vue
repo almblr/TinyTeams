@@ -114,7 +114,7 @@ const submit = async (type) => {
       }
     }
     await userStore.update(formData, userLS.value.id);
-    userLS.value = await userStore.getOne(userLS.value.username);
+    userLS.value = await userStore.getOne(userLS.value.id);
     sessionStorage.setItem("user", JSON.stringify(userLS.value));
     canSaveChanges.value = false;
     canRemoveNewPicture.value = false;

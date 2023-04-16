@@ -2,14 +2,14 @@
   <header class="post__header" :id="post.id">
     <div class="post__header__user">
       <router-link
-        :to="`/users/${post.user.username}`"
+        :to="`/users/${post.user.id}`"
         class="post__header__user__pic"
       >
         <img :src="post.user.profilePicture" alt="Photo de profil" />
       </router-link>
       <div class="post__header__user__title">
         <router-link
-          :to="`/users/${post.user.username}`"
+          :to="`/users/${post.user.id}`"
           class="post__header__user__title__name"
         >
           <h2>{{ post.user.firstname }} {{ post.user.lastname }}</h2>

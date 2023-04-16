@@ -40,7 +40,7 @@ const props = defineProps({
 .container {
   position: relative;
   @include fdCol-jcCt-aiCt;
-  max-width: 700px;
+  max-width: 768px;
   width: 100%;
   min-height: 250px;
   background-color: var(--backgroundSecond);

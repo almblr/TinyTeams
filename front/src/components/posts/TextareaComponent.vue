@@ -9,14 +9,16 @@
         v-model="input"
       ></textarea>
       <div class="container__buttons">
-        <div title="Insérez une image" @click="!showing">
-          <AddMediaButton iconSize="23px" @showUploadedImg="getUrls"
-            ><template v-slot:icon><ion-icon name="camera"></ion-icon></template
-          ></AddMediaButton>
-        </div>
-        <div title="Insérer un gif">
-          <GifPanel @showUploadedGif="getUrls" />
-        </div>
+        <AddMediaButton
+          @click="!showing"
+          @showUploadedImg="getUrls"
+          color="var(--addMediaColor)"
+        ></AddMediaButton>
+        <GifPanel
+          @showUploadedGif="getUrls"
+          tooltipPosition="left"
+          color="var(--addMediaColor)"
+        />
       </div>
     </div>
     <div class="imagePreview" v-if="mediaPreview">
@@ -136,7 +138,7 @@ const sendContent = async (type) => {
     display: flex;
     flex-wrap: wrap;
     flex: 1;
-    max-width: 630px;
+    width: 100%;
     min-height: 35px;
     background-color: var(--textarea);
     border: 1px solid var(--textareaBorder);
@@ -164,19 +166,9 @@ const sendContent = async (type) => {
   }
   &__buttons {
     @include jcCt-aiCt;
-    & > div {
-      @include jcCt-aiCt;
-      width: 30px;
-      height: 25px;
-      border-radius: 5px;
-      &:hover {
-        background-color: var(--addMediaBackground);
-      }
-    }
   }
-}
-
-.imagePreview {
-  width: 50%;
+  .imagePreview {
+    width: 50%;
+  }
 }
 </style>

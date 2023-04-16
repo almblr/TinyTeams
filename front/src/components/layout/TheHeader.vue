@@ -22,7 +22,7 @@
           @click="showTooltip = !showTooltip"
         />
         <div class="tooltip__content" v-show="showTooltip === true">
-          <router-link :to="`/users/${username}`" class="profilButton">{{
+          <router-link :to="`/users/${userLS.id}`" class="profilButton">{{
             "Votre profil"
           }}</router-link>
           <router-link to="/settings">Paramètres</router-link>
@@ -42,7 +42,6 @@ import NotifPanel from "@/components/layout/NotifPanel.vue";
 const showTooltip = ref(null);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const profilePictureUrl = userLS.profilePicture;
-const username = userLS.username;
 
 /* La directive du package v-click-outside-element agit quand on clique en dehors de l'élément. Mettre un if permet de ne pas spammer ces instructions */
 const closeTooltip = () => {

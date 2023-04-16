@@ -39,8 +39,8 @@ const modifyPost = (postId) => {
 };
 
 onMounted(async () => {
-  if (route.params.username) {
-    const user = await userStore.getOne(route.params.username);
+  if (route.params.userId) {
+    const user = await userStore.getOne(route.params.userId);
     postStore.posts.length = 0;
     return await postStore.getAll(user.id);
   }
@@ -56,10 +56,10 @@ onMounted(async () => {
 });
 
 watch(
-  () => route.params.username,
+  () => route.params.userId,
   async (newValue) => {
     if (newValue) {
-      const user = await userStore.getOne(route.params.username);
+      const user = await userStore.getOne(route.params.userId);
       postStore.posts.length = 0;
       return await postStore.getAll(user.id);
     }
@@ -70,9 +70,6 @@ watch(
   async (newValue) => {
     if (newValue) {
       const post = await postStore.getOne(route.params.postId);
-      console.log(post);
-      // postStore.posts.length = 0;
-      // postStore.posts.push(post);
     }
   }
 );
@@ -88,8 +85,8 @@ article {
   @include fdCol-jcCt-aiCt;
   position: relative;
   width: 95%;
-  max-width: 700px;
-  min-width: 260px;
+  max-width: 768px;
+  min-width: 356px;
   border-radius: 10px;
   background-color: var(--backgroundSecond);
   box-shadow: 5px 0px 20px var(--shadowColor);

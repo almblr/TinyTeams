@@ -39,9 +39,9 @@ const useUserStore = defineStore("user", () => {
       return false;
     }
   };
-  const getOne = async (username) => {
+  const getOne = async (userId) => {
     const res = await axios({
-      url: `http://localhost:3000/api/users/getOne/${username}`,
+      url: `http://localhost:3000/api/users/getOne/${userId}`,
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -63,6 +63,7 @@ const useUserStore = defineStore("user", () => {
       return console.log("No more users to load");
     }
     users.value = res.data;
+    return res.data;
   };
   const update = async (data, userId) => {
     await axios({

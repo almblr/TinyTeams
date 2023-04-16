@@ -4,6 +4,7 @@
     ref="btn"
     v-on-click-outside="closeGifPanel"
     @click="calculateAvailableSpace"
+    title="Insérer un gif"
   >
     <div class="icon" @click="openGifPanel">
       <ion-icon name="image"></ion-icon>
@@ -30,6 +31,16 @@ import { ref, onMounted, computed, watch } from "vue";
 import useGiphyStore from "@/stores/giphyStore.js";
 import { vOnClickOutside } from "@vueuse/components";
 
+const emit = defineEmits(["showUploadedGif"]);
+const props = defineProps({
+  color: {
+    type: String,
+  },
+  tooltipPosition: {
+    type: String,
+  },
+});
+
 const gifStore = useGiphyStore();
 const gifPanel = ref(null);
 const btn = ref(null);
@@ -37,13 +48,31 @@ const spaceUp = ref(null);
 const isGifPanelOpen = ref(false);
 const searchedTerm = ref("");
 
-const emit = defineEmits(["showUploadedGif"]);
-
 const tooltipClass = computed(() => {
   const direction = spaceUp.value ? "up" : "down";
   return `tooltip-${direction} tooltip`;
 });
 
+const tooltipStyle = computed(() => {
+  if (props.tooltipPosition === "right") {
+    return {
+      right: "initial",
+      left: "2px",
+      leftBorder: 0,
+      borderRight: "9px solid transparent",
+      borderLeft: "none",
+    };
+  }
+  if (props.tooltipPosition === "left") {
+    return {
+      right: "2px",
+      rightBorder: 0,
+      left: "initial",
+      borderRight: "none",
+      borderLeft: "9px solid transparent",
+    };
+  }
+});
 const calculateAvailableSpace = () => {
   const clientHeight = document.documentElement.clientHeight;
   const bottomToCenterBtn =
@@ -116,9 +145,16 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .btn {
+  @include jcCt-aiCt;
   position: relative;
-  color: var(--addMediaColor);
+  color: v-bind("props.color");
   cursor: pointer;
+  width: 30px;
+  height: 25px;
+  border-radius: 5px;
+  &:hover {
+    background-color: var(--addMediaBackground);
+  }
   & > .icon {
     @include jcCt-aiCt;
     position: relative;
@@ -136,7 +172,8 @@ onMounted(() => {
 .tooltip {
   @include fdCol-aiCt;
   position: absolute;
-  right: 0px;
+  right: v-bind("tooltipStyle.right");
+  left: v-bind("tooltipStyle.left");
   z-index: 99;
   background: rgb(39, 39, 39);
   min-width: 250px;
@@ -171,11 +208,13 @@ onMounted(() => {
 .tooltip:after {
   content: "";
   top: 100%;
-  right: 0;
+  right: v-bind("tooltipStyle.rightBorder");
+  left: v-bind("tooltipStyle.leftBorder");
   height: 0;
   width: 0;
   position: absolute;
-  border-left: 9px solid transparent;
+  border-right: v-bind("tooltipStyle.borderRight");
+  border-left: v-bind("tooltipStyle.borderLeft");
   border-top: 6px solid rgb(39, 39, 39);
 }
 .tooltip-down::after {

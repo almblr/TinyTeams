@@ -6,7 +6,7 @@
     ref="comment"
   >
     <header>
-      <router-link :to="`/users/${username}`" class="title"
+      <router-link :to="`/users/${props.author}`" class="title"
         >{{ props.firstname }} {{ props.lastname }}</router-link
       >
       <PostTooltip
@@ -57,7 +57,6 @@ const isAdmin = userLS.isAdmin;
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);
-const username = (props.firstname + props.lastname).toLowerCase();
 
 const modify = () => {
   emit("update:selectedCommentId", props.commentId);

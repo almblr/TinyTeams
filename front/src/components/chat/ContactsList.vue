@@ -1,10 +1,10 @@
 <template>
-  <div id="container" ref="usersList" v-if="props.show">
+  <div id="container" ref="usersList">
     <main class="users">
       <div class="header">
         <ion-icon
           name="arrow-back-outline"
-          @click="$emit('update:show', false)"
+          @click="chatStore.openModalContact = false"
         ></ion-icon>
         <input
           type="text"
@@ -21,21 +21,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import useUserStore from "@/stores/userStore.js";
+import useChatStore from "@/stores/chatStore.js";
+import { useRoute } from "vue-router";
 import UserCardList from "@/components/users/UserCardList.vue";
+import { useWindowSize } from "@vueuse/core";
 
-const emit = defineEmits(["update:show"]);
-const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
-});
+const { width } = useWindowSize();
+const userStore = useUserStore();
+const chatStore = useChatStore();
 const usersList = ref(null);
 const search = ref(null);
-const userStore = useUserStore();
 
 const searchUser = async (string) => {
   await userStore.getAll(string);
@@ -50,6 +48,15 @@ useInfiniteScroll(
   },
   {
     distance: 10,
+  }
+);
+
+watch(
+  () => width.value,
+  (newWidth) => {
+    if (newWidth > 768) {
+      chatStore.openContactModal = false;
+    }
   }
 );
 
@@ -71,7 +78,7 @@ onMounted(async () => {
   @include fdCol-aiCt;
   transition: 200ms;
   min-height: 100%;
-  padding-top: 2%;
+  padding-top: 10px;
   max-width: 768px;
   width: 100%;
   &__list {
@@ -89,21 +96,23 @@ onMounted(async () => {
   justify-content: space-between;
   padding: 0 15px;
   gap: 20px;
+  border-bottom: 1px solid var(--border);
   & ion-icon {
     color: var(--textColorSecond);
     border: none;
     background: transparent;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
+    cursor: pointer;
   }
   input {
     flex: 1;
     height: 100%;
     background-color: transparent;
     border: none;
+    font-size: 1.1rem;
     color: var(--textColorSecond);
-    &:focus {
-      outline: none;
-    }
+    outline: none;
+    margin-bottom: 5px;
   }
 }
 .v-enter-active,

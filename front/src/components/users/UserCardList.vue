@@ -2,7 +2,7 @@
   <article v-for="user in props.users" :key="user.id" v-if="props.users">
     <img :src="user.profilePicture" alt="profilePicture" class="userPicture" />
     <div class="userInfos">
-      <router-link :to="`/users/${user.username}`">
+      <router-link :to="`/users/${user.id}`">
         <h2>{{ user.firstname }} {{ user.lastname }}</h2>
       </router-link>
       <h3>{{ user.job }}</h3>

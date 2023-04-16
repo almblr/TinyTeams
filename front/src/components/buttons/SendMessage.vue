@@ -5,20 +5,19 @@
 <script setup>
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
-import useUserStore from "@/stores/userStore.js";
+
 const props = defineProps({
   userId: {
     type: Number,
     required: true,
   },
 });
-
 const chatStore = useChatStore();
-const userStore = useUserStore();
 
 const sendMessage = async () => {
-  chatStore.newUser = await userStore.getOne(props.userId);
-  router.push("/messages/new/");
+  chatStore.openModalContact = false;
+  chatStore.newMessage = true;
+  router.push(`/messages/new/${props.userId}`);
 };
 </script>
 <style lang="scss" scoped>

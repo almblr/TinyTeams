@@ -42,7 +42,7 @@ const routes = [
     component: () => import("@/views/UsersListView.vue"),
   },
   {
-    path: "/users/:username",
+    path: "/users/:userId",
     name: "UserProfil",
     component: () => import("@/views/UserProfilView.vue"),
   },
@@ -52,7 +52,7 @@ const routes = [
     component: () => import("@/views/ChatView.vue"),
   },
   {
-    path: "/messages/new/",
+    path: "/messages/new/:userId",
     name: "newMessage",
     component: () => import("@/views/ChatView.vue"),
   },

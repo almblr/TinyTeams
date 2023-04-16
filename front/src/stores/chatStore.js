@@ -7,6 +7,7 @@ const useConversationStore = defineStore("conversation", () => {
   const conversations = ref([]);
   const messages = ref([]);
   const newMessage = ref(null);
+  const openModalContact = ref(false);
 
   const createConversation = async (userId) => {
     const res = await axios({
@@ -114,7 +115,9 @@ const useConversationStore = defineStore("conversation", () => {
     conversations,
     messages,
     newMessage,
+    openModalContact,
     createConversation,
+    getOneConversation,
     getUserConversations,
     updateConversation,
     createMessage,

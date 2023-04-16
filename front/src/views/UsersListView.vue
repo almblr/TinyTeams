@@ -69,7 +69,9 @@ input {
   input {
     margin-bottom: 0;
   }
-  #users {
+  .users__list {
+    display: flex;
+    flex-direction: column;
     gap: 30px;
   }
 }

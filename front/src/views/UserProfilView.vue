@@ -30,19 +30,19 @@ const posts = ref(null);
 const user = ref(null);
 const loggedInUserProfile = ref(false);
 
-const getUser = async (username) => {
-  user.value = await userStore.getOne(username);
-  loggedInUserProfile.value = username === userLS.username;
+const getUser = async (id) => {
+  user.value = await userStore.getOne(id);
+  loggedInUserProfile.value = id === userLS.id;
 };
 
-watch(() => route.params.username, getUser);
-onMounted(() => getUser(route.params.username));
+watch(() => route.params.id, getUser);
+onMounted(() => getUser(route.params.userId));
 
 useInfiniteScroll(
   posts,
   async () => {
     if (postStore.posts.length !== 0) {
-      const user = await userStore.getOne(route.params.username);
+      const user = await userStore.getOne(route.params.userId);
       const lastPostId = postStore.posts[postStore.posts.length - 1].id;
       await postStore.getAll(user.id, lastPostId);
     }

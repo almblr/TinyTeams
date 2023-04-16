@@ -17,9 +17,10 @@
       </main>
       <footer>
         <div class="file">
-          <AddMediaButton iconSize="24px" @showUploadedImg="displayImagePreview"
-            ><template v-slot:icon><ion-icon name="camera"></ion-icon></template
-          ></AddMediaButton>
+          <AddMediaButton
+            color="var(--addMediaColor)"
+            @showUploadedImg="displayImagePreview"
+          />
         </div>
         <button @click="sendPost">Publier</button>
       </footer>
@@ -184,17 +185,6 @@ footer {
     height: 35px;
     cursor: pointer;
     border: none;
-  }
-  & .file {
-    @include jcCt-aiCt;
-    border-radius: 5px;
-    width: 35px;
-    height: 35px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--addMediaBackground);
-      filter: brightness(90%);
-    }
   }
 }
 

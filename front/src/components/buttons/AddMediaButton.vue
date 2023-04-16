@@ -1,7 +1,7 @@
 <template>
-  <div class="file__label">
+  <div class="file__label" title="Insérez une image">
     <label id="custom-label"
-      ><slot name="icon"> </slot>
+      ><ion-icon name="camera"></ion-icon>
       <input
         type="file"
         accept="image/png, image/jpg, image/jpeg"
@@ -14,7 +14,9 @@
 <script setup>
 const emit = defineEmits(["showUploadedImg"]);
 const props = defineProps({
-  iconSize: String,
+  color: {
+    type: String,
+  },
 });
 
 const GetUploadedImg = (event) => {
@@ -31,8 +33,14 @@ input[type="file"] {
 }
 label {
   @include jcCt-aiCt;
-  font-size: v-bind("props.iconSize");
-  color: var(--addMediaColor);
+  font-size: 1.5rem;
+  color: v-bind("props.color");
   cursor: pointer;
+  width: 30px;
+  height: 25px;
+  border-radius: 5px;
+  &:hover {
+    background-color: var(--addMediaBackground);
+  }
 }
 </style>
