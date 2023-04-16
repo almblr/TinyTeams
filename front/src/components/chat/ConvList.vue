@@ -19,24 +19,27 @@
       :to="`/messages/${conversation.id}`"
       v-else
       v-for="conversation of chatStore.conversations"
+      class="contactList__card"
     >
       <img :src="conversation.otherUser.profilePicture" alt="profilePicture" />
-      <div>
+      <div class="contactList__card__infos">
         <h3>
           {{ conversation.otherUser.firstname }}
           {{ conversation.otherUser.lastname }}
         </h3>
-        <p>
-          <span class="last-message">{{
-            conversation.lastMessage.content
-              ? conversation.lastMessage.content
-              : "Voir pièce jointe"
-          }}</span>
-          ·
-          <span>{{
-            dayjs(conversation.lastMessage.createdAt).fromNow(true)
-          }}</span>
-        </p>
+        <div class="contactList__card__infos__content">
+          <p>
+            {{
+              conversation.lastMessage.content
+                ? conversation.lastMessage.content
+                : "Voir pièce jointe"
+            }}
+            <!-- abcedfghijklmnopqrstuvwxyz -->
+          </p>
+          <span>
+            · {{ dayjs(conversation.lastMessage.createdAt).fromNow(true) }}
+          </span>
+        </div>
       </div>
     </router-link>
     <button
@@ -72,16 +75,16 @@ dayjs.updateLocale("fr", {
     future: "dans %s",
     past: "il y a %s",
     s: "quelques secondes",
-    m: "1 min",
-    mm: "%d min",
-    h: "une heure",
-    hh: "%d heures",
-    d: "un jour",
-    dd: "%d jours",
-    M: "un mois",
+    m: "1min",
+    mm: "%dmin",
+    h: "1h",
+    hh: "%dh",
+    d: "1j",
+    dd: "%d jrs",
+    M: "1 mois",
     MM: "%d mois",
-    y: "une année",
-    yy: "%d années",
+    y: "1 an",
+    yy: "%d ans",
   },
 });
 
@@ -129,6 +132,9 @@ watch(
 
 onMounted(async () => {
   await chatStore.getUserConversations();
+  "conversationId" in route.params
+    ? (notConv.value = false)
+    : (notConv.value = true);
 });
 </script>
 <style lang="scss" scoped>
@@ -148,12 +154,13 @@ onMounted(async () => {
     padding: 10px 0 0 10px;
     margin-bottom: 20px;
   }
-  a {
+  &__card {
     display: flex;
     align-items: center;
+    max-width: 100%;
+    max-height: 80px;
     text-decoration: none;
     color: var(--textColorMain);
-    max-height: 80px;
     border-radius: 10px;
     padding: 10px;
     &:hover {
@@ -166,23 +173,23 @@ onMounted(async () => {
       object-fit: cover;
       margin-right: 10px;
     }
-    & span {
-      font-size: 0.9rem;
+    &__infos {
+      width: 100%;
+      overflow: hidden;
+      &__content {
+        display: flex;
+        align-items: center;
+        & p {
+          max-width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        span {
+          min-width: 100px;
+        }
+      }
     }
-  }
-}
-
-p {
-  max-width: 200px;
-  height: 50px;
-  color: red;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  .last-message {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 }
 

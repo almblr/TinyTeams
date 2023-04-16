@@ -3,7 +3,9 @@
     <TheHeader />
     <main>
       <ConvList />
-      <ChatArea v-if="width > 768 || route.name === 'newMessage'" />
+      <ChatArea
+        v-if="route.name === 'newMessage' || 'conversationId' in route.params"
+      />
     </main>
   </div>
 </template>

@@ -16,6 +16,7 @@ html {
   --shadowHeader: rgba(0, 0, 0, 0.7);
   --border: rgba(19, 19, 19, 0.1);
   --hover: #0200000a;
+  --messageBg: #e4e6eb;
 }
 html.dark {
   --backgroundMain: #18191a;
@@ -35,6 +36,7 @@ html.dark {
   --shadowHeader: none;
   --border: rgba(255, 255, 255, 0.1);
   --hover: #f7f7f71c;
+  --messageBg: #3e4042;
 }
 
 @mixin jcCt {

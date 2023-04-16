@@ -2,30 +2,28 @@
   <div id="chatArea">
     <main>
       <AutoSuggest v-if="chatStore.newMessage === false && width > 768" />
-      <div class="preview" v-if="route.name === 'newMessage' && newUser">
+      <section class="preview" v-if="route.name === 'newMessage' && newUser">
         <img :src="newUser.profilePicture" alt="profilePicture" />
         <div>
           <h3>{{ newUser.firstname }} {{ newUser.lastname }}</h3>
           <span>{{ newUser.job }}</span>
         </div>
-      </div>
-      <div v-for="(message, index) in chatStore.messages" class="messages">
-        <div class="myMessages" v-if="message.author === userLS.id">
-          <div>
-            <p>{{ message.content }}</p>
+      </section>
+      <div class="header">John Doe</div>
+      <section class="messages" v-if="'conversationId' in route.params">
+        <div v-for="(message, index) in chatStore.messages">
+          <div class="myMessages" v-if="message.author === userLS.id">
+            <p>
+              {{ message.content }}
+            </p>
+          </div>
+          <div class="othersMessages" v-else>
+            <p>
+              {{ message.content }}
+            </p>
           </div>
         </div>
-        <div class="othersMessages" v-else>
-          <!-- <img
-            :src="message.profilepicture"
-            alt="otherUserProfilePicture"
-            v-if="showProfilePicture(index)"
-          /> -->
-          <div>
-            <p>{{ message.content }}</p>
-          </div>
-        </div>
-      </div>
+      </section>
     </main>
     <MessageInput v-if="!contactChatArea && canSendMessage" />
   </div>
@@ -111,9 +109,16 @@ onMounted(async () => {
   position: relative;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  height: 100%;
+  width: 100%;
   background-color: var(--backgroundMain);
+}
+
+main {
+  flex: 1;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 .preview {
   @include fdCol-jcCt-aiCt;
@@ -129,41 +134,47 @@ onMounted(async () => {
   }
 }
 
-main {
-  flex: 1;
-}
-
-.messages {
-  @include fdCol-jcCt-aiCt;
-  padding: 10px;
-  .myMessages {
-    align-self: flex-end;
-    right: 20px;
-    p {
-      background-color: #0084ff;
-      color: var(--textColorMain);
-      padding: 10px;
-      border-radius: 10px;
-      margin: 0 0 0 10px;
-    }
-  }
-}
-
-.othersMessages {
+.header {
+  position: absolute;
+  z-index: 99;
   display: flex;
-  align-self: start;
-  img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin: 0 10px 0 0;
-  }
-  p {
-    background-color: gray;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  padding: 0 10px;
+  font-size: 1.2rem;
+  color: var(--textColorMain);
+  font-weight: bold;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.233);
+  box-shadow: 5px 3px 5px rgba(0, 0, 0, 0.11);
+  background-color: var(--backgroundMain);
+}
+.messages {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  color: var(--textColorMain);
+  padding: 15px;
+  padding-top: 60px;
+  min-height: 100%;
+  gap: 5px;
+  .myMessages {
+    width: fit-content;
+    margin-left: auto;
+    align-self: flex-end;
+    background-color: #0084ff;
     color: white;
     padding: 10px;
     border-radius: 10px;
-    margin: 0 10px 0 0;
+  }
+  .othersMessages {
+    margin-right: auto;
+    width: fit-content;
+    align-self: flex-start;
+    background-color: var(--messageBg);
+    color: var(--textColorMain);
+    padding: 10px;
+    border-radius: 10px;
   }
 }
 </style>

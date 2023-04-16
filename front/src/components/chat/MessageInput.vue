@@ -86,6 +86,7 @@ const sendMessage = async () => {
 
 <style lang="scss" scoped>
 .container {
+  position: sticky;
   @include fdCol-jcCt-aiCt;
   bottom: 0;
   gap: 5px;
