@@ -40,16 +40,14 @@ onMounted(async () => {
 <style lang="scss" scoped>
 #chatarea-container {
   @include fdCol-jcCt-aiCt;
-  width: 100%;
   flex: 1;
+  width: 100%;
   background-color: var(--backgroundMain);
-  overflow-y: hidden;
 }
 
 main {
   flex: 1;
   width: 100%;
-  // overflow-y: auto;
   border: 1px solid red;
   &::-webkit-scrollbar {
     display: none;

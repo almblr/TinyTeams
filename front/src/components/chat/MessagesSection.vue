@@ -1,7 +1,6 @@
 <template>
-  <section class="chatbox" ref="chatbox">
-    aaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    <!-- <div class="chatbox__header">
+  <section class="chatbox" v-if="conversation">
+    <div class="chatbox__header">
       <h3>
         {{ conversation.users[1].firstname }}
         {{ conversation.users[1].lastname }}
@@ -29,7 +28,7 @@
           </p>
         </div>
       </div>
-    </div> -->
+    </div>
   </section>
 </template>
 
@@ -48,7 +47,6 @@ const chatStore = useChatStore();
 const userLS = JSON.parse(sessionStorage.getItem("user"));
 const conversation = ref(null);
 const messagesList = ref(null);
-const chatbox = ref(null);
 
 const showProfilePicture = (index) => {
   const nextUserIdx = index + 1;
@@ -77,15 +75,20 @@ const showProfilePicture = (index) => {
 //   }
 // );
 
-if ("conversationId" in route.params) {
-  conversation.value = await chatStore.getOneConv(route.params.conversationId);
-  await chatStore.getConversationMsg(route.params.conversationId);
-} else {
-  chatStore.messages = [];
-}
-
+watch(
+  () => route.params,
+  async (newValue) => {
+    if ("conversationId" in newValue) {
+      conversation.value = await chatStore.getOneConv(
+        route.params.conversationId
+      );
+      await chatStore.getConversationMsg(route.params.conversationId);
+    } else {
+      chatStore.messages = [];
+    }
+  }
+);
 onMounted(async () => {
-  console.log("test");
   if ("conversationId" in route.params) {
     conversation.value = await chatStore.getOneConv(
       route.params.conversationId
@@ -94,23 +97,20 @@ onMounted(async () => {
   } else {
     chatStore.messages = [];
   }
-  chatbox.value.scrollIntoView({ behavior: "instant", block: "end" });
+  messagesList.value.scrollIntoView({ behavior: "instant", block: "end" });
 });
 </script>
 
 <style lang="scss" scoped>
 .chatbox {
-  width: 100%;
-  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
+  overflow: hidden;
   & * {
     color: var(--textColorMain);
   }
   &__header {
-    position: sticky;
-    top: 0;
     display: flex;
     align-items: center;
     z-index: 99;
@@ -145,21 +145,20 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     flex: 1;
-    height: 100%;
+    border: 1px solid yellow;
     gap: 5px;
     padding: 0 10px;
     padding-top: 10px;
-    margin-bottom: 10px;
     overflow: hidden;
     & .message {
       display: flex;
-      align-items: flex-end;
       max-width: 60%;
       width: fit-content;
       border-radius: 10px;
       & p {
         padding: 10px;
         border-radius: 10px;
+        height: min-content;
       }
     }
     & .myMessages {

@@ -80,17 +80,17 @@ onMounted(async () => {
   max-height: 100vh;
   height: 100vh;
   width: 100%;
-  overflow: hidden;
   background-color: var(--backgroundMain);
   main {
     display: flex;
     height: 100%;
-    overflow: hidden;
+    width: 100%;
     & > .messagerie {
       display: flex;
       flex-direction: column;
-      width: 100%;
+      flex: 1;
       height: 100%;
+      width: 100%;
     }
   }
 }
