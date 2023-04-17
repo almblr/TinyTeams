@@ -91,7 +91,7 @@ const sendMessage = async () => {
   bottom: 0;
   gap: 5px;
   width: 100%;
-  min-height: 50px;
+  min-height: 40px;
   max-height: 300px;
   padding: 5px;
   background-color: var(--textarea);

@@ -4,7 +4,7 @@
       <div class="header">
         <ion-icon
           name="arrow-back-outline"
-          @click="chatStore.openModalContact = false"
+          @click="chatStore.showMobileUsersList = false"
         ></ion-icon>
         <input
           type="text"

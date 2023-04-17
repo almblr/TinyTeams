@@ -2,23 +2,59 @@
   <div id="chatView-container">
     <TheHeader />
     <main>
-      <ConvList />
-      <ChatArea
-        v-if="route.name === 'newMessage' || 'conversationId' in route.params"
+      <ConvList
+        v-if="
+          width > 768 ||
+          (!chatStore.showMobileUsersList && !chatStore.onversationMode)
+        "
       />
+      <div>
+        <AutoSuggest
+          v-if="chatStore.newMessage && !chatStore.onversationMode"
+        />
+        <ChatArea
+          v-if="
+            !chatStore.showMobileUsersList &&
+            !chatStore.newMessage &&
+            chatStore.onversationMode
+          "
+        />
+      </div>
     </main>
   </div>
 </template>
 
 <script setup>
+import { watch, onMounted } from "vue";
 import { useWindowSize } from "@vueuse/core";
+import useChatStore from "@/stores/chatStore.js";
 import TheHeader from "@/components/layout/TheHeader.vue";
 import ConvList from "@/components/chat/ConvList.vue";
+import AutoSuggest from "@/components/layout/AutoSuggest.vue";
 import ChatArea from "@/components/chat/ChatArea.vue";
 import { useRoute } from "vue-router";
 
+const chatStore = useChatStore();
 const { width } = useWindowSize();
 const route = useRoute();
+
+watch(
+  () => route.params,
+  (newValue) => {
+    if ("userId" in newValue || "conversationId" in newValue) {
+      chatStore.onversationMode = true;
+    } else {
+      chatStore.onversationMode = false;
+    }
+  }
+);
+
+onMounted(async () => {
+  await chatStore.getUserConvs();
+  "conversationId" in route.params
+    ? (chatStore.onversationMode = true)
+    : (chatStore.onversationMode = false);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -32,8 +68,12 @@ const route = useRoute();
   main {
     display: flex;
     height: 100%;
-    transition: 200ms;
-    position: relative;
+    & > div {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>

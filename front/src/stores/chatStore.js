@@ -6,8 +6,9 @@ const useConversationStore = defineStore("conversation", () => {
   const token = JSON.parse(sessionStorage.getItem(`token`));
   const conversations = ref([]);
   const messages = ref([]);
-  const newMessage = ref(null);
-  const openModalContact = ref(false);
+  const onversationMode = ref(false);
+  const newMessage = ref(false);
+  const showMobileUsersList = ref(false);
 
   const createConversation = async (userId) => {
     const res = await axios({
@@ -23,7 +24,7 @@ const useConversationStore = defineStore("conversation", () => {
     conversations.value.unshift(res.data);
     return res.data;
   };
-  const getOneConversation = async (conversationId) => {
+  const getOneConv = async (conversationId) => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/getOne/${conversationId}`,
       headers: {
@@ -32,7 +33,7 @@ const useConversationStore = defineStore("conversation", () => {
     });
     return res.data;
   };
-  const getUserConversations = async (lastConversationViewed) => {
+  const getUserConvs = async (lastConversationViewed) => {
     let url = `http://localhost:3000/api/conversations/getAll/`;
     const res = await axios({
       url,
@@ -51,7 +52,7 @@ const useConversationStore = defineStore("conversation", () => {
     }
     conversations.value = res.data;
   };
-  const updateConversation = async (conversationId, lastMessageDate) => {
+  const updateConv = async (conversationId, lastMessageDate) => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/update/${conversationId}`,
       method: "PUT",
@@ -79,7 +80,7 @@ const useConversationStore = defineStore("conversation", () => {
     });
     messages.value.push(res.data);
   };
-  const getConversationMessages = async (conversationId, lastMessageViewed) => {
+  const getConversationMsg = async (conversationId, lastMessageViewed) => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/messages/${conversationId}/getAll`,
       method: "GET",
@@ -116,13 +117,14 @@ const useConversationStore = defineStore("conversation", () => {
     conversations,
     messages,
     newMessage,
-    openModalContact,
+    onversationMode,
+    showMobileUsersList,
     createConversation,
-    getOneConversation,
-    getUserConversations,
-    updateConversation,
+    getOneConv,
+    getUserConvs,
+    updateConv,
     createMessage,
-    getConversationMessages,
+    getConversationMsg,
     deleteMessage,
   };
 });

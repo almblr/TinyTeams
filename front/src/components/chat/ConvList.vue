@@ -1,22 +1,16 @@
 <template>
-  <div
-    class="contactList"
-    v-if="
-      (!chatStore.openModalContact && route.name !== 'newMessage' && notConv) ||
-      isDeskop
-    "
-  >
+  <div class="contactList">
     <div class="contactList__header" v-if="isDeskop">
       <h2>Discussions</h2>
-      <button class="contactList__header__new">
-        <ion-icon name="add-outline" @click="openNewMessage"></ion-icon>
+      <button class="contactList__header__new" @click="openNewMessage">
+        <ion-icon name="add-outline"></ion-icon>
       </button>
     </div>
     <div v-if="chatStore.conversations.length === 0" class="nothingToDisplay">
       Il n'y a aucune conversation pour le moment
     </div>
-    <router-link
-      :to="`/messages/${conversation.id}`"
+    <a
+      @click="openConversation(conversation)"
       v-else
       v-for="conversation of chatStore.conversations"
       class="contactList__card"
@@ -34,24 +28,23 @@
                 ? conversation.lastMessage.content
                 : "Voir pièce jointe"
             }}
-            <!-- abcedfghijklmnopqrstuvwxyz -->
           </p>
           <span>
             · {{ dayjs(conversation.lastMessage.createdAt).fromNow(true) }}
           </span>
         </div>
       </div>
-    </router-link>
+    </a>
     <button
       class="newMessage"
       v-if="!isDeskop"
-      @click="chatStore.openModalContact = true"
+      @click="chatStore.showMobileUsersList = true"
     >
       <ion-icon name="add-outline"></ion-icon>
     </button>
   </div>
   <Transition>
-    <ContactsList v-if="chatStore.openModalContact" />
+    <ContactsList v-if="chatStore.showMobileUsersList" />
   </Transition>
 </template>
 
@@ -94,18 +87,24 @@ const { width } = useWindowSize();
 const route = useRoute();
 const isDeskop = ref(width.value > 768);
 const chatStore = useChatStore();
-const notConv = ref(null);
 
 const openNewMessage = () => {
   router.push("/messages/");
-  chatStore.newMessage = false;
+  chatStore.newMessage = true;
 };
+
+const openConversation = (conversation) => {
+  chatStore.openConversation = conversation;
+  chatStore.newMessage = false;
+  router.push(`/messages/${conversation.id}`);
+};
+
 watch(
   () => width.value,
   (newWidth) => {
     if (newWidth > 768) {
       isDeskop.value = true;
-      chatStore.openModalContact = false;
+      chatStore.showMobileUsersList = false;
     } else {
       isDeskop.value = false;
     }
@@ -115,27 +114,9 @@ watch(
 watch(
   () => chatStore.openConversation,
   (newValue) => {
-    newValue !== null ? (chatStore.openModalContact.value = false) : null;
+    newValue !== null ? (chatStore.showMobileUsersList = false) : null;
   }
 );
-
-watch(
-  () => route.params,
-  (newValue) => {
-    if ("conversationId" in newValue) {
-      notConv.value = false;
-    } else {
-      notConv.value = true;
-    }
-  }
-);
-
-onMounted(async () => {
-  await chatStore.getUserConversations();
-  "conversationId" in route.params
-    ? (notConv.value = false)
-    : (notConv.value = true);
-});
 </script>
 <style lang="scss" scoped>
 .contactList {
@@ -159,7 +140,6 @@ onMounted(async () => {
     align-items: center;
     max-width: 100%;
     max-height: 80px;
-    text-decoration: none;
     color: var(--textColorMain);
     border-radius: 10px;
     padding: 10px;
@@ -186,7 +166,7 @@ onMounted(async () => {
           text-overflow: ellipsis;
         }
         span {
-          min-width: 100px;
+          min-width: 50px;
         }
       }
     }

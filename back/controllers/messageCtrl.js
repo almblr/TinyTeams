@@ -1,4 +1,4 @@
-import { Message, Conversation } from "../db/sequelize.js";
+import { Message, Conversation, User } from "../db/sequelize.js";
 import { Op } from "sequelize";
 import fs from "fs";
 

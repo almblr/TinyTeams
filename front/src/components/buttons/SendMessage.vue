@@ -15,7 +15,7 @@ const props = defineProps({
 const chatStore = useChatStore();
 
 const sendMessage = async () => {
-  chatStore.openModalContact = false;
+  chatStore.showMobileUsersList = false;
   chatStore.newMessage = true;
   router.push(`/messages/new/${props.userId}`);
 };
