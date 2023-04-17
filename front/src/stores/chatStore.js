@@ -6,9 +6,10 @@ const useConversationStore = defineStore("conversation", () => {
   const token = JSON.parse(sessionStorage.getItem(`token`));
   const conversations = ref([]);
   const messages = ref([]);
-  const onversationMode = ref(false);
+  const conversationMode = ref(false);
   const newMessage = ref(false);
   const showMobileUsersList = ref(false);
+  const isDesktop = ref(true);
 
   const createConversation = async (userId) => {
     const res = await axios({
@@ -71,7 +72,7 @@ const useConversationStore = defineStore("conversation", () => {
   };
   const createMessage = async (conversationId, data) => {
     const res = await axios({
-      url: `http://localhost:3000/api/conversations/${conversationId}/create`,
+      url: `http://localhost:3000/api/conversations/messages/${conversationId}/create`,
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -117,8 +118,9 @@ const useConversationStore = defineStore("conversation", () => {
     conversations,
     messages,
     newMessage,
-    onversationMode,
+    conversationMode,
     showMobileUsersList,
+    isDesktop,
     createConversation,
     getOneConv,
     getUserConvs,

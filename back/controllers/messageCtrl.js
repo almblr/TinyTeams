@@ -45,7 +45,6 @@ const messageCtrl = {
       conversation.update({
         updatedAt: createdMessage.createdAt,
       });
-      console.log(conversation);
       return res.status(201).send(createdMessage);
     } catch {
       return res.status(500).send();

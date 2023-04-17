@@ -1,43 +1,13 @@
 <template>
-  <div class="contactList">
-    <div class="contactList__header" v-if="isDeskop">
-      <h2>Discussions</h2>
-      <button class="contactList__header__new" @click="openNewMessage">
-        <ion-icon name="add-outline"></ion-icon>
-      </button>
-    </div>
+  <div class="convList">
+    <ConvListHeader v-if="chatStore.isDesktop" />
     <div v-if="chatStore.conversations.length === 0" class="nothingToDisplay">
       Il n'y a aucune conversation pour le moment
     </div>
-    <a
-      @click="openConversation(conversation)"
-      v-else
-      v-for="conversation of chatStore.conversations"
-      class="contactList__card"
-    >
-      <img :src="conversation.otherUser.profilePicture" alt="profilePicture" />
-      <div class="contactList__card__infos">
-        <h3>
-          {{ conversation.otherUser.firstname }}
-          {{ conversation.otherUser.lastname }}
-        </h3>
-        <div class="contactList__card__infos__content">
-          <p>
-            {{
-              conversation.lastMessage.content
-                ? conversation.lastMessage.content
-                : "Voir pièce jointe"
-            }}
-          </p>
-          <span>
-            · {{ dayjs(conversation.lastMessage.createdAt).fromNow(true) }}
-          </span>
-        </div>
-      </div>
-    </a>
+    <ConvListCard v-else />
     <button
       class="newMessage"
-      v-if="!isDeskop"
+      v-if="!chatStore.isDesktop"
       @click="chatStore.showMobileUsersList = true"
     >
       <ion-icon name="add-outline"></ion-icon>
@@ -49,128 +19,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { useWindowSize } from "@vueuse/core";
-import { useRoute } from "vue-router";
-import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import ContactsList from "@/components/chat/ContactsList.vue";
-import relativeTime from "dayjs/plugin/relativeTime";
-import UpdateLocale from "dayjs/plugin/updateLocale";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
-dayjs.locale("fr");
-dayjs.extend(relativeTime);
-dayjs.extend(UpdateLocale);
-dayjs.updateLocale("fr", {
-  // Configuration des unités de temps pour les minutes
-  relativeTime: {
-    future: "dans %s",
-    past: "il y a %s",
-    s: "quelques secondes",
-    m: "1min",
-    mm: "%dmin",
-    h: "1h",
-    hh: "%dh",
-    d: "1j",
-    dd: "%d jrs",
-    M: "1 mois",
-    MM: "%d mois",
-    y: "1 an",
-    yy: "%d ans",
-  },
-});
+import ConvListHeader from "@/components/chat/ConvListHeader.vue";
+import ConvListCard from "@/components/chat/ConvListCard.vue";
 
-const emit = defineEmits(["openNewContact"]);
-
-const { width } = useWindowSize();
-const route = useRoute();
-const isDeskop = ref(width.value > 768);
 const chatStore = useChatStore();
-
-const openNewMessage = () => {
-  router.push("/messages/");
-  chatStore.newMessage = true;
-};
-
-const openConversation = (conversation) => {
-  chatStore.openConversation = conversation;
-  chatStore.newMessage = false;
-  router.push(`/messages/${conversation.id}`);
-};
-
-watch(
-  () => width.value,
-  (newWidth) => {
-    if (newWidth > 768) {
-      isDeskop.value = true;
-      chatStore.showMobileUsersList = false;
-    } else {
-      isDeskop.value = false;
-    }
-  }
-);
-
-watch(
-  () => chatStore.openConversation,
-  (newValue) => {
-    newValue !== null ? (chatStore.showMobileUsersList = false) : null;
-  }
-);
 </script>
 <style lang="scss" scoped>
-.contactList {
+.convList {
   display: flex;
   flex-direction: column;
+  text-align: center;
   width: 100%;
   max-height: 100%;
   color: var(--textColorMain);
   padding: 5px;
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    color: var(--textColorSecond);
-    padding: 10px 0 0 10px;
-    margin-bottom: 20px;
-  }
-  &__card {
-    display: flex;
-    align-items: center;
-    max-width: 100%;
-    max-height: 80px;
-    color: var(--textColorMain);
-    border-radius: 10px;
-    padding: 10px;
-    &:hover {
-      background-color: var(--hover);
-    }
-    & img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 10px;
-    }
-    &__infos {
-      width: 100%;
-      overflow: hidden;
-      &__content {
-        display: flex;
-        align-items: center;
-        & p {
-          max-width: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        span {
-          min-width: 50px;
-        }
-      }
-    }
-  }
 }
 
 .nothingToDisplay {
@@ -197,27 +61,10 @@ watch(
 }
 
 @media all and (min-width: 768px) {
-  .contactList {
+  .convList {
     border-right: 1px solid var(--border);
+    min-width: 360px;
     width: 360px;
-    &__header {
-      &__new {
-        @include jcCt-aiCt;
-        width: 40px;
-        height: 40px;
-        color: var(--textColorMain);
-        border-radius: 50%;
-        border: none;
-        background-color: transparent;
-        font-size: 2rem;
-        transition: 200ms;
-        background-color: rgba(173, 171, 171, 0.1);
-        cursor: pointer;
-        &:hover {
-          background-color: rgba(173, 171, 171, 0.2);
-        }
-      }
-    }
   }
 }
 </style>

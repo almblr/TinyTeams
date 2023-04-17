@@ -2,23 +2,17 @@
   <div id="chatView-container">
     <TheHeader />
     <main>
-      <ConvList
-        v-if="
-          width > 768 ||
-          (!chatStore.showMobileUsersList && !chatStore.onversationMode)
-        "
-      />
-      <div>
+      <ConvList v-if="chatStore.isDesktop || !chatStore.conversationMode" />
+      <div
+        class="messagerie"
+        v-if="chatStore.isDesktop || chatStore.conversationMode"
+      >
         <AutoSuggest
-          v-if="chatStore.newMessage && !chatStore.onversationMode"
-        />
-        <ChatArea
           v-if="
-            !chatStore.showMobileUsersList &&
-            !chatStore.newMessage &&
-            chatStore.onversationMode
+            'conversationId' in route.params === false && chatStore.isDesktop
           "
         />
+        <ChatArea v-if="chatStore.isDesktop || chatStore.conversationMode" />
       </div>
     </main>
   </div>
@@ -27,33 +21,55 @@
 <script setup>
 import { watch, onMounted } from "vue";
 import { useWindowSize } from "@vueuse/core";
+import { useRoute } from "vue-router";
 import useChatStore from "@/stores/chatStore.js";
 import TheHeader from "@/components/layout/TheHeader.vue";
 import ConvList from "@/components/chat/ConvList.vue";
 import AutoSuggest from "@/components/layout/AutoSuggest.vue";
 import ChatArea from "@/components/chat/ChatArea.vue";
-import { useRoute } from "vue-router";
 
+const route = useRoute();
 const chatStore = useChatStore();
 const { width } = useWindowSize();
-const route = useRoute();
+
+watch(
+  () => width.value,
+  (newWidth) => {
+    chatStore.isDesktop = newWidth > 768 ? true : false;
+    newWidth > 768 ? (chatStore.showMobileUsersList = false) : null;
+  }
+);
+
+watch(
+  () => route.name,
+  (newName) => {
+    // Page d'accueil des messages
+    if (newName === "Messages" && chatStore.isDesktop) {
+      chatStore.showMobileUsersList = false;
+    }
+    // Page de création de message
+    if (newName === "newMessage") {
+      chatStore.newMessage = true;
+    }
+  }
+);
 
 watch(
   () => route.params,
   (newValue) => {
-    if ("userId" in newValue || "conversationId" in newValue) {
-      chatStore.onversationMode = true;
-    } else {
-      chatStore.onversationMode = false;
-    }
+    chatStore.conversationMode =
+      "userId" in newValue || "conversationId" in newValue;
+    chatStore.showMobileUsersList = false;
   }
 );
 
 onMounted(async () => {
   await chatStore.getUserConvs();
-  "conversationId" in route.params
-    ? (chatStore.onversationMode = true)
-    : (chatStore.onversationMode = false);
+  chatStore.conversationMode =
+    "conversationId" in route.params || "userId" in route.params;
+  width.value > 768
+    ? (chatStore.isDesktop = true)
+    : (chatStore.isDesktop = false);
 });
 </script>
 
@@ -61,14 +77,16 @@ onMounted(async () => {
 #chatView-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  max-height: 100vh;
+  height: 100vh;
   width: 100%;
   overflow: hidden;
   background-color: var(--backgroundMain);
   main {
     display: flex;
     height: 100%;
-    & > div {
+    overflow: hidden;
+    & > .messagerie {
       display: flex;
       flex-direction: column;
       width: 100%;

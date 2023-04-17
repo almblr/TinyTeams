@@ -1,0 +1,108 @@
+<template>
+  <a
+    @click="openConversation(conversation)"
+    v-for="conversation of chatStore.conversations"
+    class="card"
+  >
+    <img :src="conversation.otherUser.profilePicture" alt="profilePicture" />
+    <div class="card__infos">
+      <h3>
+        {{ conversation.otherUser.firstname }}
+        {{ conversation.otherUser.lastname }}
+      </h3>
+      <div class="card__infos__content">
+        <p>
+          {{
+            conversation.lastMessage.content
+              ? conversation.lastMessage.content
+              : "Voir pièce jointe"
+          }}
+        </p>
+        <span>
+          · {{ dayjs(conversation.lastMessage.createdAt).fromNow(true) }}
+        </span>
+      </div>
+    </div>
+  </a>
+</template>
+
+<script setup>
+import router from "@/router/index.js";
+import useChatStore from "@/stores/chatStore.js";
+import relativeTime from "dayjs/plugin/relativeTime";
+import UpdateLocale from "dayjs/plugin/updateLocale";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+dayjs.locale("fr");
+dayjs.extend(relativeTime);
+dayjs.extend(UpdateLocale);
+dayjs.updateLocale("fr", {
+  // Configuration des unités de temps pour les minutes
+  relativeTime: {
+    future: "dans %s",
+    past: "il y a %s",
+    s: "%ds",
+    m: "1min",
+    mm: "%dmin",
+    h: "1h",
+    hh: "%dh",
+    d: "1j",
+    dd: "%d jrs",
+    M: "1 mois",
+    MM: "%d mois",
+    y: "1 an",
+    yy: "%d ans",
+  },
+});
+
+const chatStore = useChatStore();
+
+const openConversation = (conversation) => {
+  chatStore.openConversation = conversation;
+  chatStore.newMessage = false;
+  router.push(`/messages/${conversation.id}`);
+};
+</script>
+
+<style lang="scss" scoped>
+.card {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  max-height: 80px;
+  color: var(--textColorMain);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--hover);
+  }
+  & img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  &__infos {
+    width: 100%;
+    overflow: hidden;
+    & h3 {
+      text-align: start;
+    }
+    &__content {
+      display: flex;
+      align-items: center;
+      & p {
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      span {
+        min-width: 50px;
+      }
+    }
+  }
+}
+</style>

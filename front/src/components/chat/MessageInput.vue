@@ -62,31 +62,32 @@ const getUrls = (path, file) => {
 };
 
 const sendMessage = async () => {
+  const formData = new FormData();
+  const contentIsOnlySpaces = !input.value || input.value.trim().length === 0;
+  if (contentIsOnlySpaces && !mediaToSend.value) {
+    return;
+  }
+  if (contentIsOnlySpaces && mediaToSend.value) {
+    formData.append("imageUrl", mediaToSend.value);
+  }
+  if (!contentIsOnlySpaces && !mediaToSend.value) {
+    formData.append("content", input.value);
+  }
   if (route.name === "newMessage") {
-    const formData = new FormData();
-    const contentIsOnlySpaces = !input.value || input.value.trim().length === 0;
-    if (contentIsOnlySpaces && !mediaToSend.value) {
-      return;
-    }
-    if (contentIsOnlySpaces && mediaToSend.value) {
-      formData.append("imageUrl", mediaToSend.value);
-    }
-    if (!contentIsOnlySpaces && !mediaToSend.value) {
-      formData.append("content", input.value);
-    }
     const newConv = await chatStore.createConversation(route.params.userId);
     await chatStore.createMessage(newConv.id, formData);
-    input.value = "";
-    mediaPreview.value = "";
-    mediaToSend.value = "";
     router.push(`/messages/${newConv.id}`);
+  } else {
+    await chatStore.createMessage(route.params.conversationId, formData);
   }
+  input.value = "";
+  mediaPreview.value = "";
+  mediaToSend.value = "";
 };
 </script>
 
 <style lang="scss" scoped>
 .container {
-  position: sticky;
   @include fdCol-jcCt-aiCt;
   bottom: 0;
   gap: 5px;

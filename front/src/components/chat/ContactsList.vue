@@ -1,5 +1,5 @@
 <template>
-  <div id="container" ref="usersList">
+  <div id="contactlist-container" ref="usersList">
     <main class="users">
       <div class="header">
         <ion-icon
@@ -21,15 +21,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import useUserStore from "@/stores/userStore.js";
 import useChatStore from "@/stores/chatStore.js";
-import { useRoute } from "vue-router";
 import UserCardList from "@/components/users/UserCardList.vue";
-import { useWindowSize } from "@vueuse/core";
 
-const { width } = useWindowSize();
 const userStore = useUserStore();
 const chatStore = useChatStore();
 const usersList = ref(null);
@@ -51,22 +48,13 @@ useInfiniteScroll(
   }
 );
 
-watch(
-  () => width.value,
-  (newWidth) => {
-    if (newWidth > 768) {
-      chatStore.openContactModal = false;
-    }
-  }
-);
-
 onMounted(async () => {
   await userStore.getAll();
 });
 </script>
 
 <style lang="scss" scoped>
-#container {
+#contactlist-container {
   position: absolute;
   background-color: var(--backgroundMain);
   overflow-y: hidden;

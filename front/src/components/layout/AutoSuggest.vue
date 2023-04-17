@@ -69,12 +69,14 @@ const selectUser = (user) => {
   display: flex;
   position: relative;
   width: 100%;
+  min-height: 50px;
+  height: 50px;
   .search-user {
     display: flex;
     align-items: center;
     width: 100%;
+    height: 100%;
     padding-left: 15px;
-    margin-bottom: 20px;
     background-color: var(--backgroundSecond);
     border-bottom: 1px solid var(--border);
     label {
