@@ -4,7 +4,7 @@ import { socket } from "../socket.js";
 import axios from "axios";
 
 const useUserStore = defineStore("user", () => {
-  const token = ref(JSON.parse(sessionStorage.getItem(`token`)));
+  const token = ref(JSON.parse(sessionStorage.getItem("token")));
   const users = ref([]);
 
   const signup = async (data) => {
@@ -35,7 +35,7 @@ const useUserStore = defineStore("user", () => {
       sessionStorage.setItem("token", JSON.stringify(res.data.token));
       token.value = res.data.token;
       return res.data;
-    } catch (err) {
+    } catch {
       return false;
     }
   };
@@ -75,14 +75,20 @@ const useUserStore = defineStore("user", () => {
       data,
     });
   };
+  function $reset() {
+    token.value = null;
+    users.value = [];
+  }
 
   return {
+    token,
     users,
     login,
     signup,
     getOne,
     getAll,
     update,
+    $reset,
   };
 });
 

@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref } from "vue";
 import { socket } from "../../socket.js";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
@@ -36,8 +36,9 @@ import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
 import GifPanel from "@/components/posts/GifPanel.vue";
 import ImagePreview from "@//components/layout/ImagePreview.vue";
 
-const chatStore = useChatStore();
 const { textarea, input } = useTextareaAutosize();
+const chatStore = useChatStore();
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const route = useRoute();
 const mediaToSend = ref(null);
 const mediaPreview = ref(null);

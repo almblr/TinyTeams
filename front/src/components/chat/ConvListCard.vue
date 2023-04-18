@@ -30,7 +30,6 @@
 </template>
 
 <script setup>
-import { watch } from "vue";
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -60,14 +59,6 @@ dayjs.updateLocale("fr", {
 });
 
 const chatStore = useChatStore();
-
-watch(
-  () => chatStore.conversations.length,
-  async (newValue) => {
-    console.log(newValue);
-    newValue ? await chatStore.getUserConvs() : null;
-  }
-);
 
 const openConversation = (conversation) => {
   chatStore.openConversation = conversation;

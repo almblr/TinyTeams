@@ -1,11 +1,12 @@
 <template>
   <section class="chatbox" v-if="conversation">
     <div class="chatbox__header">
+      <img :src="conversation.otherUser.profilePicture" alt="" />
       <h3>
-        {{ conversation.users[1].firstname }}
-        {{ conversation.users[1].lastname }}
+        {{ conversation.otherUser.firstname }}
+        {{ conversation.otherUser.lastname }}
       </h3>
-      <router-link :to="`/users/${conversation.users[1].id}`"
+      <router-link :to="`/users/${conversation.otherUser.id}`"
         >Voir profil</router-link
       >
     </div>
@@ -19,7 +20,7 @@
         <div class="othersMessages message" v-else>
           <img
             v-if="showProfilePicture(index)"
-            :src="conversation.users[1].profilePicture"
+            :src="conversation.otherUser.profilePicture"
             alt="profilePicture"
           />
           <div v-else class="noImg"></div>
@@ -125,7 +126,15 @@ onMounted(async () => {
     border-bottom: 1px solid rgba(128, 128, 128, 0.233);
     box-shadow: 5px 3px 5px rgba(0, 0, 0, 0.11);
     background-color: var(--backgroundMain);
+    & > img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
     & > h3 {
+      font-size: 1.2rem;
       flex: 1;
     }
     & > a {
@@ -172,6 +181,8 @@ onMounted(async () => {
       margin-left: auto;
     }
     & .othersMessages {
+      display: flex;
+      align-items: flex-end;
       margin-right: auto;
       gap: 5px;
       & p {
@@ -184,8 +195,8 @@ onMounted(async () => {
         border-radius: 50%;
       }
       & .noImg {
-        width: 35px;
-        height: 35px;
+        min-width: 35px;
+        min-height: 35px;
         border-radius: 50%;
       }
     }

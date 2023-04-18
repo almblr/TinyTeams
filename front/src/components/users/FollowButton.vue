@@ -20,6 +20,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import useUserStore from "@/stores/userStore";
 import useFollowStore from "@/stores/followStore.js";
 import { socket } from "../../socket.js";
 
@@ -29,7 +30,8 @@ const props = defineProps({
 });
 
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const token = JSON.parse(sessionStorage.getItem(`token`));
+
+const userStore = useUserStore();
 const followStore = useFollowStore();
 const isHovered = ref(false);
 const isSubscribed = ref(null);
@@ -37,7 +39,6 @@ const isSubscribed = ref(null);
 const updateFollow = async (type) => {
   if (type === "follow") {
     const follow = await followStore.sendFollow(props.userId);
-    console.log(follow);
     socket.emit("newFollow", {
       senderId: userLS.id,
       senderUsername: `${userLS.firstname} ${userLS.lastname}`,
@@ -45,7 +46,7 @@ const updateFollow = async (type) => {
       type: "newFollow",
       notifiableId: follow.id,
       receiver: follow.isFollowing,
-      token,
+      token: userStore.token,
     });
     isHovered.value = false;
   } else {

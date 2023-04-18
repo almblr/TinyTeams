@@ -31,11 +31,14 @@ socket.on("notifPost", (arg) => {
 });
 
 socket.on("notifLike", (arg) => {
-  console.log(arg);
   state.newLike.unshift(arg);
   // sound.play();
 });
 
 socket.on("notifComment", (arg) => {
   state.newComment.unshift(arg);
+});
+
+socket.on("notifMessage", (arg) => {
+  state.newMessage.unshift(arg);
 });

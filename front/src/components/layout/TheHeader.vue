@@ -36,9 +36,17 @@
 <script setup>
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
+import useUserStore from "@/stores/userStore.js";
+import useChatStore from "@/stores/chatStore.js";
+import useFollowStore from "@/stores/followStore.js";
+import usePostStore from "@/stores/postStore.js";
 import SwitchThemeButton from "@/components/buttons/SwitchThemeButton.vue";
 import NotifPanel from "@/components/layout/NotifPanel.vue";
 
+const userStore = useUserStore();
+const chatStore = useChatStore();
+const followStore = useFollowStore();
+const postStore = usePostStore();
 const showTooltip = ref(null);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const profilePictureUrl = userLS.profilePicture;
@@ -53,6 +61,10 @@ const closeTooltip = () => {
 /* Deconnexion : vide le sessionStorage */
 const logout = () => {
   window.sessionStorage.length > 0 ? window.sessionStorage.clear() : null;
+  chatStore.$reset();
+  userStore.$reset();
+  followStore.$reset();
+  postStore.$reset();
 };
 </script>
 

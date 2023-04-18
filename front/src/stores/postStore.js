@@ -1,9 +1,10 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import useUserStore from "./userStore.js";
 import axios from "axios";
 
 const usePostStore = defineStore("posts", () => {
-  const token = JSON.parse(sessionStorage.getItem(`token`));
+  const userStore = useUserStore();
   const posts = ref([]);
 
   const createPost = async (data) => {
@@ -11,7 +12,7 @@ const usePostStore = defineStore("posts", () => {
       url: "http://localhost:3000/api/posts/create",
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       data,
     });
@@ -23,7 +24,7 @@ const usePostStore = defineStore("posts", () => {
       const res = await axios({
         url: `http://localhost:3000/api/posts/getOne/${postId}`,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userStore.token}`,
         },
       });
       return res.data;
@@ -36,7 +37,7 @@ const usePostStore = defineStore("posts", () => {
     const res = await axios({
       url,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       params: {
         userId,
@@ -56,7 +57,7 @@ const usePostStore = defineStore("posts", () => {
       url: `http://localhost:3000/api/posts/update/${postId}`,
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       data,
     });
@@ -71,7 +72,7 @@ const usePostStore = defineStore("posts", () => {
       url: `http://localhost:3000/api/posts/delete/${postId}`,
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
     });
     const postToDelete = posts.value.findIndex((post) => post.id === postId);
@@ -82,7 +83,7 @@ const usePostStore = defineStore("posts", () => {
       url: `http://localhost:3000/api/posts/${postId}/react`,
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
     });
     const foundPost = posts.value.find((post) => post.id === postId);
@@ -101,7 +102,7 @@ const usePostStore = defineStore("posts", () => {
       url: `http://localhost:3000/api/posts/${postId}/comments/create`,
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       data,
     });
@@ -114,7 +115,7 @@ const usePostStore = defineStore("posts", () => {
       url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/update`,
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       data,
     });
@@ -123,14 +124,13 @@ const usePostStore = defineStore("posts", () => {
       (comment) => comment.id === res.data.id
     );
     foundPost.comments.splice(indexComment, 1, res.data);
-    console.log(res.data);
   };
   const deleteComment = async (postId, commentId) => {
     await axios({
       url: `http://localhost:3000/api/posts/${postId}/comments/${commentId}/delete`,
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
     });
     const foundPost = posts.value.find((post) => post.id === postId);
@@ -140,6 +140,9 @@ const usePostStore = defineStore("posts", () => {
     foundPost.comments.splice(foundComment, 1);
   };
 
+  function $reset() {
+    posts.value = [];
+  }
   return {
     posts,
     createPost,
@@ -151,6 +154,7 @@ const usePostStore = defineStore("posts", () => {
     createComment,
     updateComment,
     deleteComment,
+    $reset,
   };
 });
 

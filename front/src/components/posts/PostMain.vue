@@ -40,6 +40,7 @@ import { ref, watch, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { socket, state } from "../../socket.js";
 import router from "@/router/index.js";
+import useUserStore from "@/stores/userStore";
 import usePostStore from "@/stores/postStore.js";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 
@@ -51,8 +52,8 @@ const props = defineProps({
 
 const route = useRoute();
 const postStore = usePostStore();
+const userStore = useUserStore();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const token = JSON.parse(sessionStorage.getItem(`token`));
 const editingMode = ref(false);
 const showMoreButton = ref(false);
 const thumbColor = ref(null);
@@ -99,7 +100,7 @@ const updateLike = async () => {
       notifiableId: like.id,
       postId: props.post.id,
       receiver: props.post.author,
-      token,
+      token: userStore.token,
     });
     thumbColor.value = "#2374e1";
     return true;

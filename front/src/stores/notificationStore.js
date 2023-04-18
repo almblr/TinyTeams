@@ -1,17 +1,19 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import useUserStore from "./userStore.js";
 import axios from "axios";
 
 const useNotifStore = defineStore("notif", () => {
+  const userStore = useUserStore();
   const notifs = ref([]);
   const nonViewedNotifs = ref(0);
 
-  const getAll = async (token, userId, lastNotifViewed) => {
+  const getAll = async (userId, lastNotifViewed) => {
     try {
       const res = await axios({
         url: `http://localhost:3000/api/notifications/getAll/${userId}`,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userStore.token}`,
         },
         params: {
           lastNotifId: lastNotifViewed,
@@ -30,12 +32,12 @@ const useNotifStore = defineStore("notif", () => {
     // notifs.value = res.data.notifs;
     // nonViewedNotifs.value = res.data.nonViewedNotifs;
   };
-  const update = async (token, notifId) => {
+  const update = async (notifId) => {
     const res = await axios({
       url: `http://localhost:3000/api/notifications/update/${notifId}`,
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
     });
     const updatedNotif = res.data;
@@ -46,12 +48,12 @@ const useNotifStore = defineStore("notif", () => {
     nonViewedNotifs.value--;
     return res.data;
   };
-  const updateAll = async (token) => {
+  const updateAll = async () => {
     const res = await axios({
       url: `http://localhost:3000/api/notifications/updateAll/${user.id}`,
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
     });
     notifs.value = res.data;

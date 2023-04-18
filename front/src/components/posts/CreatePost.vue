@@ -36,6 +36,7 @@ import { ref } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
 import { socket } from "../../socket.js";
 import usePostStore from "@/stores/postStore.js";
+import useUserStore from "@/stores/userStore.js";
 import ModalLayer from "@/components/layout/ModalLayer.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
 import ImagePreview from "@/components/layout/ImagePreview.vue";
@@ -50,7 +51,7 @@ const props = defineProps({
 
 const { textarea, input } = useTextareaAutosize();
 const postStore = usePostStore();
-const token = JSON.parse(sessionStorage.getItem(`token`));
+const userStore = useUserStore();
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const firstname = userLS.firstname;
 const emptyPost = ref(null);
@@ -97,7 +98,7 @@ const sendPost = async () => {
       type: "newPost",
       notifiableId: post.id,
       postId: post.id,
-      token,
+      token: userStore.token,
     });
   }
 };

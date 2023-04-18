@@ -34,6 +34,7 @@
 <script setup>
 import { ref } from "vue";
 import { socket } from "../../socket.js";
+import useUserStore from "@/stores/userStore.js";
 import usePostStore from "@/stores/postStore.js";
 import useChatStore from "@/stores/chatStore.js";
 import { useTextareaAutosize } from "@vueuse/core";
@@ -58,6 +59,7 @@ const props = defineProps({
   conversationId: Number,
 });
 
+const userStore = useUserStore();
 const postStore = usePostStore();
 const chatStore = useChatStore();
 const showing = ref(false);
@@ -66,7 +68,6 @@ const container = ref(null);
 const mediaToSend = ref(null);
 const mediaPreview = ref(null);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const token = JSON.parse(sessionStorage.getItem(`token`));
 
 const deleteImagePreview = () => {
   mediaPreview.value = null;
@@ -90,7 +91,7 @@ const createNotificiation = (type, notifiableId, receiver, postId) => {
     type: type,
     notifiableId: notifiableId,
     receiver,
-    token,
+    token: userStore.token,
   };
   if (postId) {
     data.postId = postId;

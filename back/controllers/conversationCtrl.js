@@ -61,14 +61,18 @@ const conversationCtrl = {
       if (!conversation) {
         return res.status(404).send({ message: "Conversation not found" });
       }
-      const users = await getAllUsers(conversation);
+      const otherUser =
+        conversation.user2 !== req.auth.userId
+          ? await getOneUser(conversation.user2)
+          : await getOneUser(conversation.user1);
+      conversation.setDataValue("otherUser", otherUser);
       const lastMessage = await Message.findOne({
         where: {
           conversationId: conversation.id,
         },
         order: [["createdAt", "DESC"]],
       });
-      conversation.setDataValue("users", users);
+      conversation.setDataValue("otherUser", otherUser);
       conversation.setDataValue("lastMessage", lastMessage);
       res.status(200).send(conversation);
     } catch {
@@ -77,6 +81,7 @@ const conversationCtrl = {
   },
   getAll: async (req, res) => {
     try {
+      console.log(req.auth.userId);
       const allConversations = await Conversation.findAll({
         where: {
           [Op.or]: [{ user1: req.auth.userId }, { user2: req.auth.userId }],

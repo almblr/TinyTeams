@@ -44,8 +44,6 @@ import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
-const token = JSON.parse(sessionStorage.getItem(`token`));
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const notifStore = useNotifStore();
 const firstload = ref(true);
 const showTooltip = ref(null);
@@ -55,7 +53,7 @@ const canInfiniteScroll = ref(true);
 const openTooltip = async () => {
   showTooltip.value = !showTooltip.value;
   // firstload.value === false ? null :
-  await notifStore.getAll(token, userLS.id);
+  await notifStore.getAll(userLS.id);
   // await notifStore.updateAll();
   firstload.value = false;
 };
@@ -65,7 +63,7 @@ const closeTooltip = () => {
 
 const updateNotif = async (notifId) => {
   const notif = notifStore.notifs.find((notif) => notif.id === notifId);
-  !notif.isRead ? await notifStore.update(token, notifId) : null;
+  !notif.isRead ? await notifStore.update(notifId) : null;
 };
 const notifLink = (notif) => {
   return notif.postId

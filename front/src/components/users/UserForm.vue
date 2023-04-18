@@ -141,15 +141,16 @@ footer {
 }
 
 @media all and (min-width: 1440px) {
-  .container {
+  #container {
     margin: 0 10% 0 0;
   }
 }
 
 @media all and (min-width: 1440px) {
-  #body {
+  #container {
     flex-direction: row;
     justify-content: flex-end;
+    padding-right: 10%;
   }
 }
 </style>

@@ -148,6 +148,9 @@ io.on("connection", (socket) => {
   socket.on("newComment", async (data) => {
     await createNotification(data, data.receiver, "notifComment");
   });
+  socket.on("newMessage", async (data) => {
+    await createNotification(data, data.receiver, "notifMessage");
+  });
 });
 
 httpServer.listen(process.env.PORT || 3000);

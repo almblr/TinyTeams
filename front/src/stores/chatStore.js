@@ -1,9 +1,12 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { socket } from "../../socket.js";
+import useUserStore from "./userStore.js";
 import axios from "axios";
 
-const useConversationStore = defineStore("conversation", () => {
-  const token = JSON.parse(sessionStorage.getItem(`token`));
+const useChatStore = defineStore("chat", () => {
+  const userLS = JSON.parse(sessionStorage.getItem("user"));
+  const userStore = useUserStore();
   const conversations = ref([]);
   const messages = ref([]);
   const conversationMode = ref(false);
@@ -16,7 +19,7 @@ const useConversationStore = defineStore("conversation", () => {
       url: "http://localhost:3000/api/conversations/create",
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       data: {
         user2: parseInt(userId),
@@ -29,7 +32,7 @@ const useConversationStore = defineStore("conversation", () => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/getOne/${conversationId}`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
     });
     return res.data;
@@ -39,7 +42,7 @@ const useConversationStore = defineStore("conversation", () => {
     const res = await axios({
       url,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       params: {
         lastConversationId: lastConversationViewed,
@@ -58,7 +61,7 @@ const useConversationStore = defineStore("conversation", () => {
       url: `http://localhost:3000/api/conversations/update/${conversationId}`,
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       data: {
         lastMessageDate,
@@ -75,14 +78,25 @@ const useConversationStore = defineStore("conversation", () => {
       url: `http://localhost:3000/api/conversations/messages/${conversationId}/create`,
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       data,
     });
     const conversation = conversations.value.findIndex(
-      (conv) => conv.id === conversationId
+      (c) => c.id === conversationId
     );
-    conversations.value[conversation].lastMessage = res.data;
+    conversations.value.splice(conversation, 1);
+    const newConv = await getOneConv(conversationId);
+    socket.emit("newMessage", {
+      senderId: userLS.id,
+      senderUsername: `${userLS.firstname} ${userLS.lastname}`,
+      senderProfilePicture: userLS.profilePicture,
+      type: "newMessage",
+      notifiableId: res.data.id,
+      receiver: newConv.otherUser.id,
+      token: userStore.token,
+    });
+    conversations.value.unshift(newConv);
     messages.value.push(res.data);
   };
   const getConversationMsg = async (conversationId, lastMessageViewed) => {
@@ -90,7 +104,7 @@ const useConversationStore = defineStore("conversation", () => {
       url: `http://localhost:3000/api/conversations/messages/${conversationId}/getAll`,
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
       params: {
         lastMessageId: lastMessageViewed,
@@ -109,7 +123,7 @@ const useConversationStore = defineStore("conversation", () => {
       url: `http://localhost:3000/api/conversations/${conversationId}/messages/${messageId}/delete`,
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userStore.token}`,
       },
     });
     const foundMessage = conversations.value.find(
@@ -117,6 +131,15 @@ const useConversationStore = defineStore("conversation", () => {
     );
     messages.splice(foundMessage, 1);
   };
+
+  function $reset() {
+    conversations.value = [];
+    messages.value = [];
+    conversationMode.value = false;
+    newMessage.value = false;
+    showMobileUsersList.value = false;
+    isDesktop.value = true;
+  }
 
   return {
     conversations,
@@ -132,7 +155,8 @@ const useConversationStore = defineStore("conversation", () => {
     createMessage,
     getConversationMsg,
     deleteMessage,
+    $reset,
   };
 });
 
-export default useConversationStore;
+export default useChatStore;
