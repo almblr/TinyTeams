@@ -79,6 +79,10 @@ const useConversationStore = defineStore("conversation", () => {
       },
       data,
     });
+    const conversation = conversations.value.findIndex(
+      (conv) => conv.id === conversationId
+    );
+    conversations.value[conversation].lastMessage = res.data;
     messages.value.push(res.data);
   };
   const getConversationMsg = async (conversationId, lastMessageViewed) => {

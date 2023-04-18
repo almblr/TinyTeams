@@ -61,19 +61,16 @@ const showProfilePicture = (index) => {
   }
 };
 
-// watch(
-//   () => chatStore.messages.length,
-//   (newValue, oldValue) => {
-//     if (newValue > oldValue) {
-//       nextTick(() => {
-//         messagesList.value.scrollIntoView({
-//           behavior: "instant",
-//           block: "end",
-//         });
-//       });
-//     }
-//   }
-// );
+watch(
+  () => chatStore.messages.length,
+  (newValue, oldValue) => {
+    if (newValue > oldValue) {
+      nextTick(() => {
+        messagesList.value.scrollTop = messagesList.value.scrollHeight;
+      });
+    }
+  }
+);
 
 watch(
   () => route.params,
@@ -97,7 +94,6 @@ onMounted(async () => {
   } else {
     chatStore.messages = [];
   }
-  messagesList.value.scrollIntoView({ behavior: "instant", block: "end" });
 });
 </script>
 
@@ -105,12 +101,19 @@ onMounted(async () => {
 .chatbox {
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+  position: relative;
   overflow: hidden;
+  max-height: 100%;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   & * {
     color: var(--textColorMain);
   }
   &__header {
+    position: sticky;
     display: flex;
     align-items: center;
     z-index: 99;
@@ -144,21 +147,24 @@ onMounted(async () => {
   &__messagesList {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    border: 1px solid yellow;
+    height: 100%;
+    width: 100%;
     gap: 5px;
     padding: 0 10px;
     padding-top: 10px;
-    overflow: hidden;
+    overflow-y: auto;
+    padding-bottom: 10px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     & .message {
-      display: flex;
       max-width: 60%;
       width: fit-content;
       border-radius: 10px;
+      word-break: break-all;
       & p {
         padding: 10px;
         border-radius: 10px;
-        height: min-content;
       }
     }
     & .myMessages {
@@ -182,6 +188,16 @@ onMounted(async () => {
         height: 35px;
         border-radius: 50%;
       }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .chatbox__messagesList::-webkit-scrollbar {
+    display: block;
+    width: 10px;
+    &-thumb {
+      border-radius: 20px;
     }
   }
 }

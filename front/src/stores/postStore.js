@@ -6,6 +6,18 @@ const usePostStore = defineStore("posts", () => {
   const token = JSON.parse(sessionStorage.getItem(`token`));
   const posts = ref([]);
 
+  const createPost = async (data) => {
+    const res = await axios({
+      url: "http://localhost:3000/api/posts/create",
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data,
+    });
+    posts.value.unshift(res.data);
+    return res.data;
+  };
   const getOne = async (postId) => {
     try {
       const res = await axios({
@@ -38,18 +50,6 @@ const usePostStore = defineStore("posts", () => {
       return posts.value.push(...res.data);
     }
     posts.value = res.data;
-  };
-  const createPost = async (data) => {
-    const res = await axios({
-      url: "http://localhost:3000/api/posts/create",
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data,
-    });
-    posts.value.unshift(res.data);
-    return res.data;
   };
   const updatePost = async (postId, data) => {
     const res = await axios({
@@ -142,12 +142,12 @@ const usePostStore = defineStore("posts", () => {
 
   return {
     posts,
+    createPost,
     getOne,
     getAll,
-    createPost,
     updatePost,
-    likePost,
     deletePost,
+    likePost,
     createComment,
     updateComment,
     deleteComment,

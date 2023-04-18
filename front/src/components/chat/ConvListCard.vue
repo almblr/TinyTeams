@@ -2,6 +2,8 @@
   <a
     @click="openConversation(conversation)"
     v-for="conversation of chatStore.conversations"
+    :key="conversation.id"
+    :id="conversation.id"
     class="card"
   >
     <img :src="conversation.otherUser.profilePicture" alt="profilePicture" />
@@ -13,13 +15,14 @@
       <div class="card__infos__content">
         <p>
           {{
-            conversation.lastMessage.content
+            conversation.lastMessage
               ? conversation.lastMessage.content
               : "Voir pièce jointe"
           }}
         </p>
         <span>
-          · {{ dayjs(conversation.lastMessage.createdAt).fromNow(true) }}
+          ·
+          {{ dayjs(conversation.lastMessage?.createdAt).fromNow(true) }}
         </span>
       </div>
     </div>
@@ -27,6 +30,7 @@
 </template>
 
 <script setup>
+import { watch } from "vue";
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -41,7 +45,7 @@ dayjs.updateLocale("fr", {
   relativeTime: {
     future: "dans %s",
     past: "il y a %s",
-    s: "%ds",
+    s: "1min",
     m: "1min",
     mm: "%dmin",
     h: "1h",
@@ -56,6 +60,14 @@ dayjs.updateLocale("fr", {
 });
 
 const chatStore = useChatStore();
+
+watch(
+  () => chatStore.conversations.length,
+  async (newValue) => {
+    console.log(newValue);
+    newValue ? await chatStore.getUserConvs() : null;
+  }
+);
 
 const openConversation = (conversation) => {
   chatStore.openConversation = conversation;

@@ -98,6 +98,7 @@ const selectUser = (user) => {
   }
   .tooltip {
     position: absolute;
+    z-index: 100;
     top: 47px;
     left: 50px;
     width: 330px;

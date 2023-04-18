@@ -78,7 +78,10 @@ const sendMessage = async () => {
     await chatStore.createMessage(newConv.id, formData);
     router.push(`/messages/${newConv.id}`);
   } else {
-    await chatStore.createMessage(route.params.conversationId, formData);
+    await chatStore.createMessage(
+      parseInt(route.params.conversationId),
+      formData
+    );
   }
   input.value = "";
   mediaPreview.value = "";
@@ -88,7 +91,7 @@ const sendMessage = async () => {
 
 <style lang="scss" scoped>
 .container {
-  @include fdCol-jcCt-aiCt;
+  display: flex;
   bottom: 0;
   gap: 5px;
   width: 100%;
@@ -106,12 +109,13 @@ const sendMessage = async () => {
   &__textarea {
     display: flex;
     align-items: center;
+    max-height: 200px;
     width: 100%;
-    max-height: 100%;
+    overflow: hidden;
     & > textarea {
       flex: 1;
       min-height: 35px;
-      max-height: 180px;
+      max-height: 100%;
       padding: 5px 0 0 5px;
       font-size: 1.05rem;
       color: var(--textColorMain);
@@ -119,6 +123,18 @@ const sendMessage = async () => {
       background-color: transparent;
       resize: none;
       border: none;
+      overflow: auto;
+      &::-webkit-scrollbar {
+        width: 10px;
+        cursor: auto;
+        &-track {
+          background: var(--textarea);
+        }
+        &-thumb {
+          background: rgba(128, 128, 128, 0.658);
+          border-radius: 10px;
+        }
+      }
       &[readonly] {
         cursor: not-allowed;
       }

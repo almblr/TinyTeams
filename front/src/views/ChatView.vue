@@ -12,7 +12,7 @@
             'conversationId' in route.params === false && chatStore.isDesktop
           "
         />
-        <ChatArea v-if="chatStore.isDesktop || chatStore.conversationMode" />
+        <ChatArea v-if="chatStore.conversationMode" />
       </div>
     </main>
   </div>
@@ -77,18 +77,18 @@ onMounted(async () => {
 #chatView-container {
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   background-color: var(--backgroundMain);
   main {
     display: flex;
     height: 100%;
+    height: 100%;
     width: 100%;
+    overflow-y: hidden;
     & > .messagerie {
       display: flex;
       flex-direction: column;
-      flex: 1;
       height: 100%;
       width: 100%;
     }

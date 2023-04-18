@@ -12,10 +12,22 @@ const props = defineProps({
     required: true,
   },
 });
+
 const chatStore = useChatStore();
+const userLS = JSON.parse(sessionStorage.getItem("user"));
 
 const sendMessage = async () => {
   chatStore.showMobileUsersList = false;
+  const isConversationExists = chatStore.conversations.find(
+    (conv) =>
+      (conv.user1 === userLS.id && conv.user2 === props.userId) ||
+      (conv.user1 === props.userId && conv.user2 === userLS.id)
+  );
+  if (isConversationExists) {
+    router.push(`/messages/${isConversationExists.id}`);
+    chatStore.conversationMode = true;
+    return;
+  }
   chatStore.newMessage = true;
   router.push(`/messages/new/${props.userId}`);
 };

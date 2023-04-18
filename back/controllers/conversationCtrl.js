@@ -1,7 +1,7 @@
 import { Conversation, Message, User } from "../db/sequelize.js";
 import { Op } from "sequelize";
 
-const getUserConversation = async (conversation) => {
+const getAllUsers = async (conversation) => {
   return await User.findAll({
     where: {
       id: [conversation.user1, conversation.user2],
@@ -9,6 +9,16 @@ const getUserConversation = async (conversation) => {
     attributes: ["id", "firstname", "lastname", "profilePicture"],
   });
 };
+
+const getOneUser = async (userId) => {
+  return await User.findOne({
+    where: { id: userId },
+    attributes: ["id", "firstname", "lastname", "profilePicture"],
+  });
+};
+
+///////////////////////////////
+///////////////////////////////
 
 const conversationCtrl = {
   create: async (req, res) => {
@@ -28,11 +38,15 @@ const conversationCtrl = {
         user1: req.auth.userId,
         user2: req.body.user2,
       });
-      const users = await getUserConversation(createdConversation);
+      const otherUser =
+        createdConversation.user2 !== req.auth.userId
+          ? await getOneUser(createdConversation.user2)
+          : await getOneUser(createdConversation.user1);
+      createdConversation.setDataValue("otherUser", otherUser);
       const conversationToSend = await Conversation.findByPk(
         createdConversation.id
       );
-      conversationToSend.setDataValue("users", users);
+      conversationToSend.setDataValue("otherUser", otherUser);
       res.status(201).send(conversationToSend);
     } catch (err) {
       console.log(err);
@@ -47,7 +61,7 @@ const conversationCtrl = {
       if (!conversation) {
         return res.status(404).send({ message: "Conversation not found" });
       }
-      const users = await getUserConversation(conversation);
+      const users = await getAllUsers(conversation);
       const lastMessage = await Message.findOne({
         where: {
           conversationId: conversation.id,
@@ -71,17 +85,11 @@ const conversationCtrl = {
           ["updatedAt", "DESC"], // Du plus récent au moins récent
         ],
       });
-      const getUserInfo = async (userId) => {
-        return await User.findOne({
-          where: { id: userId },
-          attributes: ["id", "firstname", "lastname", "profilePicture"],
-        });
-      };
       for (const conversation of allConversations) {
         const otherUser =
           conversation.user2 !== req.auth.userId
-            ? await getUserInfo(conversation.user2)
-            : await getUserInfo(conversation.user1);
+            ? await getOneUser(conversation.user2)
+            : await getOneUser(conversation.user1);
         conversation.setDataValue("otherUser", otherUser);
         const lastMessage = await Message.findOne({
           where: {
