@@ -31,37 +31,11 @@ watch(
   () => route.params,
   async (newValue) => {
     checkParams(newValue);
-    console.log(newValue);
-    if ("conversationId" in route.params) {
-      console.log("test");
-      for (const message of chatStore.messages) {
-        console.log(message.isRead);
-        if (
-          message.isRead === false &&
-          message.conversationId === parseInt(newValue.conversationId)
-        ) {
-          console.log("test2");
-          await chatStore.markAsRead(message.conversationId, message.id);
-        }
-      }
-    }
   }
 );
 
 onMounted(async () => {
   checkParams(route.params);
-  console.log(route.params);
-  if ("conversationId" in route.params) {
-    for (const message of chatStore.messages) {
-      if (
-        message.isRead === false &&
-        message.conversationId === parseInt(route.params.conversationId)
-      ) {
-        console.log("coucou");
-        await chatStore.markAsRead(message.conversationId, message.id);
-      }
-    }
-  }
 });
 </script>
 

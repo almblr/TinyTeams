@@ -81,6 +81,14 @@ watch(
         route.params.conversationId
       );
       await chatStore.getConversationMsg(route.params.conversationId);
+      for (const message of chatStore.messages) {
+        if (
+          message.isRead === false &&
+          message.conversationId === parseInt(newValue.conversationId)
+        ) {
+          await chatStore.markAsRead(message.conversationId, message.id);
+        }
+      }
     } else {
       chatStore.messages = [];
     }
@@ -92,6 +100,14 @@ onMounted(async () => {
       route.params.conversationId
     );
     await chatStore.getConversationMsg(route.params.conversationId);
+    for (const message of chatStore.messages) {
+      if (
+        message.isRead === false &&
+        message.conversationId === parseInt(route.params.conversationId)
+      ) {
+        await chatStore.markAsRead(message.conversationId, message.id);
+      }
+    }
   } else {
     chatStore.messages = [];
   }

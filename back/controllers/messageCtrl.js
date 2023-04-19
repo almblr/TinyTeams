@@ -90,11 +90,17 @@ const messageCtrl = {
       const allMessages = await Message.findAll({
         where: {
           isRead: false,
+          author: {
+            [Op.ne]: req.auth.userId,
+          },
         },
         order: [
           ["createdAt", "ASC"], // Du plus récent au moins récent
         ],
       });
+      if (allMessages.length === 0) {
+        return res.status(200).send({ message: "No new messages" });
+      }
       const numberOfNonReadMessages = allMessages.length;
       res.status(200).send({ numberOfNonReadMessages });
     } catch {
