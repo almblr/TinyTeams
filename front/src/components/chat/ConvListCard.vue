@@ -61,7 +61,6 @@ dayjs.updateLocale("fr", {
 const chatStore = useChatStore();
 
 const openConversation = (conversation) => {
-  chatStore.openConversation = conversation;
   chatStore.newMessage = false;
   router.push(`/messages/${conversation.id}`);
 };

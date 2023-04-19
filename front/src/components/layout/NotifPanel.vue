@@ -45,6 +45,7 @@ dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
 const notifStore = useNotifStore();
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const firstload = ref(true);
 const showTooltip = ref(null);
 const notifs = ref(null);
@@ -109,18 +110,7 @@ useInfiniteScroll(
   position: relative;
 }
 .iconBtn {
-  @include jcCt-aiCt;
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: #333435;
-  cursor: pointer;
-  transition: 150ms;
-  color: white;
-  &:hover {
-    filter: brightness(140%);
-  }
+  @include headerBtn;
   & > ion-icon {
     font-size: 20px;
   }

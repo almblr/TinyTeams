@@ -85,6 +85,33 @@ const messageCtrl = {
       res.status(500).send();
     }
   },
+  getNonRead: async (req, res) => {
+    try {
+      const allMessages = await Message.findAll({
+        where: {
+          isRead: false,
+        },
+        order: [
+          ["createdAt", "ASC"], // Du plus récent au moins récent
+        ],
+      });
+      const numberOfNonReadMessages = allMessages.length;
+      res.status(200).send({ numberOfNonReadMessages });
+    } catch {
+      res.status(500).send();
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const message = await Message.findByPk(req.params.messageId);
+      message.update({
+        isRead: true,
+      });
+      res.status(200).json(message);
+    } catch {
+      res.status(500).send();
+    }
+  },
   delete: async (req, res) => {
     const message = await Message.findOne({
       where: {

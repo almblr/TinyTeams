@@ -11,28 +11,56 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+import useChatStore from "@/stores/chatStore";
 import MessageInput from "@/components/chat/MessageInput.vue";
 import NewConvPreview from "@/components/chat/NewConvPreview.vue";
 import MessagesSection from "@/components/chat/MessagesSection.vue";
+
 const route = useRoute();
+const chatStore = useChatStore();
 const canSendMessage = ref(false);
 
+const checkParams = (object) => {
+  if ("userId" in object || "conversationId" in object) {
+    canSendMessage.value = true;
+  } else {
+    canSendMessage.value = false;
+  }
+};
 watch(
   () => route.params,
   async (newValue) => {
-    if ("userId" in newValue || "conversationId" in newValue) {
-      canSendMessage.value = true;
-    } else {
-      canSendMessage.value = false;
+    checkParams(newValue);
+    console.log(newValue);
+    if ("conversationId" in route.params) {
+      console.log("test");
+      for (const message of chatStore.messages) {
+        console.log(message.isRead);
+        if (
+          message.isRead === false &&
+          message.conversationId === parseInt(newValue.conversationId)
+        ) {
+          console.log("test2");
+          await chatStore.markAsRead(message.conversationId, message.id);
+        }
+      }
     }
   }
 );
 
 onMounted(async () => {
-  if ("userId" in route.params || "conversationId" in route.params) {
-    canSendMessage.value = true;
-  } else {
-    canSendMessage.value = false;
+  checkParams(route.params);
+  console.log(route.params);
+  if ("conversationId" in route.params) {
+    for (const message of chatStore.messages) {
+      if (
+        message.isRead === false &&
+        message.conversationId === parseInt(route.params.conversationId)
+      ) {
+        console.log("coucou");
+        await chatStore.markAsRead(message.conversationId, message.id);
+      }
+    }
   }
 });
 </script>

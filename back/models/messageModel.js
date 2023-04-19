@@ -15,7 +15,7 @@ const messageModel = (sequelize, DataTypes) => {
     },
     isRead: {
       type: DataTypes.BOOLEAN,
-      defaultValue: null,
+      defaultValue: false,
     },
   });
 };

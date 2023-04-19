@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { socket } from "../../socket.js";
+import { socket } from "../socket.js";
 import useUserStore from "./userStore.js";
 import axios from "axios";
 
@@ -9,6 +9,7 @@ const useChatStore = defineStore("chat", () => {
   const userStore = useUserStore();
   const conversations = ref([]);
   const messages = ref([]);
+  const nonReadMessages = ref(0);
   const conversationMode = ref(false);
   const newMessage = ref(false);
   const showMobileUsersList = ref(false);
@@ -75,7 +76,7 @@ const useChatStore = defineStore("chat", () => {
   };
   const createMessage = async (conversationId, data) => {
     const res = await axios({
-      url: `http://localhost:3000/api/conversations/messages/${conversationId}/create`,
+      url: `http://localhost:3000/api/conversations/${conversationId}/messages/create`,
       method: "POST",
       headers: {
         Authorization: `Bearer ${userStore.token}`,
@@ -101,7 +102,7 @@ const useChatStore = defineStore("chat", () => {
   };
   const getConversationMsg = async (conversationId, lastMessageViewed) => {
     const res = await axios({
-      url: `http://localhost:3000/api/conversations/messages/${conversationId}/getAll`,
+      url: `http://localhost:3000/api/conversations/${conversationId}/messages/getAll`,
       method: "GET",
       headers: {
         Authorization: `Bearer ${userStore.token}`,
@@ -117,6 +118,31 @@ const useChatStore = defineStore("chat", () => {
       return messages.value.push(...res.data);
     }
     messages.value = res.data;
+  };
+  const getNonReadMsg = async () => {
+    const res = await axios({
+      url: `http://localhost:3000/api/conversations/messages/getNonRead`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${userStore.token}`,
+      },
+    });
+    nonReadMessages.value = res.data.numberOfNonReadMessages;
+  };
+  const markAsRead = async (conversationId, messageId) => {
+    const res = await axios({
+      url: `http://localhost:3000/api/conversations/${conversationId}/messages/${messageId}/update`,
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${userStore.token}`,
+      },
+    });
+    const updatedMessage = res.data;
+    const indexMessage = messages.value.findIndex(
+      (m) => m.id === updatedMessage.id
+    );
+    messages.value[indexMessage].isRead = true;
+    nonReadMessages.value--;
   };
   const deleteMessage = async (conversationId, messageId) => {
     await axios({
@@ -135,6 +161,7 @@ const useChatStore = defineStore("chat", () => {
   function $reset() {
     conversations.value = [];
     messages.value = [];
+    nonReadMessages.value = [];
     conversationMode.value = false;
     newMessage.value = false;
     showMobileUsersList.value = false;
@@ -145,6 +172,7 @@ const useChatStore = defineStore("chat", () => {
     conversations,
     messages,
     newMessage,
+    nonReadMessages,
     conversationMode,
     showMobileUsersList,
     isDesktop,
@@ -154,6 +182,8 @@ const useChatStore = defineStore("chat", () => {
     updateConv,
     createMessage,
     getConversationMsg,
+    getNonReadMsg,
+    markAsRead,
     deleteMessage,
     $reset,
   };

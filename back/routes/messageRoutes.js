@@ -6,14 +6,20 @@ import messageCtrl from "../controllers/messageCtrl.js";
 const router = express.Router();
 
 router.post(
-  "/messages/:conversationId?/create",
+  "/:conversationId?/messages/create",
   auth,
   multerConfig,
   messageCtrl.create
 );
-router.get("/messages/:conversationId/getAll", auth, messageCtrl.getAll);
+router.get("/:conversationId/messages/getAll", auth, messageCtrl.getAll);
+router.get("/messages/getNonRead", auth, messageCtrl.getNonRead);
+router.put(
+  "/:conversationId/messages/:messageId/update",
+  auth,
+  messageCtrl.update
+);
 router.delete(
-  "/messages/:conversationId/:messageId/delete",
+  "/:conversationId/messages/:messageId/delete",
   auth,
   messageCtrl.delete
 );

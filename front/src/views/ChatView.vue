@@ -60,6 +60,11 @@ watch(
     chatStore.conversationMode =
       "userId" in newValue || "conversationId" in newValue;
     chatStore.showMobileUsersList = false;
+    if ("conversationId" in newValue) {
+      for (const message of chatStore.messages) {
+        message.isRead === false ? (message.isRead = true) : null;
+      }
+    }
   }
 );
 
@@ -70,6 +75,7 @@ onMounted(async () => {
   width.value > 768
     ? (chatStore.isDesktop = true)
     : (chatStore.isDesktop = false);
+  await chatStore.getNonReadMsg();
 });
 </script>
 
