@@ -75,7 +75,6 @@ onMounted(async () => {
   width.value > 768
     ? (chatStore.isDesktop = true)
     : (chatStore.isDesktop = false);
-  await chatStore.getNonReadMsg();
 });
 </script>
 

@@ -87,22 +87,28 @@ const messageCtrl = {
   },
   getNonRead: async (req, res) => {
     try {
-      const allMessages = await Message.findAll({
+      const usersConversation = await Conversation.findAll({
         where: {
-          isRead: false,
-          author: {
-            [Op.ne]: req.auth.userId,
-          },
+          [Op.or]: [{ user1: req.auth.userId }, { user2: req.auth.userId }],
         },
-        order: [
-          ["createdAt", "ASC"], // Du plus récent au moins récent
-        ],
       });
-      if (allMessages.length === 0) {
-        return res.status(200).send({ message: "No new messages" });
+      const usersConversationIds = usersConversation.map(
+        (conversation) => conversation.id
+      );
+      const unreadMessages = [];
+      for (let i = 0; i < usersConversationIds.length; i++) {
+        const messages = await Message.findAll({
+          where: {
+            conversationId: usersConversationIds[i],
+            isRead: false,
+            author: {
+              [Op.ne]: req.auth.userId,
+            },
+          },
+        });
+        unreadMessages.push(...messages);
       }
-      const numberOfNonReadMessages = allMessages.length;
-      res.status(200).send({ numberOfNonReadMessages });
+      res.status(200).send({ unreadMessages: unreadMessages.length });
     } catch {
       res.status(500).send();
     }

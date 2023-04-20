@@ -20,15 +20,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import usePostStore from "@//stores/postStore.js";
+import useChatStore from "@/stores/chatStore";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import CreatePost from "@/components/posts/CreatePost.vue";
 import PostContainer from "@/components/posts/PostContainer.vue";
 
 const emit = defineEmits(["sendRefs"]);
 const postStore = usePostStore();
+const chatStore = useChatStore();
 const showCreateModal = ref(false);
 const posts = ref(null);
 
@@ -43,6 +45,10 @@ useInfiniteScroll(
     distance: 10,
   }
 );
+
+onMounted(async () => {
+  await chatStore.getNonReadMsg();
+});
 </script>
 
 <style lang="scss" scoped>

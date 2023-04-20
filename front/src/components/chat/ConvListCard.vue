@@ -1,6 +1,6 @@
 <template>
   <a
-    @click="openConversation(conversation)"
+    @click="openConversation(conversation.id)"
     v-for="conversation of chatStore.conversations"
     :key="conversation.id"
     :id="conversation.id"
@@ -13,7 +13,9 @@
         {{ conversation.otherUser.lastname }}
       </h3>
       <div class="card__infos__content">
-        <p>
+        <p
+          :class="{ nonReadMessage: conversation.lastMessage.isRead === false }"
+        >
           {{
             conversation.lastMessage
               ? conversation.lastMessage.content
@@ -60,9 +62,14 @@ dayjs.updateLocale("fr", {
 
 const chatStore = useChatStore();
 
-const openConversation = (conversation) => {
+const openConversation = (conversationId) => {
   chatStore.newMessage = false;
-  router.push(`/messages/${conversation.id}`);
+  const conversation = chatStore.conversations.find(
+    (conv) => conv.id === conversationId
+  );
+  console.log(conversation.lastMessage);
+  router.push(`/messages/${conversationId}`);
+  conversation.lastMessage.isRead = false;
 };
 </script>
 
@@ -91,6 +98,7 @@ const openConversation = (conversation) => {
     overflow: hidden;
     & h3 {
       text-align: start;
+      font-weight: 500;
     }
     &__content {
       display: flex;
@@ -100,6 +108,9 @@ const openConversation = (conversation) => {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+      & .nonReadMessage {
+        font-weight: bold;
       }
       span {
         min-width: 50px;

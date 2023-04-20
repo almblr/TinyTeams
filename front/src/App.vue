@@ -9,10 +9,12 @@
 import { ref, watch, onMounted } from "vue";
 import { state, socket } from "./socket.js";
 import useNotifStore from "@/stores/notificationStore.js";
+import useChatStore from "@/stores/chatStore.js";
 
-const newNotif = ref(false);
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const notifStore = useNotifStore();
+const chatStore = useChatStore();
+const newNotif = ref(false);
 const notifContent = ref(null);
 const path = ref(null);
 
@@ -56,8 +58,15 @@ watch(state.newFollow, async (newValue) => {
   }
 });
 
-onMounted(() => {
+watch(state.newMessage, async (newValue) => {
+  if (newValue) {
+    chatStore.nonReadMessages++;
+  }
+});
+
+onMounted(async () => {
   userLS ? socket.emit("sendUserId", userLS.id) : null;
+  await chatStore.getNonReadMsg();
 });
 </script>
 

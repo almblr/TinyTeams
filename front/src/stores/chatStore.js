@@ -127,7 +127,9 @@ const useChatStore = defineStore("chat", () => {
         Authorization: `Bearer ${userStore.token}`,
       },
     });
-    nonReadMessages.value = res.data.numberOfNonReadMessages;
+    res.data.unreadMessages === 0
+      ? null
+      : (nonReadMessages.value = res.data.unreadMessages);
   };
   const markAsRead = async (conversationId, messageId) => {
     const res = await axios({

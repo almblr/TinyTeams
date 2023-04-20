@@ -62,6 +62,26 @@ const showProfilePicture = (index) => {
   }
 };
 
+const getConversation = async (routeParams) => {
+  if ("conversationId" in routeParams) {
+    const conversationId = parseInt(routeParams.conversationId);
+    conversation.value = chatStore.conversations.find(
+      (conv) => conv.id === conversationId
+    );
+    await chatStore.getConversationMsg(conversationId);
+    for (const message of chatStore.messages) {
+      if (
+        message.isRead === false &&
+        message.conversationId === conversationId
+      ) {
+        await chatStore.markAsRead(message.conversationId, message.id);
+      }
+    }
+  } else {
+    chatStore.messages = [];
+  }
+};
+
 watch(
   () => chatStore.messages.length,
   (newValue, oldValue) => {
@@ -76,41 +96,11 @@ watch(
 watch(
   () => route.params,
   async (newValue) => {
-    if ("conversationId" in newValue) {
-      conversation.value = await chatStore.getOneConv(
-        route.params.conversationId
-      );
-      await chatStore.getConversationMsg(route.params.conversationId);
-      for (const message of chatStore.messages) {
-        if (
-          message.isRead === false &&
-          message.conversationId === parseInt(newValue.conversationId)
-        ) {
-          await chatStore.markAsRead(message.conversationId, message.id);
-        }
-      }
-    } else {
-      chatStore.messages = [];
-    }
+    await getConversation(newValue);
   }
 );
 onMounted(async () => {
-  if ("conversationId" in route.params) {
-    conversation.value = await chatStore.getOneConv(
-      route.params.conversationId
-    );
-    await chatStore.getConversationMsg(route.params.conversationId);
-    for (const message of chatStore.messages) {
-      if (
-        message.isRead === false &&
-        message.conversationId === parseInt(route.params.conversationId)
-      ) {
-        await chatStore.markAsRead(message.conversationId, message.id);
-      }
-    }
-  } else {
-    chatStore.messages = [];
-  }
+  await getConversation(route.params);
 });
 </script>
 
