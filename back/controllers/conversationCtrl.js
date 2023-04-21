@@ -1,15 +1,6 @@
 import { Conversation, Message, User } from "../db/sequelize.js";
 import { Op } from "sequelize";
 
-const getAllUsers = async (conversation) => {
-  return await User.findAll({
-    where: {
-      id: [conversation.user1, conversation.user2],
-    },
-    attributes: ["id", "firstname", "lastname", "profilePicture"],
-  });
-};
-
 const getOneUser = async (userId) => {
   return await User.findOne({
     where: { id: userId },
@@ -48,8 +39,7 @@ const conversationCtrl = {
       );
       conversationToSend.setDataValue("otherUser", otherUser);
       res.status(201).send(conversationToSend);
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(500).send();
     }
   },
@@ -62,10 +52,9 @@ const conversationCtrl = {
         return res.status(404).send({ message: "Conversation not found" });
       }
       const otherUser =
-        conversation.user2 !== req.auth.userId
-          ? await getOneUser(conversation.user2)
-          : await getOneUser(conversation.user1);
-      conversation.setDataValue("otherUser", otherUser);
+        conversation.user1 !== req.auth.userId
+          ? await getOneUser(conversation.user1)
+          : await getOneUser(conversation.user2);
       const lastMessage = await Message.findOne({
         where: {
           conversationId: conversation.id,
@@ -81,7 +70,6 @@ const conversationCtrl = {
   },
   getAll: async (req, res) => {
     try {
-      console.log(req.auth.userId);
       const allConversations = await Conversation.findAll({
         where: {
           [Op.or]: [{ user1: req.auth.userId }, { user2: req.auth.userId }],
@@ -92,9 +80,9 @@ const conversationCtrl = {
       });
       for (const conversation of allConversations) {
         const otherUser =
-          conversation.user2 !== req.auth.userId
-            ? await getOneUser(conversation.user2)
-            : await getOneUser(conversation.user1);
+          conversation.user1 !== req.auth.userId
+            ? await getOneUser(conversation.user1)
+            : await getOneUser(conversation.user2);
         conversation.setDataValue("otherUser", otherUser);
         const lastMessage = await Message.findOne({
           where: {

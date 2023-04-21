@@ -18,6 +18,7 @@ import followRoutes from "./routes/followRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import { log } from "console";
 
 export const app = express();
 export const httpServer = createServer(app);
@@ -148,8 +149,8 @@ io.on("connection", (socket) => {
   socket.on("newComment", async (data) => {
     await createNotification(data, data.receiver, "notifComment");
   });
-  socket.on("newMessage", async (data) => {
-    await createNotification(data, data.receiver, "notifMessage");
+  socket.on("newMessage", async (receiver, message) => {
+    io.to(sessionsMap[receiver]).emit("notifMessage", message);
   });
 });
 
