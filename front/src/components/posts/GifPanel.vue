@@ -174,7 +174,7 @@ onMounted(() => {
   position: absolute;
   right: v-bind("tooltipStyle.right");
   left: v-bind("tooltipStyle.left");
-  z-index: 99;
+  z-index: 999;
   background: rgb(39, 39, 39);
   min-width: 250px;
   height: 310px;

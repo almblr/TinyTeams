@@ -1,7 +1,7 @@
 <template>
   <a
     @click="openConversation(conversation.id)"
-    v-for="conversation of chatStore.conversations"
+    v-for="conversation in chatStore.conversations"
     :key="conversation.id"
     :id="conversation.id"
     class="card"
@@ -23,8 +23,10 @@
           }}
         </p>
         <span>
-          ·
-          {{ dayjs(conversation.lastMessage?.createdAt).fromNow(true) }}
+          {{
+            " · " + dayjs(conversation.lastMessage?.createdAt).fromNow(true) ||
+            ""
+          }}
         </span>
       </div>
     </div>
@@ -32,6 +34,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -67,9 +70,10 @@ const openConversation = (conversationId) => {
   const conversation = chatStore.conversations.find(
     (conv) => conv.id === conversationId
   );
-  console.log(conversation.lastMessage);
   router.push(`/messages/${conversationId}`);
-  conversation.lastMessage.isRead = false;
+  if (conversation.lastMessage) {
+    conversation.lastMessage.isRead = true;
+  }
 };
 </script>
 

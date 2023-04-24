@@ -1,7 +1,7 @@
 import express from "express";
 import auth from "../middleware/auth.js";
 import multerConfig from "../middleware/multer-config.js";
-import messageCtrl from "../controllers/messageCtrl.js";
+import messageController from "../controllers/messageController.js";
 
 const router = express.Router();
 
@@ -9,19 +9,19 @@ router.post(
   "/:conversationId?/messages/create",
   auth,
   multerConfig,
-  messageCtrl.create
+  messageController.create
 );
-router.get("/:conversationId/messages/getAll", auth, messageCtrl.getAll);
-router.get("/messages/getNonRead", auth, messageCtrl.getNonRead);
+router.get("/:conversationId/messages/getAll", auth, messageController.getAll);
+router.get("/messages/getNonRead", auth, messageController.getNonRead);
 router.put(
   "/:conversationId/messages/:messageId/update",
   auth,
-  messageCtrl.update
+  messageController.update
 );
 router.delete(
   "/:conversationId/messages/:messageId/delete",
   auth,
-  messageCtrl.delete
+  messageController.delete
 );
 
 export default router;

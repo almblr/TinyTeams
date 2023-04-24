@@ -47,7 +47,7 @@ useInfiniteScroll(
 );
 
 onMounted(async () => {
-  await chatStore.getNonReadMsg();
+  await chatStore.getNonReadMessages();
 });
 </script>
 

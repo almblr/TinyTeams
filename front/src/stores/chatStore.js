@@ -15,6 +15,7 @@ const useChatStore = defineStore("chat", () => {
   const showMobileUsersList = ref(false);
   const isDesktop = ref(true);
 
+  /// CONVERSATIONS ///
   const createConversation = async (userId) => {
     const res = await axios({
       url: "http://localhost:3000/api/conversations/create",
@@ -29,7 +30,7 @@ const useChatStore = defineStore("chat", () => {
     conversations.value.unshift(res.data);
     return res.data;
   };
-  const getOneConv = async (conversationId) => {
+  const getOneConversation = async (conversationId) => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/getOne/${conversationId}`,
       headers: {
@@ -38,7 +39,7 @@ const useChatStore = defineStore("chat", () => {
     });
     return res.data;
   };
-  const getUserConvs = async (lastConversationViewed) => {
+  const getUserConversations = async (lastConversationViewed) => {
     let url = `http://localhost:3000/api/conversations/getAll/`;
     const res = await axios({
       url,
@@ -50,30 +51,15 @@ const useChatStore = defineStore("chat", () => {
       },
     });
     if (Object.values(res.data).includes("No more conversations")) {
-      return console.log("No more convs to load");
+      return;
     }
     if (lastConversationViewed) {
       return conversations.value.push(...res.data);
     }
     conversations.value = res.data;
   };
-  const updateConv = async (conversationId, lastMessageDate) => {
-    const res = await axios({
-      url: `http://localhost:3000/api/conversations/update/${conversationId}`,
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${userStore.token}`,
-      },
-      data: {
-        lastMessageDate,
-      },
-    });
-    const updatedConversation = res.data;
-    const indexConversation = conversations.value.findIndex(
-      (message) => message.id === updatedConversation.id
-    );
-    conversations.value.splice(indexConversation, 1, updatedConversation);
-  };
+
+  /// MESSAGES ///
   const createMessage = async (conversationId, data) => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/${conversationId}/messages/create`,
@@ -83,24 +69,13 @@ const useChatStore = defineStore("chat", () => {
       },
       data,
     });
-    const conversation = conversations.value.findIndex(
-      (c) => c.id === conversationId
-    );
-    conversations.value.splice(conversation, 1);
-    const newConv = await getOneConv(conversationId);
-    socket.emit("newMessage", {
-      senderId: userLS.id,
-      senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-      senderProfilePicture: userLS.profilePicture,
-      type: "newMessage",
-      notifiableId: res.data.id,
-      receiver: newConv.otherUser.id,
-      token: userStore.token,
-    });
-    conversations.value.unshift(newConv);
-    messages.value.push(res.data);
+    const conv = conversations.value.find((c) => c.id === conversationId);
+    socket.emit("newMessage", { id: conv.otherUser.id }, res.data.message);
+    conversations.value.splice(conv, 1);
+    conversations.value.unshift(res.data.conversation);
+    messages.value.push(res.data.message);
   };
-  const getConversationMsg = async (conversationId, lastMessageViewed) => {
+  const getConversationMessages = async (conversationId, lastMessageViewed) => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/${conversationId}/messages/getAll`,
       method: "GET",
@@ -115,11 +90,11 @@ const useChatStore = defineStore("chat", () => {
       return console.log("No more messages to load");
     }
     if (lastMessageViewed) {
-      return messages.value.push(...res.data);
+      return messages.value.unshift(...res.data);
     }
     messages.value = res.data;
   };
-  const getNonReadMsg = async () => {
+  const getNonReadMessages = async () => {
     const res = await axios({
       url: `http://localhost:3000/api/conversations/messages/getNonRead`,
       method: "GET",
@@ -160,6 +135,7 @@ const useChatStore = defineStore("chat", () => {
     messages.splice(foundMessage, 1);
   };
 
+  /// RESET ///
   function $reset() {
     conversations.value = [];
     messages.value = [];
@@ -179,12 +155,11 @@ const useChatStore = defineStore("chat", () => {
     showMobileUsersList,
     isDesktop,
     createConversation,
-    getOneConv,
-    getUserConvs,
-    updateConv,
+    getOneConversation,
+    getUserConversations,
     createMessage,
-    getConversationMsg,
-    getNonReadMsg,
+    getConversationMessages,
+    getNonReadMessages,
     markAsRead,
     deleteMessage,
     $reset,

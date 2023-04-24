@@ -1,6 +1,6 @@
 import { React } from "../db/sequelize.js";
 
-const reactionCtrl = {
+const reactionController = {
   react: async (req, res) => {
     const userId = req.auth.userId;
     const postId = req.params.postId;
@@ -36,4 +36,4 @@ const reactionCtrl = {
   },
 };
 
-export default reactionCtrl;
+export default reactionController;

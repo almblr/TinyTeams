@@ -60,13 +60,13 @@ watch(state.newFollow, async (newValue) => {
 
 watch(state.newMessage, async (newValue) => {
   if (newValue) {
+    chatStore.messages.push(newValue[0]);
     chatStore.nonReadMessages++;
   }
 });
 
 onMounted(async () => {
   userLS ? socket.emit("sendUserId", userLS.id) : null;
-  await chatStore.getNonReadMsg();
 });
 </script>
 

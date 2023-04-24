@@ -38,7 +38,6 @@ import ImagePreview from "@//components/layout/ImagePreview.vue";
 
 const { textarea, input } = useTextareaAutosize();
 const chatStore = useChatStore();
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const route = useRoute();
 const mediaToSend = ref(null);
 const mediaPreview = ref(null);

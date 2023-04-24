@@ -11,7 +11,7 @@
       >
     </div>
     <div class="chatbox__messagesList" ref="messagesList">
-      <div v-for="(message, index) in chatStore.messages">
+      <div v-for="(message, index) in sortedMessageArray">
         <div class="myMessages message" v-if="message.author === userLS.id">
           <p :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')">
             {{ message.content }}
@@ -34,8 +34,9 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from "vue";
+import { ref, computed, watch, onMounted, nextTick } from "vue";
 import { useRoute } from "vue-router";
+import { useInfiniteScroll } from "@vueuse/core";
 import useChatStore from "@/stores/chatStore.js";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
@@ -48,6 +49,28 @@ const chatStore = useChatStore();
 const userLS = JSON.parse(sessionStorage.getItem("user"));
 const conversation = ref(null);
 const messagesList = ref(null);
+
+const sortedMessageArray = computed(() => {
+  return chatStore.messages.sort((a, b) => {
+    return new Date(a.createdAt) - new Date(b.createdAt);
+  });
+});
+
+useInfiniteScroll(
+  messagesList,
+  async () => {
+    const lastMessage = chatStore.messages[0];
+    const lastMessageId = lastMessage.id;
+    await chatStore.getConversationMessages(
+      lastMessage.conversationId,
+      lastMessageId
+    );
+    return;
+  },
+  {
+    direction: "top",
+  }
+);
 
 const showProfilePicture = (index) => {
   const nextUserIdx = index + 1;
@@ -68,7 +91,7 @@ const getConversation = async (routeParams) => {
     conversation.value = chatStore.conversations.find(
       (conv) => conv.id === conversationId
     );
-    await chatStore.getConversationMsg(conversationId);
+    await chatStore.getConversationMessages(conversationId);
     for (const message of chatStore.messages) {
       if (
         message.isRead === false &&
@@ -77,8 +100,6 @@ const getConversation = async (routeParams) => {
         await chatStore.markAsRead(message.conversationId, message.id);
       }
     }
-  } else {
-    chatStore.messages = [];
   }
 };
 
@@ -88,6 +109,7 @@ watch(
     if (newValue > oldValue) {
       nextTick(() => {
         messagesList.value.scrollTop = messagesList.value.scrollHeight;
+        // Eviter de faire remonter quand on charge des anciens messages !
       });
     }
   }
@@ -99,6 +121,7 @@ watch(
     await getConversation(newValue);
   }
 );
+
 onMounted(async () => {
   await getConversation(route.params);
 });

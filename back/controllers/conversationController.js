@@ -11,7 +11,7 @@ const getOneUser = async (userId) => {
 ///////////////////////////////
 ///////////////////////////////
 
-const conversationCtrl = {
+const conversationController = {
   create: async (req, res) => {
     try {
       const isConversationExists = await Conversation.findOne({
@@ -121,4 +121,4 @@ const conversationCtrl = {
   },
 };
 
-export default conversationCtrl;
+export default conversationController;

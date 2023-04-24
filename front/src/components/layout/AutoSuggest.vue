@@ -34,16 +34,16 @@
 <script setup>
 import { ref } from "vue";
 import useUserStore from "@/stores/userStore.js";
+import useChatStore from "@/stores/chatStore.js";
 import router from "@/router/index.js";
 import { onClickOutside } from "@vueuse/core";
 
 const userStore = useUserStore();
-const chatStore = useUserStore();
+const chatStore = useChatStore();
 const users = ref(null);
 const tooltip = ref(null);
 const showTooltip = ref(false);
 const searchTerm = ref("");
-const selectedUser = ref("");
 
 const loadUsers = async () => {
   if (!searchTerm.value) return (users.value = null);
@@ -55,12 +55,19 @@ onClickOutside(tooltip, () => {
 });
 
 const selectUser = (user) => {
-  chatStore.newMessage = true;
-  selectedUser.value = user;
-  searchTerm.value = "";
-  chatStore.showContactList = false;
-  showTooltip.value = false;
-  router.push(`/messages/new/${user.id}`);
+  console.log(user.id);
+  const isConversationExist = chatStore.conversations.find(
+    (c) => c.user1 === user.id || c.user2 === user.id
+  );
+  if (isConversationExist) {
+    router.push(`/messages/${isConversationExist.id}`);
+  } else {
+    router.push(`/messages/new/${user.id}`);
+    chatStore.newMessage = true;
+    searchTerm.value = "";
+    chatStore.showContactList = false;
+    showTooltip.value = false;
+  }
 };
 </script>
 

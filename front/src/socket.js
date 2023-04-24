@@ -7,6 +7,7 @@ export const state = reactive({
   newFollow: [],
   newLike: [],
   newComment: [],
+  newMessage: [],
 });
 
 // "undefined" means the URL will be computed from the `window.location` object
@@ -32,7 +33,6 @@ socket.on("notifPost", (arg) => {
 
 socket.on("notifLike", (arg) => {
   state.newLike.unshift(arg);
-  // sound.play();
 });
 
 socket.on("notifComment", (arg) => {

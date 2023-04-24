@@ -22,6 +22,8 @@
 import { watch, onMounted } from "vue";
 import { useWindowSize } from "@vueuse/core";
 import { useRoute } from "vue-router";
+import { state } from "@/socket.js";
+import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import TheHeader from "@/components/layout/TheHeader.vue";
 import ConvList from "@/components/chat/ConvList.vue";
@@ -61,6 +63,13 @@ watch(
       "userId" in newValue || "conversationId" in newValue;
     chatStore.showMobileUsersList = false;
     if ("conversationId" in newValue) {
+      const conversationId = parseInt(newValue.conversationId);
+      const conversation = chatStore.conversations.find(
+        (conv) => conv.id === conversationId
+      );
+      conversation
+        ? (conversation.lastMessage.isRead = true)
+        : router.push(`/notfound/conversation/${route.params.conversationId}`);
       for (const message of chatStore.messages) {
         message.isRead === false ? (message.isRead = true) : null;
       }
@@ -68,10 +77,35 @@ watch(
   }
 );
 
+watch(
+  () => state.newMessage,
+  (newMessage) => {
+    if (newMessage.convId === route.params.convId) {
+      chatStore.messages.unshift(newMessage);
+      const conversation = chatStore.conversations.find(
+        (conv) => conv.convId === newMessage.convId
+      );
+      conversation.lastMessage = newMessage.content;
+    }
+  }
+);
+
 onMounted(async () => {
-  await chatStore.getUserConvs();
+  await chatStore.getUserConversations();
   chatStore.conversationMode =
     "conversationId" in route.params || "userId" in route.params;
+  if ("conversationId" in route.params) {
+    const conversationId = parseInt(route.params.conversationId);
+    const conversation = chatStore.conversations.find(
+      (conv) => conv.id === conversationId
+    );
+    conversation
+      ? (conversation.lastMessage.isRead = true)
+      : router.push(`/notfound/conversation/${route.params.conversationId}`);
+    for (const message of chatStore.messages) {
+      message.isRead === false ? (message.isRead = true) : null;
+    }
+  }
   width.value > 768
     ? (chatStore.isDesktop = true)
     : (chatStore.isDesktop = false);

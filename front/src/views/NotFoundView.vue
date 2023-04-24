@@ -23,6 +23,8 @@ const errorMessage = computed(() => {
       return "Nous sommes désolés, il semblerait que cet utilisateur n'existe pas";
     case "post":
       return "Le post que vous essayez de charger a peut-être été supprimé :(";
+    case "conversation":
+      return "La conversation que vous essayez de charger n'existe pas";
   }
 });
 </script>

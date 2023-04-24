@@ -28,12 +28,14 @@
 <script setup>
 import { ref } from "vue";
 import useUserStore from "@/stores/userStore.js";
+import useChatStore from "@/stores/chatStore.js";
 import router from "@/router/index.js";
 import UserForm from "@/components/users/UserForm.vue";
 import PasswordSwitcherButton from "@/components/buttons/PasswordSwitcherButton.vue";
 import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 
 const userStore = useUserStore();
+const chatStore = useChatStore();
 const inputType = ref("password");
 const showErrorMsg = ref(false);
 const data = ref({});
@@ -49,6 +51,7 @@ const initErrorMsg = () => {
 const login = async () => {
   const user = await userStore.login(data.value);
   !user ? initErrorMsg() : router.push("/feed");
+  await chatStore.getNonReadMessages();
 };
 </script>
 

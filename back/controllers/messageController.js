@@ -2,7 +2,15 @@ import { Message, Conversation, User } from "../db/sequelize.js";
 import { Op } from "sequelize";
 import fs from "fs";
 
-const messageCtrl = {
+const getOneUser = async (userId) => {
+  return await User.findOne({
+    where: { id: userId },
+    attributes: ["id", "firstname", "lastname", "profilePicture"],
+  });
+};
+
+/// MESSAGES CONTROLLER ///
+const messageController = {
   create: async (req, res) => {
     const { conversationId } = req.params;
     const { body, auth, protocol, get } = req;
@@ -45,7 +53,19 @@ const messageCtrl = {
       conversation.update({
         updatedAt: createdMessage.createdAt,
       });
-      return res.status(201).send(createdMessage);
+      const otherUser =
+        conversation.user2 !== req.auth.userId
+          ? await getOneUser(conversation.user2)
+          : await getOneUser(conversation.user1);
+      const lastMessage = await Message.findOne({
+        where: {
+          conversationId: conversation.id,
+        },
+        order: [["createdAt", "DESC"]],
+      });
+      conversation.setDataValue("lastMessage", lastMessage);
+      conversation.setDataValue("otherUser", otherUser);
+      return res.status(201).send({ message: createdMessage, conversation });
     } catch {
       return res.status(500).send();
     }
@@ -56,9 +76,7 @@ const messageCtrl = {
         where: {
           conversationId: req.params.conversationId,
         },
-        order: [
-          ["createdAt", "ASC"], // Du plus récent au moins récent
-        ],
+        order: [["createdAt", "DESC"]],
       });
       if ("lastMessageId" in req.query) {
         const lastMessage = allMessages.findIndex(
@@ -149,4 +167,4 @@ const messageCtrl = {
   },
 };
 
-export default messageCtrl;
+export default messageController;
