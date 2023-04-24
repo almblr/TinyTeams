@@ -8,12 +8,14 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { state, socket } from "./socket.js";
+import { useRoute } from "vue-router";
 import useNotifStore from "@/stores/notificationStore.js";
 import useChatStore from "@/stores/chatStore.js";
 
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const notifStore = useNotifStore();
 const chatStore = useChatStore();
+const route = useRoute();
 const newNotif = ref(false);
 const notifContent = ref(null);
 const path = ref(null);
@@ -58,9 +60,13 @@ watch(state.newFollow, async (newValue) => {
   }
 });
 
-watch(state.newMessage, async (newValue) => {
-  if (newValue) {
-    chatStore.messages.push(newValue[0]);
+watch(state.newMessage, async (newMessage) => {
+  if (newMessage) {
+    chatStore.messages.push(newMessage[0]);
+    const conversationId = parseInt(route.params.conversationId);
+    if (conversationId === newMessage[0].conversationId) {
+      return await chatStore.markAsRead(conversationId, newMessage[0].id);
+    }
     chatStore.nonReadMessages++;
   }
 });

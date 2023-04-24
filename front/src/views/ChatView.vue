@@ -23,7 +23,6 @@ import { watch, onMounted } from "vue";
 import { useWindowSize } from "@vueuse/core";
 import { useRoute } from "vue-router";
 import { state } from "@/socket.js";
-import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import TheHeader from "@/components/layout/TheHeader.vue";
 import ConvList from "@/components/chat/ConvList.vue";
@@ -67,9 +66,14 @@ watch(
       const conversation = chatStore.conversations.find(
         (conv) => conv.id === conversationId
       );
-      conversation
-        ? (conversation.lastMessage.isRead = true)
-        : router.push(`/notfound/conversation/${route.params.conversationId}`);
+      if (conversation) {
+        conversation.lastMessage
+          ? (conversation.lastMessage.isRead = true)
+          : null;
+      }
+      // conversation
+      //   ? (conversation.lastMessage.isRead = true)
+      //   : router.push(`/notfound/conversation/${route.params.conversationId}`);
       for (const message of chatStore.messages) {
         message.isRead === false ? (message.isRead = true) : null;
       }
@@ -99,9 +103,11 @@ onMounted(async () => {
     const conversation = chatStore.conversations.find(
       (conv) => conv.id === conversationId
     );
-    conversation
-      ? (conversation.lastMessage.isRead = true)
-      : router.push(`/notfound/conversation/${route.params.conversationId}`);
+    if (conversation) {
+      conversation.lastMessage
+        ? (conversation.lastMessage.isRead = true)
+        : null;
+    }
     for (const message of chatStore.messages) {
       message.isRead === false ? (message.isRead = true) : null;
     }

@@ -59,15 +59,19 @@ const sortedMessageArray = computed(() => {
 useInfiniteScroll(
   messagesList,
   async () => {
+    const oldScrollHeight = messagesList.value.scrollHeight;
     const lastMessage = chatStore.messages[0];
     const lastMessageId = lastMessage.id;
     await chatStore.getConversationMessages(
       lastMessage.conversationId,
       lastMessageId
     );
+    messagesList.value.scrollTop =
+      messagesList.value.scrollHeight - oldScrollHeight;
     return;
   },
   {
+    distance: 100,
     direction: "top",
   }
 );
@@ -104,13 +108,20 @@ const getConversation = async (routeParams) => {
 };
 
 watch(
-  () => chatStore.messages.length,
+  // On observe le dernier message
+  () => chatStore.messages[chatStore.messages.length - 1],
   (newValue, oldValue) => {
-    if (newValue > oldValue) {
+    // S'il y a un nouveau message, on scroll en bas
+    if (newValue !== oldValue) {
       nextTick(() => {
         messagesList.value.scrollTop = messagesList.value.scrollHeight;
-        // Eviter de faire remonter quand on charge des anciens messages !
       });
+      if (newValue.conversationId === parseInt(route.params.conversationId)) {
+        const conversation = chatStore.conversations.find(
+          (conv) => conv.id === newValue.conversationId
+        );
+        conversation.lastMessage.isRead = true;
+      }
     }
   }
 );
@@ -124,6 +135,9 @@ watch(
 
 onMounted(async () => {
   await getConversation(route.params);
+  nextTick(() => {
+    messagesList.value.scrollTop = messagesList.value.scrollHeight;
+  });
 });
 </script>
 

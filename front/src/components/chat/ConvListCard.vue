@@ -14,6 +14,7 @@
       </h3>
       <div class="card__infos__content">
         <p
+          v-if="conversation.lastMessage"
           :class="{ nonReadMessage: conversation.lastMessage.isRead === false }"
         >
           {{
@@ -22,6 +23,7 @@
               : "Voir pièce jointe"
           }}
         </p>
+        <p class="messageDeleted" v-else>Message supprimé</p>
         <span>
           {{
             " · " + dayjs(conversation.lastMessage?.createdAt).fromNow(true) ||
@@ -115,6 +117,9 @@ const openConversation = (conversationId) => {
       }
       & .nonReadMessage {
         font-weight: bold;
+      }
+      & .messageDeleted {
+        font-style: italic;
       }
       span {
         min-width: 50px;
