@@ -173,7 +173,7 @@ const sendContent = async (type) => {
     @include jcCt-aiCt;
   }
   .imagePreview {
-    max-width: 40%;
+    max-width: 300px;
     max-height: 300px;
   }
 }

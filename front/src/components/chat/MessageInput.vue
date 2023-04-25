@@ -31,7 +31,7 @@ import { socket } from "../../socket.js";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
-import { useTextareaAutosize } from "@vueuse/core";
+import { computedEager, useTextareaAutosize } from "@vueuse/core";
 import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
 import GifPanel from "@/components/posts/GifPanel.vue";
 import ImagePreview from "@//components/layout/ImagePreview.vue";
@@ -51,8 +51,11 @@ const deleteImagePreview = () => {
 const getGif = (path) => {
   gif.value = path;
   mediaPreview.value = path;
+  mediaToSend.value = path;
 };
 const getUrls = (path, file) => {
+  console.log(path);
+  console.log(file);
   if (file) {
     mediaToSend.value = file;
   } else {
@@ -62,6 +65,7 @@ const getUrls = (path, file) => {
 };
 
 const sendMessage = async () => {
+  console.log(mediaToSend.value);
   const formData = new FormData();
   const contentIsOnlySpaces = !input.value || input.value.trim().length === 0;
   if (contentIsOnlySpaces && !mediaToSend.value) {
@@ -92,38 +96,39 @@ const sendMessage = async () => {
 <style lang="scss" scoped>
 .container {
   display: flex;
+  flex-direction: column;
   bottom: 0;
   gap: 5px;
   width: 100%;
-  min-height: 40px;
-  max-height: 300px;
   padding: 5px;
   background-color: var(--textarea);
+  max-height: 350px;
   &__imagePreview {
     @include jcCt-aiCt;
     align-self: flex-start;
-    width: 70px;
-    min-height: 100px;
-    max-height: 100px;
+    max-width: 150px;
   }
   &__textarea {
     display: flex;
     align-items: center;
     max-height: 200px;
+    min-height: 30px;
     width: 100%;
-    overflow: hidden;
     & > textarea {
-      flex: 1;
-      min-height: 35px;
-      max-height: 100%;
-      padding: 5px 0 0 5px;
+      position: relative;
+      width: 100%;
+      min-height: 20px;
+      height: 20px;
+      max-height: 100px;
+      padding: 0 0 0 5px;
       font-size: 1.05rem;
       color: var(--textColorMain);
       caret-color: var(--textColorMain);
       background-color: transparent;
-      resize: none;
       border: none;
+      resize: none;
       overflow: auto;
+      margin-right: 10px;
       &::-webkit-scrollbar {
         width: 10px;
         cursor: auto;
@@ -145,6 +150,7 @@ const sendMessage = async () => {
         color: var(--placeholder);
       }
     }
+
     ion-icon {
       @include jcCt-aiCt;
       font-size: 1.3rem;

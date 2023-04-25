@@ -20,8 +20,6 @@ const props = defineProps({
   min-width: 100%;
   min-height: 100%;
   img {
-    max-width: 100%;
-    max-height: 100%;
     border-radius: 10px;
     object-fit: v-bind("props.size");
     background-color: rgb(0, 0, 0);
@@ -33,8 +31,8 @@ const props = defineProps({
   button {
     @include jcCt-aiCt;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 10px;
+    right: 10px;
     width: 25px;
     height: 25px;
     transition: 200ms;
