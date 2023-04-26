@@ -3,7 +3,6 @@ import fs from "fs";
 
 const commentController = {
   create: async (req, res) => {
-    console.log(req.files);
     if (
       !req.body.content &&
       Object.keys(req.files).length === 0 &&

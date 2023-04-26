@@ -18,7 +18,7 @@
           :class="{ nonReadMessage: conversation.lastMessage.isRead === false }"
         >
           {{
-            conversation.lastMessage
+            conversation.lastMessage.content
               ? conversation.lastMessage.content
               : "Voir pièce jointe"
           }}
@@ -26,8 +26,8 @@
         <p class="messageDeleted" v-else>Message supprimé</p>
         <span>
           {{
-            " · " + dayjs(conversation.lastMessage?.createdAt).fromNow(true) ||
-            ""
+            "&nbsp;· " +
+              dayjs(conversation.lastMessage?.createdAt).fromNow(true) || ""
           }}
         </span>
       </div>
@@ -122,7 +122,7 @@ const openConversation = (conversationId) => {
         font-style: italic;
       }
       span {
-        min-width: 50px;
+        min-width: 75px;
       }
     }
   }

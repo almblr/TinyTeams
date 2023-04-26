@@ -13,9 +13,13 @@
     <div class="chatbox__messagesList" ref="messagesList">
       <div v-for="(message, index) in sortedMessageArray">
         <div class="myMessages message" v-if="message.author === userLS.id">
-          <p :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')">
+          <p
+            v-if="message.content"
+            :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')"
+          >
             {{ message.content }}
           </p>
+          <img v-if="message.imageUrl" :src="message.imageUrl" alt="image" />
         </div>
         <div class="othersMessages message" v-else>
           <img
@@ -61,6 +65,7 @@ useInfiniteScroll(
   async () => {
     const oldScrollHeight = messagesList.value.scrollHeight;
     const lastMessage = chatStore.messages[0];
+    if (!lastMessage) return;
     const lastMessageId = lastMessage.id;
     await chatStore.getConversationMessages(
       lastMessage.conversationId,
@@ -89,20 +94,14 @@ const showProfilePicture = (index) => {
   }
 };
 
-const getConversation = async (routeParams) => {
-  if ("conversationId" in routeParams) {
-    const conversationId = parseInt(routeParams.conversationId);
-    conversation.value = chatStore.conversations.find(
-      (conv) => conv.id === conversationId
-    );
-    await chatStore.getConversationMessages(conversationId);
-    for (const message of chatStore.messages) {
-      if (
-        message.isRead === false &&
-        message.conversationId === conversationId
-      ) {
-        await chatStore.markAsRead(message.conversationId, message.id);
-      }
+const getConversation = async (conversationId) => {
+  conversation.value = chatStore.conversations.find(
+    (conv) => conv.id === conversationId
+  );
+  await chatStore.getConversationMessages(conversationId);
+  for (const message of chatStore.messages) {
+    if (message.isRead === false && message.conversationId === conversationId) {
+      await chatStore.markAsRead(message.conversationId, message.id);
     }
   }
 };
@@ -116,7 +115,10 @@ watch(
       nextTick(() => {
         messagesList.value.scrollTop = messagesList.value.scrollHeight;
       });
-      if (newValue.conversationId === parseInt(route.params.conversationId)) {
+      if (
+        newValue &&
+        newValue.conversationId === parseInt(route.params.conversationId)
+      ) {
         const conversation = chatStore.conversations.find(
           (conv) => conv.id === newValue.conversationId
         );
@@ -127,17 +129,26 @@ watch(
 );
 
 watch(
-  () => route.params,
-  async (newValue) => {
-    await getConversation(newValue);
+  () => route.params.conversationId,
+  async (newId) => {
+    if (newId) {
+      const conversationId = parseInt(newId);
+      await getConversation(conversationId);
+      nextTick(() => {
+        messagesList.value.scrollTop = messagesList.value.scrollHeight;
+        return;
+      });
+    }
   }
 );
 
 onMounted(async () => {
-  await getConversation(route.params);
+  const conversationId = parseInt(route.params.conversationId);
+  await getConversation(conversationId);
   nextTick(() => {
     messagesList.value.scrollTop = messagesList.value.scrollHeight;
   });
+  console.log("test");
 });
 </script>
 
@@ -220,8 +231,21 @@ onMounted(async () => {
       }
     }
     & .myMessages {
-      background-color: #0084ff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
       margin-left: auto;
+      & > p {
+        width: fit-content;
+        background-color: #0084ff;
+      }
+      & > img {
+        width: 100%;
+        max-width: 480px;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
     }
     & .othersMessages {
       display: flex;

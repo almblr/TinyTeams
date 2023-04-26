@@ -1,6 +1,6 @@
 <template>
   <div class="container" ref="container">
-    <div class="container__textarea" ref="containerTextarea">
+    <div class="container__textarea">
       <textarea
         :id="props.postId"
         :placeholder="props.placeholder"
@@ -32,11 +32,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { socket } from "../../socket.js";
 import useUserStore from "@/stores/userStore.js";
 import usePostStore from "@/stores/postStore.js";
-import useChatStore from "@/stores/chatStore.js";
 import { useTextareaAutosize } from "@vueuse/core";
 import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
 import GifPanel from "@/components/posts/GifPanel.vue";
@@ -61,9 +60,7 @@ const props = defineProps({
 
 const userStore = useUserStore();
 const postStore = usePostStore();
-const chatStore = useChatStore();
 const showing = ref(false);
-const containerTextarea = ref(null);
 const container = ref(null);
 const mediaToSend = ref(null);
 const mediaPreview = ref(null);
@@ -110,26 +107,14 @@ const sendContent = async (type) => {
   if (!contentIsOnlySpaces && !mediaToSend.value) {
     formData.append("content", input.value);
   }
-  switch (type) {
-    case "sendComment":
-      const comment = await postStore.createComment(props.postId, formData);
-      createNotificiation("newComment", comment.id, props.author, props.postId);
-      break;
-
-    case "sendMessage":
-      const message = await chatStore.createMessage(formData);
-      const conversation = chatStore.conversations.find(
-        (conv) => conv.id === props.conversationId
-      );
-      if (!conversation) {
-        await chatStore.createConversation(props.receiver.id);
-      }
-      createNotificiation("newMessage", message.id, props.receiver.id);
-      break;
-  }
+  const comment = await postStore.createComment(props.postId, formData);
+  createNotificiation("newComment", comment.id, props.author, props.postId);
   input.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
+  nextTick(() => {
+    textarea.value.style.height = "35px";
+  });
 };
 </script>
 

@@ -12,14 +12,14 @@ const getOneUser = async (userId) => {
 /// MESSAGES CONTROLLER ///
 const messageController = {
   create: async (req, res) => {
-    const { conversationId } = req.params;
-    const { body, auth, protocol, get } = req;
-    const { content, imageUrl } = body;
+    const { body, auth, protocol, files } = req;
     const { userId } = auth;
+    const { conversationId } = req.params;
+    const { content, imageUrl } = body;
+    if (!content && Object.keys(req.files).length === 0 && !imageUrl) {
+      return res.status(400).json({ message: "Empty message" });
+    }
     try {
-      if (!content && Object.keys(req.files).length === 0 && !imageUrl) {
-        return res.status(400).json({ message: "Empty message" });
-      }
       let conversation;
       if (!conversationId) {
         conversation = await Conversation.findOne({
@@ -43,9 +43,9 @@ const messageController = {
         author: userId,
         conversationId: conversation?.id || parseInt(conversationId),
         content: content || null,
-        imageUrl: imageUrl
-          ? `${protocol}://${get("host")}/images/${
-              req.files.imageUrl[0].filename
+        imageUrl: files.imageUrl
+          ? `${protocol}://${req.get("host")}/images/${
+              files.imageUrl[0].filename
             }`
           : imageUrl,
       });

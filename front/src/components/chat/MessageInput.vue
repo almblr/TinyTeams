@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { socket } from "../../socket.js";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
@@ -65,16 +65,15 @@ const getUrls = (path, file) => {
 };
 
 const sendMessage = async () => {
-  console.log(mediaToSend.value);
   const formData = new FormData();
   const contentIsOnlySpaces = !input.value || input.value.trim().length === 0;
   if (contentIsOnlySpaces && !mediaToSend.value) {
     return;
   }
-  if (contentIsOnlySpaces && mediaToSend.value) {
+  if (mediaToSend.value) {
     formData.append("imageUrl", mediaToSend.value);
   }
-  if (!contentIsOnlySpaces && !mediaToSend.value) {
+  if (input.value) {
     formData.append("content", input.value);
   }
   if (route.name === "newMessage") {
@@ -90,6 +89,9 @@ const sendMessage = async () => {
   input.value = "";
   mediaPreview.value = "";
   mediaToSend.value = "";
+  nextTick(() => {
+    textarea.value.style.height = "20px";
+  });
 };
 </script>
 
