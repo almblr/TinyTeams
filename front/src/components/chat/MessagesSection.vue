@@ -13,7 +13,7 @@
     <div class="chatbox__messagesList" ref="messagesList">
       <div v-for="(message, index) in sortedMessageArray">
         <h6 class="date" v-if="showDate(message, index)">
-          {{ date(message, index) }}
+          {{ date(message.createdAt) }}
         </h6>
         <div class="myMessages message" v-if="message.author === userLS.id">
           <p
@@ -64,7 +64,6 @@ const sortedMessageArray = computed(() => {
 });
 
 const showDate = (message, index) => {
-  if (sortedMessageArray.value.length === 0) return false;
   const previousMessage = sortedMessageArray.value[index - 1];
   if (!previousMessage) return true;
   const messageDate = dayjs(message.createdAt);
@@ -75,14 +74,13 @@ const showDate = (message, index) => {
   }
 };
 
-const date = (message, index) => {
-  const messageDate = dayjs(message.createdAt);
+const date = (messageDate) => {
+  const messageDatejs = dayjs(messageDate);
   const today = dayjs().format("DD/MM/YY");
-  if (today === messageDate.format("DD/MM/YY")) {
-    return messageDate.format("HH[h]mm");
-  } else {
-    return messageDate.format("DD/MM/YY à HH[h]mm");
+  if (today === messageDatejs.format("DD/MM/YY")) {
+    return messageDatejs.format("HH[h]mm");
   }
+  return messageDatejs.format("DD/MM/YY à HH[h]mm");
 };
 
 useInfiniteScroll(
