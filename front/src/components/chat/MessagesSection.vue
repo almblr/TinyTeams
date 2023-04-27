@@ -12,6 +12,9 @@
     </div>
     <div class="chatbox__messagesList" ref="messagesList">
       <div v-for="(message, index) in sortedMessageArray">
+        <h6 class="date" v-if="isFirstMessage(message)">
+          {{ dayjs(message.createdAt).format("DD/MM/YY à HH[h]mm") }}
+        </h6>
         <div class="myMessages message" v-if="message.author === userLS.id">
           <p
             v-if="message.content"
@@ -32,6 +35,9 @@
             {{ message.content }}
           </p>
         </div>
+        <h6 class="date" v-if="showDate(message, index)">
+          {{ date(message, index) }}
+        </h6>
       </div>
     </div>
   </section>
@@ -59,6 +65,40 @@ const sortedMessageArray = computed(() => {
     return new Date(a.createdAt) - new Date(b.createdAt);
   });
 });
+
+const isFirstMessage = (message) => {
+  const firstMessageArray = sortedMessageArray.value[0];
+  if (!firstMessageArray) return;
+  if (message.id === firstMessageArray.id) {
+    return true;
+  }
+};
+
+const showDate = (message, index) => {
+  const nextMessage = sortedMessageArray.value[index + 1];
+  if (!nextMessage) return;
+  const messageDate = dayjs(message.createdAt);
+  const nextMessageDate = dayjs(nextMessage.createdAt);
+  const diff = nextMessageDate.diff(messageDate, "hour");
+  if (diff > 1) {
+    return true;
+  }
+};
+
+const date = (message, index) => {
+  const nextMessage = sortedMessageArray.value[index + 1];
+  if (!nextMessage) return;
+  const messageDate = dayjs(message.createdAt);
+  const nextMessageDate = dayjs(nextMessage.createdAt);
+  const difference = nextMessageDate.diff(messageDate, "hour");
+  console.log(difference);
+  if (difference < 24 && difference > 1) {
+    return nextMessageDate.format("HH[h]mm");
+  }
+  if (difference >= 24) {
+    return nextMessageDate.format("DD/MM/YY à HH[h]mm");
+  }
+};
 
 useInfiniteScroll(
   messagesList,
@@ -164,7 +204,7 @@ onMounted(async () => {
   &::-webkit-scrollbar {
     display: none;
   }
-  & * {
+  & *:not(p) {
     color: var(--textColorMain);
   }
   &__header {
@@ -220,6 +260,15 @@ onMounted(async () => {
     &::-webkit-scrollbar {
       display: none;
     }
+    & .date {
+      font-weight: 300;
+      font-size: 0.8rem;
+      font-style: italic;
+      text-align: center;
+      margin: 20px 0;
+      width: 100%;
+      color: var(--textColorSecond);
+    }
     & .message {
       max-width: 60%;
       width: fit-content;
@@ -228,6 +277,7 @@ onMounted(async () => {
       & p {
         padding: 10px;
         border-radius: 10px;
+        color: white;
       }
     }
     & .myMessages {
