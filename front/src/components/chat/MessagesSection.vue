@@ -12,8 +12,8 @@
     </div>
     <div class="chatbox__messagesList" ref="messagesList">
       <div v-for="(message, index) in sortedMessageArray">
-        <h6 class="date" v-if="isFirstMessage(message)">
-          {{ dayjs(message.createdAt).format("DD/MM/YY à HH[h]mm") }}
+        <h6 class="date" v-if="showDate(message, index)">
+          {{ date(message, index) }}
         </h6>
         <div class="myMessages message" v-if="message.author === userLS.id">
           <p
@@ -35,9 +35,6 @@
             {{ message.content }}
           </p>
         </div>
-        <h6 class="date" v-if="showDate(message, index)">
-          {{ date(message, index) }}
-        </h6>
       </div>
     </div>
   </section>
@@ -66,37 +63,25 @@ const sortedMessageArray = computed(() => {
   });
 });
 
-const isFirstMessage = (message) => {
-  const firstMessageArray = sortedMessageArray.value[0];
-  if (!firstMessageArray) return;
-  if (message.id === firstMessageArray.id) {
-    return true;
-  }
-};
-
 const showDate = (message, index) => {
-  const nextMessage = sortedMessageArray.value[index + 1];
-  if (!nextMessage) return;
+  if (sortedMessageArray.value.length === 0) return false;
+  const previousMessage = sortedMessageArray.value[index - 1];
+  if (!previousMessage) return true;
   const messageDate = dayjs(message.createdAt);
-  const nextMessageDate = dayjs(nextMessage.createdAt);
-  const diff = nextMessageDate.diff(messageDate, "hour");
-  if (diff > 1) {
+  const previousMessageDate = dayjs(previousMessage.createdAt);
+  const diff = messageDate.diff(previousMessageDate, "hour");
+  if (diff >= 1) {
     return true;
   }
 };
 
 const date = (message, index) => {
-  const nextMessage = sortedMessageArray.value[index + 1];
-  if (!nextMessage) return;
   const messageDate = dayjs(message.createdAt);
-  const nextMessageDate = dayjs(nextMessage.createdAt);
-  const difference = nextMessageDate.diff(messageDate, "hour");
-  console.log(difference);
-  if (difference < 24 && difference > 1) {
-    return nextMessageDate.format("HH[h]mm");
-  }
-  if (difference >= 24) {
-    return nextMessageDate.format("DD/MM/YY à HH[h]mm");
+  const today = dayjs().format("DD/MM/YY");
+  if (today === messageDate.format("DD/MM/YY")) {
+    return messageDate.format("HH[h]mm");
+  } else {
+    return messageDate.format("DD/MM/YY à HH[h]mm");
   }
 };
 
@@ -188,7 +173,6 @@ onMounted(async () => {
   nextTick(() => {
     messagesList.value.scrollTop = messagesList.value.scrollHeight;
   });
-  console.log("test");
 });
 </script>
 
