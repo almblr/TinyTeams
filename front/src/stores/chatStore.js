@@ -71,7 +71,8 @@ const useChatStore = defineStore("chat", () => {
     });
     const conv = conversations.value.find((c) => c.id === conversationId);
     socket.emit("newMessage", { id: conv.otherUser.id }, res.data.message);
-    conversations.value.splice(conv, 1);
+    const convIdx = conversations.value.indexOf(conv);
+    conversations.value.splice(convIdx, 1);
     conversations.value.unshift(res.data.conversation);
     messages.value.push(res.data.message);
   };

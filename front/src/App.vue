@@ -74,7 +74,8 @@ watch(state.newMessage, async (newValue) => {
     const conversionUpdated = await chatStore.getOneConversation(
       newValue[0].conversationId
     );
-    chatStore.conversations.splice(conversationIndex, 1, conversionUpdated);
+    chatStore.conversations.splice(conversationIndex, 1);
+    chatStore.conversations.unshift(conversionUpdated);
     chatStore.nonReadMessages++;
   }
 });

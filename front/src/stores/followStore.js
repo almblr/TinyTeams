@@ -15,7 +15,7 @@ const useFollowStore = defineStore("follow", () => {
         Authorization: `Bearer ${userStore.token}`,
       },
     });
-    this.follows.push(res.data);
+    follows.value.push(res.data);
     return res.data;
   };
   const getOne = async (userId) => {
@@ -27,7 +27,7 @@ const useFollowStore = defineStore("follow", () => {
     });
     Object.values(res.data).includes("Follow not found")
       ? false
-      : this.follows.push(res.data);
+      : follows.value.push(res.data);
   };
   const unfollow = async (followId) => {
     const res = await axios({
@@ -37,9 +37,9 @@ const useFollowStore = defineStore("follow", () => {
         Authorization: `Bearer ${userStore.token}`,
       },
     });
-    const follow = this.follows.find((follow) => follow.id === followId);
-    const followIndex = this.follows.indexOf(follow);
-    this.follows.splice(followIndex, 1);
+    const follow = follows.value.find((follow) => follow.id === followId);
+    const followIndex = follows.value.indexOf(follow);
+    follows.value.splice(followIndex, 1);
   };
 
   function $reset() {

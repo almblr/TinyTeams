@@ -31,12 +31,15 @@
           }}
         </span>
       </div>
+      <div
+        v-if="!conversation.lastMessage.isRead"
+        class="conversationBadge"
+      ></div>
     </div>
   </a>
 </template>
 
 <script setup>
-import { computed } from "vue";
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -47,7 +50,6 @@ dayjs.locale("fr");
 dayjs.extend(relativeTime);
 dayjs.extend(UpdateLocale);
 dayjs.updateLocale("fr", {
-  // Configuration des unités de temps pour les minutes
   relativeTime: {
     future: "dans %s",
     past: "il y a %s",
@@ -81,6 +83,7 @@ const openConversation = (conversationId) => {
 
 <style lang="scss" scoped>
 .card {
+  position: relative;
   display: flex;
   align-items: center;
   max-width: 100%;
@@ -125,6 +128,15 @@ const openConversation = (conversationId) => {
         min-width: 75px;
       }
     }
+  }
+  & .conversationBadge {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 10px;
+    height: 10px;
+    border-radius: 99px;
+    background-color: #2e89ff;
   }
 }
 </style>

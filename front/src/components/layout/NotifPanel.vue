@@ -27,7 +27,7 @@
           </p>
           <span>{{ dayjs().to(dayjs(notif.createdAt)) }}</span>
         </div>
-        <div v-if="notif.isRead === false" class="notificationBadge"></div>
+        <div v-if="!notif.isRead" class="notificationBadge"></div>
       </router-link>
     </div>
   </div>

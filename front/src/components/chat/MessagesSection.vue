@@ -26,14 +26,19 @@
         </div>
         <div class="othersMessages message" v-else>
           <img
+            class="profilePicture"
             v-if="showProfilePicture(index)"
             :src="conversation.otherUser.profilePicture"
             alt="profilePicture"
           />
           <div v-else class="noImg"></div>
-          <p :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')">
+          <p
+            v-if="message.content"
+            :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')"
+          >
             {{ message.content }}
           </p>
+          <img v-if="message.imageUrl" :src="message.imageUrl" alt="image" />
         </div>
       </div>
     </div>
@@ -83,27 +88,11 @@ const date = (messageDate) => {
   return messageDatejs.format("DD/MM/YY à HH[h]mm");
 };
 
-useInfiniteScroll(
-  messagesList,
-  async () => {
-    const oldScrollHeight = messagesList.value.scrollHeight;
-    const lastMessage = chatStore.messages[0];
-    if (!lastMessage) return;
-    const lastMessageId = lastMessage.id;
-    await chatStore.getConversationMessages(
-      lastMessage.conversationId,
-      lastMessageId
-    );
-    messagesList.value.scrollTop =
-      messagesList.value.scrollHeight - oldScrollHeight;
-    return;
-  },
-  {
-    distance: 100,
-    direction: "top",
-  }
-);
-
+const scrollToLastMessage = () => {
+  nextTick(() => {
+    messagesList.value.scrollTop = messagesList.value.scrollHeight;
+  });
+};
 const showProfilePicture = (index) => {
   const nextUserIdx = index + 1;
   if (nextUserIdx === chatStore.messages.length) {
@@ -135,9 +124,7 @@ watch(
   (newValue, oldValue) => {
     // S'il y a un nouveau message, on scroll en bas
     if (newValue !== oldValue) {
-      nextTick(() => {
-        messagesList.value.scrollTop = messagesList.value.scrollHeight;
-      });
+      scrollToLastMessage();
       if (
         newValue &&
         newValue.conversationId === parseInt(route.params.conversationId)
@@ -165,12 +152,33 @@ watch(
   }
 );
 
+useInfiniteScroll(
+  messagesList,
+  async () => {
+    const oldScrollHeight = messagesList.value.scrollHeight;
+    const lastMessage = chatStore.messages[0];
+    if (!lastMessage) return;
+    const lastMessageId = lastMessage.id;
+    await chatStore.getConversationMessages(
+      lastMessage.conversationId,
+      lastMessageId
+    );
+    messagesList.value.scrollTop =
+      messagesList.value.scrollHeight - oldScrollHeight;
+    return;
+  },
+  {
+    distance: 100,
+    direction: "top",
+  }
+);
+
 onMounted(async () => {
-  const conversationId = parseInt(route.params.conversationId);
-  await getConversation(conversationId);
-  nextTick(() => {
-    messagesList.value.scrollTop = messagesList.value.scrollHeight;
-  });
+  if (route.params.conversationId) {
+    const conversationId = parseInt(route.params.conversationId);
+    await getConversation(conversationId);
+    scrollToLastMessage();
+  }
 });
 </script>
 
@@ -259,7 +267,6 @@ onMounted(async () => {
       & p {
         padding: 10px;
         border-radius: 10px;
-        color: white;
       }
     }
     & .myMessages {
@@ -270,6 +277,7 @@ onMounted(async () => {
       & > p {
         width: fit-content;
         background-color: #0084ff;
+        color: white;
       }
       & > img {
         width: 100%;
@@ -284,14 +292,21 @@ onMounted(async () => {
       align-items: flex-end;
       margin-right: auto;
       gap: 5px;
-      & p {
-        background-color: var(--messageBg);
-      }
-      & img {
+      & .profilePicture {
         width: 35px;
         height: 35px;
         object-fit: cover;
         border-radius: 50%;
+      }
+      & p {
+        background-color: var(--messageBg);
+      }
+      & img {
+        width: 100%;
+        max-width: 480px;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
       }
       & .noImg {
         min-width: 35px;

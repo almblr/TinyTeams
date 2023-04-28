@@ -35,7 +35,7 @@ const getUser = async (id) => {
   loggedInUserProfile.value = id === userLS.id;
 };
 
-watch(() => route.params.id, getUser);
+watch(() => route.params.userId, getUser);
 onMounted(() => getUser(route.params.userId));
 
 useInfiniteScroll(
