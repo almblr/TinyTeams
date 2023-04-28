@@ -61,19 +61,29 @@ watch(state.newFollow, async (newValue) => {
   }
 });
 
-watch(state.newMessage, async (newMessage) => {
-  if (newMessage) {
-    chatStore.messages.push(newMessage[0]);
-    const conversationId = parseInt(route.params.conversationId);
-    if (conversationId === newMessage[0].conversationId) {
-      return await chatStore.markAsRead(conversationId, newMessage[0].id);
+watch(state.newMessage, async (newValue) => {
+  if (newValue) {
+    const conversationIdParam = parseInt(route.params.conversationId);
+    if (conversationIdParam === newValue[0].conversationId) {
+      chatStore.messages.push(newValue[0]);
+      await chatStore.markAsRead(conversationIdParam, newValue[0].id);
     }
+    const conversationIndex = chatStore.conversations.findIndex(
+      (c) => c.id === newValue[0].conversationId
+    );
+    const conversionUpdated = await chatStore.getOneConversation(
+      newValue[0].conversationId
+    );
+    chatStore.conversations.splice(conversationIndex, 1, conversionUpdated);
     chatStore.nonReadMessages++;
   }
 });
 
 onMounted(async () => {
   userLS ? socket.emit("sendUserId", userLS.id) : null;
+  if (route.name !== "Login" && route.name !== "Signup") {
+    await chatStore.getNonReadMessages();
+  }
 });
 </script>
 

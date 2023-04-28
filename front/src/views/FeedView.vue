@@ -45,10 +45,6 @@ useInfiniteScroll(
     distance: 10,
   }
 );
-
-onMounted(async () => {
-  await chatStore.getNonReadMessages();
-});
 </script>
 
 <style lang="scss" scoped>

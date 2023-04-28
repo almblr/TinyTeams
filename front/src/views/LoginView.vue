@@ -51,7 +51,6 @@ const initErrorMsg = () => {
 const login = async () => {
   const user = await userStore.login(data.value);
   !user ? initErrorMsg() : router.push("/feed");
-  await chatStore.getNonReadMessages();
 };
 </script>
 

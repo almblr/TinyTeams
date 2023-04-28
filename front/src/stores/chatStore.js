@@ -73,6 +73,7 @@ const useChatStore = defineStore("chat", () => {
     socket.emit("newMessage", { id: conv.otherUser.id }, res.data.message);
     conversations.value.splice(conv, 1);
     conversations.value.unshift(res.data.conversation);
+    messages.value.push(res.data.message);
   };
   const getConversationMessages = async (conversationId, lastMessageViewed) => {
     const res = await axios({
@@ -117,7 +118,7 @@ const useChatStore = defineStore("chat", () => {
     const indexMessage = messages.value.findIndex(
       (m) => m.id === updatedMessage.id
     );
-    messages.value[indexMessage].isRead = true;
+    messages.value.splice(indexMessage, 1, updatedMessage);
     nonReadMessages.value--;
   };
   const deleteMessage = async (conversationId, messageId) => {

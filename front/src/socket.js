@@ -39,6 +39,7 @@ socket.on("notifComment", (arg) => {
   state.newComment.unshift(arg);
 });
 
-socket.on("notifMessage", (arg) => {
-  state.newMessage.unshift(arg);
+socket.on("notifMessage", (message, conversationUpdated) => {
+  state.newMessage.length = 0;
+  state.newMessage.unshift(message, conversationUpdated);
 });

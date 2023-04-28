@@ -81,19 +81,6 @@ watch(
   }
 );
 
-watch(
-  () => state.newMessage,
-  (newMessage) => {
-    if (newMessage.convId === route.params.convId) {
-      chatStore.messages.unshift(newMessage);
-      const conversation = chatStore.conversations.find(
-        (conv) => conv.convId === newMessage.convId
-      );
-      conversation.lastMessage = newMessage.content;
-    }
-  }
-);
-
 onMounted(async () => {
   await chatStore.getUserConversations();
   chatStore.conversationMode =
