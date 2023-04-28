@@ -73,7 +73,6 @@ const useChatStore = defineStore("chat", () => {
     socket.emit("newMessage", { id: conv.otherUser.id }, res.data.message);
     conversations.value.splice(conv, 1);
     conversations.value.unshift(res.data.conversation);
-    messages.value.push(res.data.message);
   };
   const getConversationMessages = async (conversationId, lastMessageViewed) => {
     const res = await axios({

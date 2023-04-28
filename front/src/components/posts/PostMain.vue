@@ -105,7 +105,7 @@ const updateLike = async () => {
     thumbColor.value = "#2374e1";
     return true;
   } else {
-    thumbColor.value = "rgba(133, 133, 133, 0.5)";
+    thumbColor.value = "#85858580";
     await postStore.likePost(props.post.id);
     return false;
   }
@@ -126,7 +126,7 @@ watch(editingMode, () => {
 
 onMounted(() => {
   doesUserLike.value
-    ? (thumbColor.value = "rgba(133, 133, 133, 0.5)")
+    ? (thumbColor.value = "#85858580")
     : (thumbColor.value = "#2374e1");
 });
 </script>
