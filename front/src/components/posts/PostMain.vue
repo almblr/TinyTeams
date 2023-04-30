@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from "vue";
+import { ref, watch, computed, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
 import { socket, state } from "../../socket.js";
 import router from "@/router/index.js";
@@ -58,6 +58,7 @@ const editingMode = ref(false);
 const showMoreButton = ref(false);
 const thumbColor = ref(null);
 const postContent = ref(null);
+const doesUserLike = ref(null);
 
 const displayedContent = computed(() => {
   if (showMoreButton.value === false && props.post.content.length > 500) {
@@ -75,22 +76,9 @@ const showMore = () => {
   showMoreButton.value = false;
 };
 
-const doesUserLike = computed(() => {
-  const thisPost = postStore.posts.find((post) => post.id === props.post.id);
-  const postReactions = thisPost.reactions;
-  const doesUserLike = postReactions.find(
-    (react) => react.userId === userLS.id
-  );
-  if (doesUserLike === undefined) {
-    return true;
-  } else {
-    return false;
-  }
-});
-
 /* Met à jour le like d'un post et l'affichage des posts */
 const updateLike = async () => {
-  if (doesUserLike.value === true) {
+  if (!doesUserLike.value) {
     const like = await postStore.likePost(props.post.id);
     socket.emit("newLike", {
       senderId: userLS.id,
@@ -102,12 +90,10 @@ const updateLike = async () => {
       receiver: props.post.author,
       token: userStore.token,
     });
-    thumbColor.value = "#2374e1";
-    return true;
+    doesUserLike.value = true;
   } else {
-    thumbColor.value = "#85858580";
     await postStore.likePost(props.post.id);
-    return false;
+    doesUserLike.value = false;
   }
 };
 
@@ -120,14 +106,26 @@ watch(
   }
 );
 
+watch(
+  () => doesUserLike.value,
+  (newValue) => {
+    newValue
+      ? (thumbColor.value = "#2374e1")
+      : (thumbColor.value = "#85858580");
+  }
+);
+
 watch(editingMode, () => {
   emit("update:postToEdit", null);
 });
 
-onMounted(() => {
-  doesUserLike.value
-    ? (thumbColor.value = "#85858580")
-    : (thumbColor.value = "#2374e1");
+onBeforeMount(() => {
+  const thisPost = postStore.posts.find((post) => post.id === props.post.id);
+  const postReactions = thisPost.reactions;
+  doesUserLike.value = postReactions.find((like) => like.userId === userLS.id)
+    ? true
+    : false;
+  doesUserLike.value ? "#2374e1" : "#85858580";
 });
 </script>
 

@@ -70,7 +70,7 @@ const logout = () => {
     right: 0;
     top: 40px;
     z-index: 9999;
-    background: rgb(44, 43, 43);
+    background: var(--backgroundMain);
     box-shadow: 5px 5px 20px #000000c7;
     margin-top: 3px;
     border-radius: 5px;
@@ -83,13 +83,14 @@ const logout = () => {
       height: 40px;
       width: 100%;
       text-decoration: none;
-      color: white;
+      color: var(--textColorMain);
       font-size: 19px;
       text-align: center;
       border-bottom: none;
       gap: 20px;
+      transition: 200ms;
       &:hover {
-        background: rgb(39, 39, 39);
+        background: var(--hover);
       }
     }
   }

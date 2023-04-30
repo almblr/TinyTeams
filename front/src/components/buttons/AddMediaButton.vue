@@ -1,7 +1,8 @@
 <template>
   <div class="file__label" title="Insérez une image">
     <label id="custom-label"
-      ><ion-icon name="camera"></ion-icon>
+      ><span v-if="route.name === 'Settings'">Modifier votre photo</span>
+      <ion-icon v-else name="camera"></ion-icon>
       <input
         type="file"
         accept="image/png, image/jpg, image/jpeg"
@@ -12,12 +13,15 @@
 </template>
 
 <script setup>
+import { useRoute } from "vue-router";
 const emit = defineEmits(["showUploadedImg"]);
 const props = defineProps({
   color: {
     type: String,
   },
 });
+
+const route = useRoute();
 
 const GetUploadedImg = (event) => {
   const blop = URL.createObjectURL(event.target.files[0]);
@@ -39,8 +43,13 @@ label {
   width: 30px;
   height: 25px;
   border-radius: 5px;
-  &:hover {
-    background-color: var(--addMediaBackground);
+  span {
+    font-size: 1rem;
+  }
+  ion-icon {
+    &:hover {
+      background-color: var(--addMediaBackground);
+    }
   }
 }
 </style>
