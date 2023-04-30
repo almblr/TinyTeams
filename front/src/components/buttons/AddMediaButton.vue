@@ -40,7 +40,7 @@ label {
   font-size: 1.5rem;
   color: v-bind("props.color");
   cursor: pointer;
-  width: 30px;
+  width: v-bind('route.name === "Settings" ? "auto" : "30px"');
   height: 25px;
   border-radius: 5px;
   span {

@@ -2,7 +2,7 @@
   <div id="chatarea-container">
     <main>
       <NewConvPreview v-if="route.name === 'newMessage'" />
-      <MessagesSection v-else />
+      <MessagesSection v-if="route.params" />
     </main>
     <MessageInput v-if="canSendMessage" />
   </div>

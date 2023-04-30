@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from "vue";
+import { ref, computed, watch, onMounted, nextTick, onUpdated } from "vue";
 import { useRoute } from "vue-router";
 import { useInfiniteScroll } from "@vueuse/core";
 import useChatStore from "@/stores/chatStore.js";
@@ -145,8 +145,7 @@ watch(
       const conversationId = parseInt(newId);
       await getConversation(conversationId);
       nextTick(() => {
-        messagesList.value.scrollTop = messagesList.value.scrollHeight;
-        return;
+        return (messagesList.value.scrollTop = messagesList.value.scrollHeight);
       });
     }
   }
@@ -174,10 +173,30 @@ useInfiniteScroll(
 );
 
 onMounted(async () => {
-  if (route.params.conversationId) {
-    const conversationId = parseInt(route.params.conversationId);
-    await getConversation(conversationId);
-    scrollToLastMessage();
+  const conversationId = parseInt(route.params.conversationId);
+  await getConversation(conversationId);
+  // On attend que les images soient chargées
+  // pour scroller en bas
+  const images = messagesList.value.getElementsByTagName("img");
+  let loadedImages = 0;
+  Array.from(images).forEach((img) => {
+    if (img.complete) {
+      loadedImages++;
+    } else {
+      img.addEventListener("load", () => {
+        loadedImages++;
+        if (loadedImages === images.length) {
+          nextTick(() => {
+            messagesList.value.scrollTop = messagesList.value.scrollHeight;
+          });
+        }
+      });
+    }
+  });
+  if (loadedImages === images.length) {
+    nextTick(() => {
+      messagesList.value.scrollTop = messagesList.value.scrollHeight;
+    });
   }
 });
 </script>
@@ -281,7 +300,6 @@ onMounted(async () => {
       }
       & > img {
         width: 100%;
-        max-width: 480px;
         max-height: 200px;
         object-fit: cover;
         border-radius: 10px;

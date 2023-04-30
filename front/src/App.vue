@@ -82,9 +82,6 @@ watch(state.newMessage, async (newValue) => {
 
 onMounted(async () => {
   userLS ? socket.emit("sendUserId", userLS.id) : null;
-  if (route.name !== "Login" && route.name !== "Signup") {
-    await chatStore.getNonReadMessages();
-  }
 });
 </script>
 
@@ -94,8 +91,6 @@ onMounted(async () => {
 
 #app {
   height: 100vh;
-  min-width: 100%;
-  overflow-y: hidden;
 }
 
 *,

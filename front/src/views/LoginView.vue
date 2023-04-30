@@ -35,7 +35,6 @@ import PasswordSwitcherButton from "@/components/buttons/PasswordSwitcherButton.
 import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 
 const userStore = useUserStore();
-const chatStore = useChatStore();
 const inputType = ref("password");
 const showErrorMsg = ref(false);
 const data = ref({});

@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 import useUserStore from "@/stores/userStore";
 import InputSettings from "@/components/settings/InputSettings.vue";
 import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
@@ -68,14 +68,18 @@ const updatedPassword = ref({
 
 const profilePictureFunctions = {
   get: (blop, file) => {
-    imageBlop.value = blop;
-    updatedUser.value.profilePicture = file;
-    canRemoveNewPicture.value = true;
+    nextTick(() => {
+      imageBlop.value = blop;
+      updatedUser.value.profilePicture = file;
+      canRemoveNewPicture.value = true;
+    });
   },
   remove: () => {
-    imageBlop.value = null;
-    updatedUser.value.profilePicture = userLS.value.profilePicture;
-    canRemoveNewPicture.value = false;
+    nextTick(() => {
+      imageBlop.value = null;
+      updatedUser.value.profilePicture = userLS.value.profilePicture;
+      canRemoveNewPicture.value = false;
+    });
   },
 };
 

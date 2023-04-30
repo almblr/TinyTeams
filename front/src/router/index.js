@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import useChatStore from "@/stores/chatStore.js";
 import Login from "@/views/LoginView.vue";
 import Feed from "@/views/FeedView.vue";
 import Signup from "@/views/SignupView.vue";
@@ -53,7 +54,7 @@ const routes = [
     children: [
       {
         path: ":conversationId",
-        name: "Messages",
+        name: "MessagesConversation",
         component: () => import("@/views/ChatView.vue"),
       },
     ],
@@ -78,6 +79,15 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (to.name !== "Login" && to.name !== "Signup") {
+    const chatStore = useChatStore();
+    await chatStore.getNonReadMessages();
+    return next();
+  }
+  next();
 });
 
 export default router;
