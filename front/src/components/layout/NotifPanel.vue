@@ -53,9 +53,11 @@ const canInfiniteScroll = ref(true);
 
 const openTooltip = async () => {
   showTooltip.value = !showTooltip.value;
-  // firstload.value === false ? null :
+  if (!firstload.value) {
+    await notifStore.updateAll();
+  }
   await notifStore.getAll(userLS.id);
-  // await notifStore.updateAll();
+  await notifStore.updateAll(userLS.id);
   firstload.value = false;
 };
 const closeTooltip = () => {
@@ -67,20 +69,18 @@ const updateNotif = async (notifId) => {
   !notif.isRead ? await notifStore.update(notifId) : null;
 };
 const notifLink = (notif) => {
-  return notif.postId
-    ? `/post/${notif.postId}`
-    : `/users/${notif.senderUsername.replaceAll(" ", "").toLowerCase()}`;
+  return notif.postId ? `/post/${notif.postId}` : `/users/${notif.sender}`;
 };
 
 const notifDescription = (notifType) => {
   if (notifType === "newLike") {
-    return "a aimé votre post";
+    return " a aimé votre post";
   } else if (notifType === "newPost") {
-    return "a publié un nouveau post";
+    return " a publié un nouveau post";
   } else if (notifType === "newFollow") {
-    return "vous suit !";
+    return " vous suit !";
   } else {
-    return "a commenté votre post";
+    return " a commenté votre post";
   }
 };
 

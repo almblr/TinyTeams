@@ -3,7 +3,7 @@ import useChatStore from "@/stores/chatStore.js";
 import Login from "@/views/LoginView.vue";
 import Feed from "@/views/FeedView.vue";
 import Signup from "@/views/SignupView.vue";
-import UserProfil from "@/views/UserProfilView.vue";
+import UserProfile from "@/views/UserProfilView.vue";
 import UsersList from "@/views/UsersListView.vue";
 import Settings from "@/views/SettingsView.vue";
 import PostView from "@/views/PostView.vue";
@@ -44,7 +44,7 @@ const routes = [
   },
   {
     path: "/users/:userId",
-    name: "UserProfil",
+    name: "UserProfile",
     component: () => import("@/views/UserProfilView.vue"),
   },
   {

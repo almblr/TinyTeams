@@ -6,6 +6,7 @@ import axios from "axios";
 const useUserStore = defineStore("user", () => {
   const token = ref(JSON.parse(sessionStorage.getItem("token")));
   const users = ref([]);
+  const user = ref(null);
 
   const signup = async (data) => {
     await axios({
@@ -46,6 +47,7 @@ const useUserStore = defineStore("user", () => {
         Authorization: `Bearer ${token.value}`,
       },
     });
+    user.value = res.data;
     return res.data;
   };
   const getAll = async (string, lastUserViewed) => {
@@ -83,6 +85,7 @@ const useUserStore = defineStore("user", () => {
   return {
     token,
     users,
+    user,
     login,
     signup,
     getOne,

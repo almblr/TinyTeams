@@ -19,18 +19,18 @@ const useNotifStore = defineStore("notif", () => {
           lastNotifId: lastNotifViewed,
         },
       });
+      if (Object.values(res.data).includes("No more notifications")) {
+        console.log("No more notifs to load");
+        return false;
+      }
+      if (lastNotifViewed) {
+        return notifs.value.push(...res.data);
+      }
+      notifs.value = res.data.notifs;
+      nonViewedNotifs.value = res.data.nonViewedNotifs;
     } catch (error) {
       console.log(error.response);
     }
-    // if (Object.values(res.data).includes("No more notifications")) {
-    //   console.log("No more notifs to load");
-    //   return false;
-    // }
-    // if (lastNotifViewed) {
-    //   return notifs.value.push(...res.data);
-    // }
-    // notifs.value = res.data.notifs;
-    // nonViewedNotifs.value = res.data.nonViewedNotifs;
   };
   const update = async (notifId) => {
     const res = await axios({
@@ -48,9 +48,9 @@ const useNotifStore = defineStore("notif", () => {
     nonViewedNotifs.value--;
     return res.data;
   };
-  const updateAll = async () => {
+  const updateAll = async (userId) => {
     const res = await axios({
-      url: `http://localhost:3000/api/notifications/updateAll/${user.id}`,
+      url: `http://localhost:3000/api/notifications/updateAll/${userId}`,
       method: "PUT",
       headers: {
         Authorization: `Bearer ${userStore.token}`,

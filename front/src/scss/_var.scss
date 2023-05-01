@@ -17,6 +17,9 @@ html {
   --border: rgba(19, 19, 19, 0.1);
   --hover: #0200000a;
   --messageBg: #e4e6eb;
+  --closeButtonBg: #e4e6eb;
+  --closeButtonBgHover: #999ca170;
+  --closeButtonCross: #606770;
 }
 html.dark {
   --backgroundMain: #18191a;
@@ -37,6 +40,9 @@ html.dark {
   --border: rgba(255, 255, 255, 0.1);
   --hover: #f7f7f71c;
   --messageBg: #3e4042;
+  --closeButtonBg: #3a3b3c;
+  --closeButtonBgHover: #464849;
+  --closeButtonCross: #96999c;
 }
 
 @mixin jcCt {

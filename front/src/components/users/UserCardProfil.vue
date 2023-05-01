@@ -1,38 +1,46 @@
 <template>
   <div class="container">
     <div class="band"></div>
-    <img class="profilePicture" :src="props.user.profilePicture" />
+    <img class="profilePicture" :src="userStore.user.profilePicture" />
     <div class="userInfo">
       <h2 class="userInfo__name">
-        {{ props.user.firstname }} {{ props.user.lastname }}
+        {{ userStore.user.firstname }} {{ userStore.user.lastname }}
       </h2>
-      <p class="userInfo__job">{{ props.user.job }}</p>
+      <p class="userInfo__job">{{ userStore.user.job }}</p>
       <router-link
         to="/settings"
-        v-if="loggedInUserProfile"
+        v-if="userStore.user.id === userLS.id"
         class="userInfo__btn edit"
         >Modifier votre profil
       </router-link>
-      <FollowButton
-        :userId="props.user.id"
-        :loggedInUserProfile="loggedInUserProfile"
-      />
+      <FollowButton v-else :userId="userStore.user.id" />
     </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from "vue";
+import useUserStore from "@/stores/userStore";
 import FollowButton from "@/components/users/FollowButton.vue";
 
-const props = defineProps({
-  user: {
-    type: Object,
-    required: true,
-  },
-  loggedInUserProfile: {
-    type: Boolean,
-    required: true,
-  },
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const userStore = useUserStore();
+
+const randomColor = computed(() => {
+  const colors = [
+    "#936DBB",
+    "#25C39D",
+    "#CFA6E6",
+    "#321270",
+    "#6F87CB",
+    "#0E344A",
+    "#22824F",
+    "#3EFFE1",
+    "#1C55DC",
+    "#D7C050",
+    "#8F0024",
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
 });
 </script>
 
@@ -51,7 +59,7 @@ const props = defineProps({
 .band {
   min-width: 100%;
   height: 65px;
-  background-color: rgb(36, 51, 100);
+  background-color: v-bind("randomColor");
 }
 
 .profilePicture {

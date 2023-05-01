@@ -1,6 +1,13 @@
 <template>
-  <span v-if="postStore.posts.length === 0"> {{ noPostMessage }}</span>
-  <article v-else v-for="post of postStore.posts" :key="post.id" :id="post.id">
+  <span v-if="postStore.posts.length === 0 && !isLoading">
+    {{ noPostMessage }}</span
+  >
+  <article
+    v-if="!isLoading"
+    v-for="post of postStore.posts"
+    :key="post.id"
+    :id="post.id"
+  >
     <PostHeader :post="post" @editPost="modifyPost" />
     <PostMain :post="post" v-model:postToEdit="getPostId" />
     <BlockDivider width="98%" height="1px" />
@@ -9,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onBeforeMount, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import usePostStore from "@/stores/postStore.js";
@@ -24,12 +31,12 @@ const userStore = useUserStore();
 const route = useRoute();
 const article = ref(null);
 const getPostId = ref(null);
+const isLoading = ref(true);
 
 const noPostMessage = computed(() => {
   if (route.name === "Feed") {
     return "Il n'y a aucun post à afficher";
-  }
-  if (route.name === "UserProfil") {
+  } else {
     return "Cet utilisateur n'a pas encore publié de post";
   }
 });
@@ -38,38 +45,48 @@ const modifyPost = (postId) => {
   getPostId.value = postId;
 };
 
-onMounted(async () => {
-  if (route.params.userId) {
-    const user = await userStore.getOne(route.params.userId);
-    postStore.posts.length = 0;
-    return await postStore.getAll(user.id);
+const getUsersPosts = async () => {
+  await userStore.getOne(route.params.userId);
+  postStore.posts.length = 0;
+  await postStore.getAll(userStore.user.id);
+  isLoading.value = false;
+};
+
+const getOnePost = async () => {
+  const post = await postStore.getOne(route.params.postId);
+  if (!post) {
+    router.push(`/notfound/post/${route.params.postId}`);
   }
-  if (route.params.postId) {
-    const post = await postStore.getOne(route.params.postId);
-    if (!post) {
-      router.push(`/notfound/post/${route.params.postId}`);
-    }
-    postStore.posts.length = 0;
-    return postStore.posts.push(post);
+  postStore.posts.length = 0;
+  postStore.posts.push(post);
+  isLoading.value = false;
+};
+
+onBeforeMount(async () => {
+  switch (route.name) {
+    case "Feed":
+      postStore.getAll();
+      isLoading.value = false;
+      break;
+    case "UserProfile":
+      getUsersPosts();
+      break;
+    case "Post":
+      getOnePost();
+      break;
+    default:
+      break;
   }
-  await postStore.getAll();
 });
 
 watch(
-  () => route.params.userId,
-  async (newValue) => {
-    if (newValue) {
-      const user = await userStore.getOne(route.params.userId);
-      postStore.posts.length = 0;
-      return await postStore.getAll(user.id);
-    }
-  }
-);
-watch(
-  () => route.params.postId,
-  async (newValue) => {
-    if (newValue) {
-      const post = await postStore.getOne(route.params.postId);
+  () => route.params,
+  (newValue) => {
+    if (newValue.userId) {
+      isLoading.value = true;
+      getUsersPosts();
+    } else if (newValue.postId) {
+      getOnePost();
     }
   }
 );

@@ -1,6 +1,6 @@
 <template>
   <button
-    v-if="isSubscribed !== null && !loggedInUserProfile"
+    v-if="!isLoading && isSubscribed !== null"
     class="btn"
     :class="{ follow: !isSubscribed, unfollow: isSubscribed }"
     @click="updateFollow(isSubscribed ? 'unfollow' : 'follow')"
@@ -11,7 +11,7 @@
       <ion-icon name="person-add"></ion-icon>
       S'abonner
     </span>
-    <span v-if="isSubscribed">
+    <span v-else>
       <ion-icon name="checkmark" v-if="!isHovered"></ion-icon>
       <ion-icon name="checkmark" v-else></ion-icon>Abonné
     </span>
@@ -22,17 +22,19 @@
 import { ref, onMounted } from "vue";
 import useUserStore from "@/stores/userStore";
 import useFollowStore from "@/stores/followStore.js";
-import { socket } from "../../socket.js";
+import { socket } from "@/socket.js";
 
 const props = defineProps({
-  userId: Number,
-  loggedInUserProfile: Boolean,
+  userId: {
+    type: Number,
+    required: true,
+  },
 });
 
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
-
 const userStore = useUserStore();
 const followStore = useFollowStore();
+const isLoading = ref(true);
 const isHovered = ref(false);
 const isSubscribed = ref(null);
 
@@ -48,25 +50,22 @@ const updateFollow = async (type) => {
       receiver: follow.isFollowing,
       token: userStore.token,
     });
+    isSubscribed.value = true;
     isHovered.value = false;
   } else {
-    const followId = followStore.follows.find(
+    const follow = followStore.follows.find(
       (follow) =>
         follow.author === userLS.id && follow.isFollowing === props.userId
-    ).id;
-    await followStore.unfollow(followId);
+    );
+    await followStore.unfollow(follow.id);
+    isSubscribed.value = false;
     isHovered.value = true;
   }
-  isSubscribed.value = type === "follow";
 };
 
 onMounted(async () => {
-  await followStore.getOne(props.userId);
-  const follow = followStore.follows.find(
-    (follow) =>
-      follow.author === userLS.id && follow.isFollowing === props.userId
-  );
-  follow ? (isSubscribed.value = true) : (isSubscribed.value = false);
+  isSubscribed.value = await followStore.getOneFollow(props.userId);
+  isLoading.value = false;
 });
 </script>
 

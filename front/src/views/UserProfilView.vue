@@ -1,19 +1,15 @@
 <template>
   <div id="container" ref="posts">
     <TheHeader />
-    <main>
-      <UserCardProfil
-        v-if="user !== null"
-        :user="user"
-        :loggedInUserProfile="loggedInUserProfile"
-      />
-      <PostContainer v-if="user" />
+    <main v-if="!isLoading">
+      <UserCardProfil />
+      <PostContainer />
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onBeforeMount, nextTick } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
 import { useRoute } from "vue-router";
 import useUserStore from "@/stores/userStore.js";
@@ -22,21 +18,21 @@ import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardProfil from "@/components/users/UserCardProfil.vue";
 import PostContainer from "@/components/posts/PostContainer.vue";
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
 const postStore = usePostStore();
 const route = useRoute();
 const posts = ref(null);
-const user = ref(null);
-const loggedInUserProfile = ref(false);
+const isLoading = ref(true);
 
 const getUser = async (id) => {
-  user.value = await userStore.getOne(id);
-  loggedInUserProfile.value = parseInt(id) === userLS.id;
+  await userStore.getOne(id);
+  nextTick(() => {
+    isLoading.value = false;
+  });
 };
 
 watch(() => route.params.userId, getUser);
-onMounted(() => getUser(route.params.userId));
+onBeforeMount(() => getUser(route.params.userId));
 
 useInfiniteScroll(
   posts,
@@ -65,10 +61,4 @@ main {
   row-gap: 20px;
   transition: 200ms;
 }
-// .posts {
-//   @include fdCol-jcCt-aiCt;
-//   max-width: 1000px;
-//   width: 100%;
-//   overflow: auto;
-// }
 </style>

@@ -34,7 +34,7 @@ const followController = {
       const follow = await Follow.findOne({
         where: {
           author: req.auth.userId,
-          isFollowing: parseInt(req.params.userId),
+          isFollowing: req.params.userId,
         },
       });
       !follow

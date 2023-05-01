@@ -8,10 +8,7 @@
       <h3>{{ user.job }}</h3>
     </div>
     <div v-if="route.name === 'User'">
-      <FollowButton
-        :userId="user.id"
-        :loggedInUserProfile="user.id === userLS.id"
-      />
+      <FollowButton :userId="user.id" />
     </div>
     <SendMessageBtn v-else :userId="user.id" />
   </article>

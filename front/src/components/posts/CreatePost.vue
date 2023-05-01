@@ -1,8 +1,11 @@
 <template>
-  <ModalLayer v-if="show" @click.self="emit('close'), resetPost()">
+  <ModalLayer v-if="show">
     <div class="container">
       <header>
         <h2>Créer une publication</h2>
+        <div class="closeButton" @click="emit('close'), resetPost()">
+          <ion-icon name="close-outline"></ion-icon>
+        </div>
       </header>
       <BlockDivider width="100%" height="1px" />
       <main>
@@ -123,11 +126,27 @@ header {
   color: var(--textColorSecond);
   font-size: 15px;
   text-align: center;
-  & .exit {
+  & .closeButton {
+    @include jcCt-aiCt;
     position: absolute;
-    top: 0px;
-    right: 0px;
-    color: rgb(0, 0, 0);
+    background-color: var(--closeButtonBg);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 1.7rem;
+    top: 13px;
+    right: 15px;
+    color: var(--closeButtonCross);
+    transition: 100ms;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--closeButtonBgHover);
+    }
+    & > * {
+      position: relative;
+      top: 1px;
+      left: 1px;
+    }
   }
 }
 
