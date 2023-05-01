@@ -39,6 +39,7 @@ import InputSettings from "@/components/settings/InputSettings.vue";
 import SubmitFormButton from "@/components/buttons/SubmitFormButton.vue";
 import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
 
+const emit = defineEmits(["showPopup"]);
 const props = defineProps({
   sectionName: { type: String, required: true },
   title: { type: String, required: true },
@@ -127,6 +128,7 @@ const submit = async (type) => {
     formData.append("newPassword", updatedPassword.value.newPassword);
   }
   await userStore.update(formData, userLS.value.id);
+  emit("showPopup");
   canSaveChanges.value = false;
 };
 watch(

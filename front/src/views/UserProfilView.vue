@@ -22,7 +22,7 @@ import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardProfil from "@/components/users/UserCardProfil.vue";
 import PostContainer from "@/components/posts/PostContainer.vue";
 
-let userLS = JSON.parse(sessionStorage.getItem(`user`));
+const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
 const postStore = usePostStore();
 const route = useRoute();
@@ -32,7 +32,7 @@ const loggedInUserProfile = ref(false);
 
 const getUser = async (id) => {
   user.value = await userStore.getOne(id);
-  loggedInUserProfile.value = id === userLS.id;
+  loggedInUserProfile.value = parseInt(id) === userLS.id;
 };
 
 watch(() => route.params.userId, getUser);

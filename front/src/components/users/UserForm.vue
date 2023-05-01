@@ -114,7 +114,7 @@ footer {
   background-color: #df2222;
   border-radius: 10px;
   transform: translate(-50%, 0);
-  animation: displayError 7s 1;
+  animation: displayError 5s 1;
   box-shadow: 5px 5px 20px #0000003d;
   opacity: 0;
   & > span {

@@ -6,7 +6,7 @@
       <h2 class="userInfo__name">
         {{ props.user.firstname }} {{ props.user.lastname }}
       </h2>
-      <p class="userInfo__job">Développeur</p>
+      <p class="userInfo__job">{{ props.user.job }}</p>
       <router-link
         to="/settings"
         v-if="loggedInUserProfile"

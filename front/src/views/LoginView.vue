@@ -43,7 +43,7 @@ const initErrorMsg = () => {
   showErrorMsg.value = true;
   setTimeout(() => {
     showErrorMsg.value = false;
-  }, 7000);
+  }, 5000);
   return;
 };
 
