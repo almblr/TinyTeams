@@ -22,7 +22,7 @@
       :postId="post.id"
       :author="post.author"
       type="post"
-      top="7px"
+      top="20px"
       dotSize="4px"
       v-if="post.author === userLS.id || userLS.isAdmin"
       @editPost="edit"

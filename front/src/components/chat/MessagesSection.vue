@@ -120,13 +120,36 @@ const getConversation = async (conversationId) => {
   }
 };
 
+const waitForImages = () => {
+  const images = messagesList.value.getElementsByTagName("img");
+  let loadedImages = 0;
+  Array.from(images).forEach((img) => {
+    if (img.complete) {
+      loadedImages++;
+    } else {
+      img.addEventListener("load", () => {
+        loadedImages++;
+        if (loadedImages === images.length) {
+          nextTick(() => {
+            messagesList.value.scrollTop = messagesList.value.scrollHeight;
+          });
+        }
+      });
+    }
+  });
+  if (loadedImages === images.length) {
+    nextTick(() => {
+      messagesList.value.scrollTop = messagesList.value.scrollHeight;
+    });
+  }
+};
+
 watch(
   // On observe le dernier message
   () => chatStore.messages[chatStore.messages.length - 1],
   (newValue, oldValue) => {
     // S'il y a un nouveau message, on scroll en bas
-    if (newValue !== oldValue) {
-      scrollToLastMessage();
+    if (newValue !== oldValue && messagesList.value) {
       if (
         newValue &&
         newValue.conversationId === parseInt(route.params.conversationId)
@@ -136,6 +159,7 @@ watch(
         );
         conversation.lastMessage.isRead = true;
       }
+      waitForImages();
     }
   }
 );
@@ -179,27 +203,7 @@ onMounted(async () => {
   await getConversation(conversationId);
   // On attend que les images soient chargées
   // pour scroller en bas
-  const images = messagesList.value.getElementsByTagName("img");
-  let loadedImages = 0;
-  Array.from(images).forEach((img) => {
-    if (img.complete) {
-      loadedImages++;
-    } else {
-      img.addEventListener("load", () => {
-        loadedImages++;
-        if (loadedImages === images.length) {
-          nextTick(() => {
-            messagesList.value.scrollTop = messagesList.value.scrollHeight;
-          });
-        }
-      });
-    }
-  });
-  if (loadedImages === images.length) {
-    nextTick(() => {
-      messagesList.value.scrollTop = messagesList.value.scrollHeight;
-    });
-  }
+  waitForImages();
 });
 </script>
 
@@ -282,7 +286,7 @@ onMounted(async () => {
       color: var(--textColorSecond);
     }
     & .message {
-      max-width: 60%;
+      max-width: 85%;
       width: fit-content;
       border-radius: 10px;
       word-break: break-all;
@@ -297,12 +301,14 @@ onMounted(async () => {
       flex-direction: column;
       align-items: flex-end;
       margin-left: auto;
+      gap: 10px;
       & > p {
+        width: 100%;
         background-color: #0084ff;
         color: white;
       }
       & > img {
-        width: 100%;
+        width: 400px;
         max-height: 200px;
         object-fit: cover;
         border-radius: 10px;
@@ -319,10 +325,16 @@ onMounted(async () => {
         object-fit: cover;
         border-radius: 50%;
       }
+      & .noImg {
+        min-width: 35px;
+        min-height: 35px;
+        border-radius: 50%;
+      }
       &__divContent {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
       }
       & p {
         background-color: var(--messageBg);
@@ -333,11 +345,6 @@ onMounted(async () => {
         max-height: 200px;
         object-fit: cover;
         border-radius: 10px;
-      }
-      & .noImg {
-        min-width: 35px;
-        min-height: 35px;
-        border-radius: 50%;
       }
     }
   }

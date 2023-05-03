@@ -6,7 +6,7 @@ Le projet n'étant pas encore terminé, les instructions concernant son installa
 
 **Technologies déployées** : Vue 3, Node.js, Sequelize, SQLite, Socket.io, VueUse
 
-_Dernière mise à jour du readme : 7 Avril 2023_
+_Dernière mise à jour du readme : 03 Mai 2023_
 
 # Fonctionnalités disponibles
 
@@ -24,7 +24,4 @@ _Dernière mise à jour du readme : 7 Avril 2023_
 - page paramètres
 - infinite scroll
 - mode sombre
-
-# Fonctionnalités à venir
-
 - messagerie instantanée

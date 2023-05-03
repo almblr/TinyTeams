@@ -19,10 +19,9 @@
 </template>
 
 <script setup>
-import { watch, onMounted } from "vue";
+import { watch, onMounted, onUnmounted } from "vue";
 import { useWindowSize } from "@vueuse/core";
 import { useRoute } from "vue-router";
-import { state } from "@/socket.js";
 import useChatStore from "@/stores/chatStore.js";
 import TheHeader from "@/components/layout/TheHeader.vue";
 import ConvList from "@/components/chat/ConvList.vue";
@@ -71,9 +70,9 @@ watch(
           ? (conversation.lastMessage.isRead = true)
           : null;
       }
-      // conversation
-      //   ? (conversation.lastMessage.isRead = true)
-      //   : router.push(`/notfound/conversation/${route.params.conversationId}`);
+      conversation
+        ? (conversation.lastMessage.isRead = true)
+        : router.push(`/notfound/conversation/${route.params.conversationId}`);
       for (const message of chatStore.messages) {
         message.isRead === false ? (message.isRead = true) : null;
       }
@@ -102,6 +101,12 @@ onMounted(async () => {
   width.value > 768
     ? (chatStore.isDesktop = true)
     : (chatStore.isDesktop = false);
+});
+
+onUnmounted(() => {
+  chatStore.conversationMode = false;
+  chatStore.newMessage = false;
+  chatStore.showMobileUsersList = false;
 });
 </script>
 

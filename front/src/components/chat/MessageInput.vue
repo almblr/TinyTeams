@@ -27,11 +27,10 @@
 
 <script setup>
 import { ref, nextTick } from "vue";
-import { socket } from "../../socket.js";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
-import { computedEager, useTextareaAutosize } from "@vueuse/core";
+import { useTextareaAutosize } from "@vueuse/core";
 import AddMediaButton from "@//components/buttons/AddMediaButton.vue";
 import GifPanel from "@/components/posts/GifPanel.vue";
 import ImagePreview from "@//components/layout/ImagePreview.vue";

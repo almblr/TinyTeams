@@ -15,7 +15,11 @@
       <div class="card__infos__content">
         <p
           v-if="conversation.lastMessage"
-          :class="{ nonReadMessage: conversation.lastMessage.isRead === false }"
+          :class="{
+            nonReadMessage:
+              !conversation.lastMessage.isRead &&
+              conversation.lastMessage.author !== userLS.id,
+          }"
         >
           {{
             conversation.lastMessage.content
@@ -32,7 +36,10 @@
         </span>
       </div>
       <div
-        v-if="!conversation.lastMessage.isRead"
+        v-if="
+          !conversation.lastMessage.isRead &&
+          conversation.lastMessage.author !== userLS.id
+        "
         class="conversationBadge"
       ></div>
     </div>
@@ -68,6 +75,7 @@ dayjs.updateLocale("fr", {
 });
 
 const chatStore = useChatStore();
+const userLS = JSON.parse(sessionStorage.getItem("user"));
 
 const openConversation = (conversationId) => {
   chatStore.newMessage = false;

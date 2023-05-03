@@ -19,17 +19,10 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
 import useUserStore from "@/stores/userStore";
 import FollowButton from "@/components/users/FollowButton.vue";
-
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
-
-const randomColor = computed(() => {
-  const colors = ["#243364", "#8F0024", "#1C55DC", "#2A873D", "#321282"];
-  return colors[Math.floor(Math.random() * colors.length)];
-});
 </script>
 
 <style lang="scss" scoped>
@@ -43,13 +36,11 @@ const randomColor = computed(() => {
   transition: 200ms;
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
 }
-
 .band {
   min-width: 100%;
   height: 65px;
-  background-color: v-bind("randomColor");
+  background-color: #107aca;
 }
-
 .profilePicture {
   position: absolute;
   top: 10px;
@@ -59,7 +50,6 @@ const randomColor = computed(() => {
   object-fit: cover;
   border: 4px solid white;
 }
-
 .userInfo {
   @include fdCol-jcCt-aiCt;
   position: relative;
