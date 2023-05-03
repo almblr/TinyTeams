@@ -89,14 +89,12 @@ const remove = async (postId, commentId) => {
 <style lang="scss" scoped>
 .btn {
   position: relative;
-  min-height: 15px;
-  max-height: 15px;
   top: v-bind("props.top");
+  height: min-content;
   &:hover {
     cursor: pointer;
   }
   & > .icon {
-    min-height: 15px;
     display: flex;
     align-items: center;
     gap: 1px;

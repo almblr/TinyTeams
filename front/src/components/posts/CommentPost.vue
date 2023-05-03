@@ -6,31 +6,42 @@
     ref="comment"
   >
     <header>
-      <router-link :to="`/users/${props.author}`" class="title"
-        >{{ props.firstname }} {{ props.lastname }}</router-link
+      <router-link :to="`/users/${props.comment.author}`" class="title"
+        >{{ props.comment.user.firstname }}
+        {{ props.comment.user.lastname }}</router-link
       >
-      <PostTooltip
-        :commentId="props.commentId"
-        :postId="props.postId"
-        :author="props.author"
-        type="comment"
-        top="3px"
-        dotSize="4px"
-        @editComment="modify"
-        v-show="(props.author === userId || isAdmin) && editingMode === false"
-      />
+      <div class="aside">
+        <span>
+          {{ dayjs(props.comment.createdAt).fromNow(true) }}
+        </span>
+        <PostTooltip
+          :commentId="props.comment.id"
+          :postId="props.comment.postId"
+          :author="props.comment.author"
+          type="comment"
+          top="1px"
+          dotSize="4px"
+          @editComment="modify"
+          v-show="
+            (props.comment.author === userId || isAdmin) &&
+            editingMode === false
+          "
+        />
+      </div>
     </header>
-    <p v-if="!editingMode">{{ props.content }}</p>
+    <p v-if="!editingMode">{{ props.comment.content }}</p>
     <TextareaEditing
       v-else
-      :postId="props.postId"
-      :commentId="props.commentId"
-      :content="props.content"
+      :postId="props.comment.postId"
+      :commentId="props.comment.commentId"
+      :content="props.comment.content"
       v-model:show="editingMode"
       textareaType="comment"
     />
-    <span v-if="editingMode" @click="editingMode = false">Annuler</span>
-    <img :src="props.imageUrl" v-if="props.imageUrl" />
+    <span class="cancel" v-if="editingMode" @click="editingMode = false"
+      >Annuler</span
+    >
+    <img :src="props.comment.imageUrl" v-if="props.comment.imageUrl" />
   </div>
 </template>
 
@@ -38,17 +49,35 @@
 import { ref, watch } from "vue";
 import TextareaEditing from "@/components/posts/TextareaEditing.vue";
 import PostTooltip from "@/components/posts/PostTooltip.vue";
+import relativeTime from "dayjs/plugin/relativeTime";
+import UpdateLocale from "dayjs/plugin/updateLocale";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+dayjs.locale("fr");
+dayjs.extend(relativeTime);
+dayjs.extend(UpdateLocale);
+dayjs.updateLocale("fr", {
+  relativeTime: {
+    future: "dans %s",
+    past: "il y a %s",
+    s: "1min",
+    m: "1min",
+    mm: "%dmin",
+    h: "1h",
+    hh: "%dh",
+    d: "1j",
+    dd: "%d jrs",
+    M: "1 mois",
+    MM: "%d mois",
+    y: "1 an",
+    yy: "%d ans",
+  },
+});
 
 const emit = defineEmits(["update:selectedCommentId"]);
 const props = defineProps({
-  author: Number,
-  postId: Number,
-  commentId: Number,
-  content: String,
-  imageUrl: String,
+  comment: Object,
   selectedCommentId: Number,
-  firstname: String,
-  lastname: String,
 });
 
 const userLS = JSON.parse(sessionStorage.getItem(`user`));
@@ -59,7 +88,7 @@ const showTooltip = ref(false);
 const editingMode = ref(false);
 
 const modify = () => {
-  emit("update:selectedCommentId", props.commentId);
+  emit("update:selectedCommentId", props.comment.id);
   editingMode.value = true;
   comment.value.style.flex = 1;
 };
@@ -67,7 +96,7 @@ const modify = () => {
 watch(
   () => props.selectedCommentId,
   (newValue) => {
-    editingMode.value = newValue === props.commentId;
+    editingMode.value = newValue === props.comment.id;
   }
 );
 
@@ -112,6 +141,18 @@ watch(
       }
     }
   }
+  & .aside {
+    @include jcCt-aiCt;
+    min-width: 50px;
+    height: 20px;
+    gap: 8px;
+    align-items: center;
+    & > span {
+      font-size: 11px;
+      margin-top: 0;
+      color: var(--textColorSecondary);
+    }
+  }
   & p {
     overflow: hidden;
     height: 100%;
@@ -121,7 +162,7 @@ watch(
     margin: 5px 0;
     max-width: 500px;
   }
-  & span {
+  & .cancel {
     font-size: 11px;
     margin-top: 5px;
     color: var(--cancelButton);

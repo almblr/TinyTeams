@@ -85,6 +85,9 @@ const notificationController = {
       where: {
         receiver: req.params.userId,
       },
+      order: [
+        ["createdAt", "DESC"], // Du plus récent au moins récent
+      ],
     });
     try {
       for (const notif of notifications)

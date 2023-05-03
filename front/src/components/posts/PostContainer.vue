@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount, computed, watch } from "vue";
+import { ref, onBeforeMount, computed, watch, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import usePostStore from "@/stores/postStore.js";
@@ -66,7 +66,9 @@ onBeforeMount(async () => {
   switch (route.name) {
     case "Feed":
       postStore.getAll();
-      isLoading.value = false;
+      nextTick(() => {
+        isLoading.value = false;
+      });
       break;
     case "UserProfile":
       getUsersPosts();

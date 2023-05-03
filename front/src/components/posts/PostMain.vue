@@ -6,7 +6,9 @@
       ref="postContent"
     >
       {{ displayedContent }}
-      <button @click="showMore" v-if="showMoreButton">Voir plus</button>
+      <router-link :to="`/post/${props.post.id}`" v-if="showMoreButton">
+        Voir plus
+      </router-link>
     </p>
     <TextareaEditing
       v-else
@@ -61,20 +63,16 @@ const postContent = ref(null);
 const doesUserLike = ref(null);
 
 const displayedContent = computed(() => {
-  if (showMoreButton.value === false && props.post.content.length > 500) {
+  if (
+    props.post.content.length > 500 &&
+    (route.name === "Feed" || route.name === "UserProfile")
+  ) {
     showMoreButton.value = true;
     return props.post.content.substring(0, 500) + "...";
   }
   showMoreButton.value = false;
   return props.post.content;
 });
-
-const showMore = () => {
-  if (route.name === "Feed") {
-    router.push(`/post/${props.post.id}`);
-  }
-  showMoreButton.value = false;
-};
 
 /* Met à jour le like d'un post et l'affichage des posts */
 const updateLike = async () => {
@@ -141,9 +139,11 @@ onBeforeMount(() => {
     overflow-wrap: break-word;
     padding: 10px 15px;
     color: var(--textColorMain);
-    & > button {
+    & > a {
       border: none;
       background: none;
+      text-decoration: none;
+      font-size: 0.9rem;
       color: var(--textColorMain);
       font-weight: bold;
       cursor: pointer;

@@ -19,7 +19,7 @@
         v-model="input"
       ></textarea>
       <div class="buttons">
-        <ion-icon name="send"></ion-icon>
+        <ion-icon name="send" @click="sendMessage()"></ion-icon>
       </div>
     </div>
   </div>

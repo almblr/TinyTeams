@@ -32,13 +32,15 @@
             alt="profilePicture"
           />
           <div v-else class="noImg"></div>
-          <p
-            v-if="message.content"
-            :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')"
-          >
-            {{ message.content }}
-          </p>
-          <img v-if="message.imageUrl" :src="message.imageUrl" alt="image" />
+          <div class="othersMessages_divContent">
+            <p
+              v-if="message.content"
+              :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')"
+            >
+              {{ message.content }}
+            </p>
+            <img v-if="message.imageUrl" :src="message.imageUrl" alt="image" />
+          </div>
         </div>
       </div>
     </div>
@@ -250,6 +252,7 @@ onMounted(async () => {
       font-size: 1.15rem;
       font-weight: bold;
       color: rgba(152, 143, 229, 0.712);
+      color: var(--textColorSecond);
       cursor: pointer;
       &:hover {
         background-color: var(--hover);
@@ -284,6 +287,7 @@ onMounted(async () => {
       border-radius: 10px;
       word-break: break-all;
       & p {
+        width: fit-content;
         padding: 10px;
         border-radius: 10px;
       }
@@ -294,7 +298,6 @@ onMounted(async () => {
       align-items: flex-end;
       margin-left: auto;
       & > p {
-        width: fit-content;
         background-color: #0084ff;
         color: white;
       }
@@ -307,14 +310,19 @@ onMounted(async () => {
     }
     & .othersMessages {
       display: flex;
-      align-items: flex-end;
       margin-right: auto;
       gap: 5px;
       & .profilePicture {
+        margin-top: 4px;
         width: 35px;
         height: 35px;
         object-fit: cover;
         border-radius: 50%;
+      }
+      &__divContent {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
       }
       & p {
         background-color: var(--messageBg);

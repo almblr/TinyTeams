@@ -27,19 +27,7 @@ const userLS = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
 
 const randomColor = computed(() => {
-  const colors = [
-    "#936DBB",
-    "#25C39D",
-    "#CFA6E6",
-    "#321270",
-    "#6F87CB",
-    "#0E344A",
-    "#22824F",
-    "#3EFFE1",
-    "#1C55DC",
-    "#D7C050",
-    "#8F0024",
-  ];
+  const colors = ["#243364", "#8F0024", "#1C55DC", "#2A873D", "#321282"];
   return colors[Math.floor(Math.random() * colors.length)];
 });
 </script>

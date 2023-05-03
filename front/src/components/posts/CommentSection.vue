@@ -13,14 +13,8 @@
         height="35px"
       />
       <CommentPost
-        :author="comment.author"
-        :postId="comment.postId"
-        :commentId="comment.id"
-        :imageUrl="comment.imageUrl"
-        :content="comment.content"
+        :comment="comment"
         v-model:selectedCommentId="selectedCommentId"
-        :firstname="comment.user.firstname"
-        :lastname="comment.user.lastname"
       />
     </div>
   </section>

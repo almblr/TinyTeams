@@ -21,6 +21,7 @@ const props = defineProps({
   min-height: 100%;
   img {
     border-radius: 10px;
+    width: 100%;
     object-fit: v-bind("props.size");
     background-color: rgb(0, 0, 0);
     &:hover {
