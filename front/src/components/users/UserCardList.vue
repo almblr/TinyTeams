@@ -24,7 +24,6 @@ const props = defineProps({
 });
 
 const route = useRoute();
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
 </script>
 
 <style lang="scss" scoped>

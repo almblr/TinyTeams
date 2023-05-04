@@ -28,6 +28,7 @@ const useFollowStore = defineStore("follow", () => {
     if (res.data.message === "Follow not found") {
       return false;
     } else {
+      follows.value.unshift(res.data);
       return true;
     }
   };

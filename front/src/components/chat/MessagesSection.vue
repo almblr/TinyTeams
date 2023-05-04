@@ -22,7 +22,12 @@
           >
             {{ message.content }}
           </p>
-          <img v-if="message.imageUrl" :src="message.imageUrl" alt="image" />
+          <img
+            class="imgContent"
+            v-if="message.imageUrl"
+            :src="message.imageUrl"
+            alt="image"
+          />
         </div>
         <div class="othersMessages message" v-else>
           <img
@@ -39,7 +44,12 @@
             >
               {{ message.content }}
             </p>
-            <img v-if="message.imageUrl" :src="message.imageUrl" alt="image" />
+            <img
+              class="imgContent"
+              v-if="message.imageUrl"
+              :src="message.imageUrl"
+              alt="image"
+            />
           </div>
         </div>
       </div>
@@ -95,6 +105,7 @@ const scrollToLastMessage = () => {
     messagesList.value.scrollTop = messagesList.value.scrollHeight;
   });
 };
+
 const showProfilePicture = (index) => {
   const nextUserIdx = index + 1;
   if (nextUserIdx === chatStore.messages.length) {
@@ -130,17 +141,13 @@ const waitForImages = () => {
       img.addEventListener("load", () => {
         loadedImages++;
         if (loadedImages === images.length) {
-          nextTick(() => {
-            messagesList.value.scrollTop = messagesList.value.scrollHeight;
-          });
+          scrollToLastMessage();
         }
       });
     }
   });
   if (loadedImages === images.length) {
-    nextTick(() => {
-      messagesList.value.scrollTop = messagesList.value.scrollHeight;
-    });
+    scrollToLastMessage();
   }
 };
 
@@ -170,9 +177,7 @@ watch(
     if (newId) {
       const conversationId = parseInt(newId);
       await getConversation(conversationId);
-      nextTick(() => {
-        return (messagesList.value.scrollTop = messagesList.value.scrollHeight);
-      });
+      scrollToLastMessage();
     }
   }
 );
@@ -295,6 +300,13 @@ onMounted(async () => {
         padding: 10px;
         border-radius: 10px;
       }
+      & .imgContent {
+        width: 100%;
+        max-width: 480px;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
     }
     & .myMessages {
       display: flex;
@@ -303,7 +315,6 @@ onMounted(async () => {
       margin-left: auto;
       gap: 10px;
       & > p {
-        width: 100%;
         background-color: #0084ff;
         color: white;
       }
@@ -338,13 +349,6 @@ onMounted(async () => {
       }
       & p {
         background-color: var(--messageBg);
-      }
-      & img {
-        width: 100%;
-        max-width: 480px;
-        max-height: 200px;
-        object-fit: cover;
-        border-radius: 10px;
       }
     }
   }
