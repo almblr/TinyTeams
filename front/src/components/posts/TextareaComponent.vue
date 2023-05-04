@@ -64,7 +64,7 @@ const showing = ref(false);
 const container = ref(null);
 const mediaToSend = ref(null);
 const mediaPreview = ref(null);
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const user = JSON.parse(sessionStorage.getItem(`user`));
 
 const deleteImagePreview = () => {
   mediaPreview.value = null;
@@ -82,9 +82,9 @@ const getUrls = (path, file) => {
 
 const createNotificiation = (type, notifiableId, receiver, postId) => {
   const data = {
-    senderId: userLS.id,
-    senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-    senderProfilePicture: userLS.profilePicture,
+    senderId: user.id,
+    senderUsername: `${user.firstname} ${user.lastname}`,
+    senderProfilePicture: user.profilePicture,
     type: type,
     notifiableId: notifiableId,
     receiver,

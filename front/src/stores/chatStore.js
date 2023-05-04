@@ -5,7 +5,7 @@ import useUserStore from "./userStore.js";
 import axios from "axios";
 
 const useChatStore = defineStore("chat", () => {
-  const userLS = JSON.parse(sessionStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const userStore = useUserStore();
   const conversations = ref([]);
   const messages = ref([]);

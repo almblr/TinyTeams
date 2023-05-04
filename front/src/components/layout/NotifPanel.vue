@@ -7,7 +7,7 @@
       @click="openTooltip"
     >
       <ion-icon name="notifications"></ion-icon>
-      <NumberBadge :unread="notifStore.nonViewedNotifs" />
+      <NumberBadge :unread="notifStore.nonViewedNotifs.length" />
     </div>
     <div class="tooltip" v-show="showTooltip === true" ref="notifs">
       <div class="nothingToShow" v-if="notifStore.notifs.length === 0">
@@ -33,14 +33,10 @@ import { vOnClickOutside } from "@vueuse/components";
 import { useInfiniteScroll } from "@vueuse/core";
 import NumberBadge from "@/components/layout/NumberBadge.vue";
 import useNotifStore from "@/stores/notificationStore.js";
-import relativeTime from "dayjs/plugin/relativeTime";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
-dayjs.locale("fr");
-dayjs.extend(relativeTime);
+import dayjs from "@/dayjs.js";
 
 const notifStore = useNotifStore();
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const firstload = ref(true);
 const showTooltip = ref(null);
 const notifs = ref(null);
@@ -55,11 +51,11 @@ const openTooltip = async () => {
     if (notifStore.notifs.every((notif) => notif.isRead)) {
       return;
     } else {
-      return await notifStore.getAll(userLS.id);
+      return await notifStore.getAll(user.id);
     }
   }
-  await notifStore.getAll(userLS.id);
-  await notifStore.updateAll(userLS.id);
+  await notifStore.getAll(user.id);
+  await notifStore.updateAll(user.id);
   firstload.value = false;
 };
 const closeTooltip = () => {

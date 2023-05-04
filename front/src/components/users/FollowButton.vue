@@ -31,7 +31,7 @@ const props = defineProps({
   },
 });
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
 const followStore = useFollowStore();
 const isLoading = ref(true);
@@ -42,9 +42,9 @@ const updateFollow = async (type) => {
   if (type === "follow") {
     const follow = await followStore.sendFollow(props.userId);
     socket.emit("newFollow", {
-      senderId: userLS.id,
-      senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-      senderProfilePicture: userLS.profilePicture,
+      senderId: user.id,
+      senderUsername: `${user.firstname} ${user.lastname}`,
+      senderProfilePicture: user.profilePicture,
       type: "newFollow",
       notifiableId: follow.id,
       receiver: follow.isFollowing,
@@ -55,7 +55,7 @@ const updateFollow = async (type) => {
   } else {
     const follow = followStore.follows.find(
       (follow) =>
-        follow.author === userLS.id && follow.isFollowing === props.userId
+        follow.author === user.id && follow.isFollowing === props.userId
     );
     await followStore.unfollow(follow.id);
     isSubscribed.value = false;
@@ -64,7 +64,7 @@ const updateFollow = async (type) => {
 };
 
 onMounted(async () => {
-  isSubscribed.value = await followStore.getOneFollow(props.userId);
+  isSubscribed.value = await followStore.getOneFollow(user.id, props.userId);
   isLoading.value = false;
 });
 </script>

@@ -4,13 +4,8 @@
     <main id="settings">
       <SectionSettings
         v-for="section in sections"
-        :sectionName="section.name"
-        :title="section.title"
-        :inputsArray="section.inputs"
-        :submit="section.function"
-        :profilePicture="userLS.profilePicture"
-        :showprofilePicture="section.showprofilePicture"
-        :type="section.type"
+        :section="section"
+        :profilePicture="user.profilePicture"
         @showPopup="toggleShowPopup"
       />
     </main>
@@ -25,7 +20,7 @@ import { ref } from "vue";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import SectionSettings from "@/components/settings/SectionSettings.vue";
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const showPopup = ref(false);
 
 const sections = [
@@ -38,28 +33,28 @@ const sections = [
       {
         name: "firstname",
         type: "text",
-        value: userLS.firstname,
+        value: user.firstname,
         label: "Prénom",
         canBeModified: false,
       },
       {
         name: "lastname",
         type: "text",
-        value: userLS.lastname,
+        value: user.lastname,
         label: "Nom",
         canBeModified: false,
       },
       {
         name: "email",
         type: "email",
-        value: userLS.email,
+        value: user.email,
         label: "Votre adresse e-mail",
         canBeModified: true,
       },
       {
         name: "job",
         type: "text",
-        value: userLS.job,
+        value: user.job,
         label: "Poste occupé",
         canBeModified: true,
       },
@@ -106,18 +101,15 @@ const toggleShowPopup = () => {
 
 <style lang="scss" scoped>
 #container {
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-  background-color: var(--backgroundMain);
+  @include container;
 }
 
 #settings {
   @include fdCol-aiCt;
-  transition: 200ms;
   min-height: min-content;
   padding-top: 30px;
   gap: 30px;
+  transition: 200ms;
 }
 
 .popup {

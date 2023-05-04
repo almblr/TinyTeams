@@ -108,25 +108,6 @@ const waitForImages = () => {
   }
 };
 
-watch(
-  // On observe le dernier message
-  () => chatStore.messages[chatStore.messages.length - 1],
-  (newValue, oldValue) => {
-    // S'il y a un nouveau message, on scroll en bas
-    if (newValue !== oldValue && messagesList.value) {
-      if (
-        newValue &&
-        newValue.conversationId === parseInt(route.params.conversationId)
-      ) {
-        const conversation = chatStore.conversations.find(
-          (conv) => conv.id === newValue.conversationId
-        );
-        conversation.lastMessage.isRead = true;
-      }
-      waitForImages();
-    }
-  }
-);
 useInfiniteScroll(
   messagesList,
   async () => {
@@ -149,11 +130,32 @@ useInfiniteScroll(
 );
 
 watch(
+  // On observe le dernier message
+  () => chatStore.messages[chatStore.messages.length - 1],
+  (newValue, oldValue) => {
+    // S'il y a un nouveau message, on scroll en bas
+    if (newValue !== oldValue && messagesList.value) {
+      if (
+        newValue &&
+        newValue.conversationId === parseInt(route.params.conversationId)
+      ) {
+        const conversation = chatStore.conversations.find(
+          (conv) => conv.id === newValue.conversationId
+        );
+        conversation.lastMessage.isRead = true;
+      }
+      waitForImages();
+    }
+  }
+);
+
+watch(
   () => route.params.conversationId,
   async (newId) => {
     if (newId) {
       const conversationId = parseInt(newId);
       await getConversation(conversationId);
+      chatStore.isConversationMode = true;
       scrollToLastMessage();
     }
   }
@@ -162,6 +164,7 @@ watch(
 onMounted(async () => {
   const conversationId = parseInt(route.params.conversationId);
   await getConversation(conversationId);
+  chatStore.isConversationMode = true;
   // On attend que les images soient chargées pour scroller en bas
   waitForImages();
 });

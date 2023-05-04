@@ -29,7 +29,7 @@
     </div>
     <div
       class="main__reactBtn"
-      @click="updateLike(post.id, post.author, userLS.id)"
+      @click="updateLike(post.id, post.author, user.id)"
     >
       <ion-icon name="thumbs-up"></ion-icon>
       <span>J'aime</span>
@@ -55,7 +55,7 @@ const props = defineProps({
 const route = useRoute();
 const postStore = usePostStore();
 const userStore = useUserStore();
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const editingMode = ref(false);
 const showMoreButton = ref(false);
 const thumbColor = ref(null);
@@ -79,9 +79,9 @@ const updateLike = async () => {
   if (!doesUserLike.value) {
     const like = await postStore.likePost(props.post.id);
     socket.emit("newLike", {
-      senderId: userLS.id,
-      senderUsername: `${userLS.firstname} ${userLS.lastname}`,
-      senderProfilePicture: userLS.profilePicture,
+      senderId: user.id,
+      senderUsername: `${user.firstname} ${user.lastname}`,
+      senderProfilePicture: user.profilePicture,
       type: "newLike",
       notifiableId: like.id,
       postId: props.post.id,
@@ -120,7 +120,7 @@ watch(editingMode, () => {
 onBeforeMount(() => {
   const thisPost = postStore.posts.find((post) => post.id === props.post.id);
   const postReactions = thisPost.reactions;
-  doesUserLike.value = postReactions.find((like) => like.userId === userLS.id)
+  doesUserLike.value = postReactions.find((like) => like.userId === user.id)
     ? true
     : false;
   doesUserLike.value ? "#2374e1" : "#85858580";

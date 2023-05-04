@@ -66,8 +66,8 @@ const userStore = useUserStore();
 const userInfo = ref({});
 const inputType = ref("password");
 
-const showHidePassword = (e) => {
-  inputType.value = e;
+const showHidePassword = (newType) => {
+  inputType.value = newType;
 };
 
 const signup = async () => {
@@ -92,7 +92,7 @@ const signup = async () => {
   border-radius: 5px;
   & span {
     font-size: 13px;
-    color: rgba(0, 0, 0, 0.849);
+    color: rgba(0, 0, 0, 0.85);
   }
 }
 </style>

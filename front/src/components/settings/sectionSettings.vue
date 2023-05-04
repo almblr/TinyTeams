@@ -1,9 +1,9 @@
 <template>
-  <section :id="props.sectionName">
+  <section :id="section.sectionName">
     <h3>
-      {{ props.title }}
+      {{ section.title }}
     </h3>
-    <div class="profilePicture" v-if="props.showprofilePicture">
+    <div class="profilePicture" v-if="section.showprofilePicture">
       <img :src="profilePictureUrl" alt="userprofilePicture" />
       <AddMediaButton
         @showUploadedImg="profilePictureFunctions.get"
@@ -14,15 +14,10 @@
         >Annuler</span
       >
     </div>
-    <form class="inputs" @submit.prevent="submit(props.submit)">
+    <form class="inputs" @submit.prevent="submit(section.submit)">
       <InputSettings
-        v-for="input in inputsArray"
-        :key="input.value"
-        :name="input.name"
-        :type="input.type"
-        :value="input.value"
-        :label="input.label"
-        :canBeModified="input.canBeModified"
+        v-for="input in section.inputs"
+        :input="input"
         @getInputValue="updateValue"
       />
       <div class="formButtons">
@@ -41,24 +36,20 @@ import AddMediaButton from "@/components/buttons/AddMediaButton.vue";
 
 const emit = defineEmits(["showPopup"]);
 const props = defineProps({
-  sectionName: { type: String, required: true },
-  title: { type: String, required: true },
-  inputsArray: { type: Array, required: true },
-  submit: { type: String, required: true },
+  section: { type: Object, required: true },
   profilePicture: { type: String, required: false },
-  showprofilePicture: { type: Boolean, required: true },
 });
 
 const userStore = useUserStore();
-const userLS = ref(JSON.parse(sessionStorage.getItem(`user`)));
+const user = ref(JSON.parse(sessionStorage.getItem(`user`)));
 const canSaveChanges = ref(false);
 const imageBlop = ref(null);
 const canRemoveNewPicture = ref(false);
 
 const updatedUser = ref({
-  profilePicture: userLS.value.profilePicture,
-  email: userLS.value.email,
-  job: userLS.value.job,
+  profilePicture: user.value.profilePicture,
+  email: user.value.email,
+  job: user.value.job,
 });
 
 const updatedPassword = ref({
@@ -78,7 +69,7 @@ const profilePictureFunctions = {
   remove: () => {
     nextTick(() => {
       imageBlop.value = null;
-      updatedUser.value.profilePicture = userLS.value.profilePicture;
+      updatedUser.value.profilePicture = user.value.profilePicture;
       canRemoveNewPicture.value = false;
     });
   },
@@ -89,7 +80,7 @@ const profilePictureUrl = computed(() => {
 });
 
 const updateValue = (inputValue, inputName) => {
-  if (props.sectionName === "user") {
+  if (props.section.sectionName === "user") {
     const userKeys = Object.keys(updatedUser.value);
     for (const key of userKeys) {
       if (inputName === key) {
@@ -97,7 +88,7 @@ const updateValue = (inputValue, inputName) => {
       }
     }
   }
-  if (props.sectionName === "password") {
+  if (props.section.sectionName === "password") {
     const passwordKeys = Object.keys(updatedPassword.value);
     for (const key of passwordKeys) {
       if (inputName === key) {
@@ -111,34 +102,32 @@ const submit = async (type) => {
   const formData = new FormData();
   if (type === "saveUser") {
     const commonKeys = Object.keys(updatedUser.value).filter(
-      (key) => key in userLS.value
+      (key) => key in user.value
     );
     for (const key of commonKeys) {
-      if (updatedUser.value[key] !== userLS.value[key]) {
+      if (updatedUser.value[key] !== user.value[key]) {
         formData.append(key, updatedUser.value[key]);
       }
     }
-    await userStore.update(formData, userLS.value.id);
-    userLS.value = await userStore.getOne(userLS.value.id);
-    sessionStorage.setItem("user", JSON.stringify(userLS.value));
+    await userStore.update(formData, user.value.id);
+    user.value = await userStore.getOne(user.value.id);
+    sessionStorage.setItem("user", JSON.stringify(user.value));
     canSaveChanges.value = false;
     canRemoveNewPicture.value = false;
   } else if (type === "savePassword") {
     formData.append("oldPassword", updatedPassword.value.oldPassword);
     formData.append("newPassword", updatedPassword.value.newPassword);
   }
-  await userStore.update(formData, userLS.value.id);
+  await userStore.update(formData, user.value.id);
   emit("showPopup");
   canSaveChanges.value = false;
 };
 watch(
   () => updatedUser.value,
   (newValue) => {
-    const commonKeys = Object.keys(newValue).filter(
-      (key) => key in userLS.value
-    );
+    const commonKeys = Object.keys(newValue).filter((key) => key in user.value);
     const areValuesEqual = commonKeys.every(
-      (key) => newValue[key] === userLS.value[key]
+      (key) => newValue[key] === user.value[key]
     );
     areValuesEqual
       ? (canSaveChanges.value = false)

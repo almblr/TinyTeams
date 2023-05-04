@@ -7,9 +7,10 @@
         {{ userStore.user.firstname }} {{ userStore.user.lastname }}
       </h2>
       <p class="userInfo__job">{{ userStore.user.job }}</p>
+      <p v-if="isFollowingYou" class="userInfo__isFollowing">vous suit</p>
       <router-link
         to="/settings"
-        v-if="userStore.user.id === userLS.id"
+        v-if="userStore.user.id === user.id"
         class="userInfo__btn edit"
         >Modifier votre profil
       </router-link>
@@ -21,7 +22,14 @@
 <script setup>
 import useUserStore from "@/stores/userStore";
 import FollowButton from "@/components/users/FollowButton.vue";
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+
+const props = defineProps({
+  isFollowingYou: {
+    type: Boolean,
+  },
+});
+
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
 </script>
 
@@ -31,7 +39,7 @@ const userStore = useUserStore();
   @include fdCol-jcCt-aiCt;
   max-width: 768px;
   width: 100%;
-  min-height: 250px;
+  min-height: 280px;
   background-color: var(--backgroundSecond);
   transition: 200ms;
   box-shadow: 5px 0 20px rgba(0, 0, 0, 0.2);
@@ -73,6 +81,12 @@ const userStore = useUserStore();
     color: #ffffff;
     transition: 200ms;
     text-decoration: none;
+  }
+  &__isFollowing {
+    margin-top: 3px;
+    background-color: rgba(88, 87, 87, 0.521);
+    padding: 3px 5px;
+    border-radius: 3px;
   }
   :hover {
     cursor: pointer;

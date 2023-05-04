@@ -80,9 +80,9 @@ const props = defineProps({
   selectedCommentId: Number,
 });
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const userId = userLS.id;
-const isAdmin = userLS.isAdmin;
+const user = JSON.parse(sessionStorage.getItem(`user`));
+const userId = user.id;
+const isAdmin = user.isAdmin;
 const comment = ref(null);
 const showTooltip = ref(false);
 const editingMode = ref(false);

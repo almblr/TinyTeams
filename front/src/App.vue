@@ -12,7 +12,7 @@ import { useRoute } from "vue-router";
 import useNotifStore from "@/stores/notificationStore.js";
 import useChatStore from "@/stores/chatStore.js";
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const notifStore = useNotifStore();
 const chatStore = useChatStore();
 const route = useRoute();
@@ -80,7 +80,7 @@ watch(state.newMessage, async (newValue) => {
 });
 
 onMounted(async () => {
-  userLS ? socket.emit("sendUserId", userLS.id) : null;
+  user ? socket.emit("sendUserId", user.id) : null;
 });
 </script>
 
@@ -90,6 +90,11 @@ onMounted(async () => {
 
 #app {
   height: 100vh;
+  & > div {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 
 *,
@@ -157,5 +162,13 @@ onMounted(async () => {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--addMediaBackground);
+}
+
+@media screen and (min-width: 768px) {
+  #app {
+    & > div::-webkit-scrollbar {
+      display: block;
+    }
+  }
 }
 </style>

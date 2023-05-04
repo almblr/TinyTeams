@@ -25,8 +25,8 @@ import usePostStore from "@/stores/postStore.js";
 import { vOnClickOutside } from "@vueuse/components";
 
 const postStore = usePostStore();
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
-const userId = userLS.id;
+const user = JSON.parse(sessionStorage.getItem(`user`));
+const userId = user.id;
 const btn = ref(null);
 const spaceUp = ref(null);
 const showTooltip = ref(null);

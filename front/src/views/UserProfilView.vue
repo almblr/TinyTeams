@@ -2,7 +2,7 @@
   <div id="container" ref="posts">
     <TheHeader />
     <main v-if="!isLoading">
-      <UserCardProfil />
+      <UserCardProfil :isFollowingYou="isFollowing" />
       <PostContainer />
     </main>
   </div>
@@ -14,25 +14,30 @@ import { useInfiniteScroll } from "@vueuse/core";
 import { useRoute } from "vue-router";
 import useUserStore from "@/stores/userStore.js";
 import usePostStore from "@/stores/postStore.js";
+import useFollowStore from "@/stores/followStore.js";
 import TheHeader from "@//components/layout/TheHeader.vue";
 import UserCardProfil from "@/components/users/UserCardProfil.vue";
 import PostContainer from "@/components/posts/PostContainer.vue";
 
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const userStore = useUserStore();
 const postStore = usePostStore();
+const followStore = useFollowStore();
 const route = useRoute();
 const posts = ref(null);
 const isLoading = ref(true);
+const isFollowing = ref(false);
 
 const getUser = async (id) => {
   await userStore.getOne(id);
+  isFollowing.value = await followStore.getOneFollow(
+    userStore.user.id,
+    user.id
+  );
   nextTick(() => {
     isLoading.value = false;
   });
 };
-
-watch(() => route.params.userId, getUser);
-onBeforeMount(() => getUser(route.params.userId));
 
 useInfiniteScroll(
   posts,
@@ -47,13 +52,22 @@ useInfiniteScroll(
     distance: 10,
   }
 );
+
+watch(
+  () => route.params.userId,
+  (newValue) => {
+    getUser(newValue);
+  }
+);
+
+onBeforeMount(() => {
+  getUser(route.params.userId);
+});
 </script>
 
 <style lang="scss" scoped>
 #container {
-  height: 100vh;
-  overflow-y: auto;
-  background-color: var(--backgroundMain);
+  @include container;
 }
 main {
   @include fdCol-aiCt;

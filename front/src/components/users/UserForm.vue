@@ -11,7 +11,7 @@
       <footer>
         <p>
           {{ props.question }}
-          <router-link :to="props.link" @click="resetForm">{{
+          <router-link :to="props.link" @click="userStore.$reset()">{{
             props.reponse
           }}</router-link>
         </p>
@@ -38,9 +38,6 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
-const resetForm = () => {
-  userStore.$reset();
-};
 </script>
 
 <style lang="scss" scoped>

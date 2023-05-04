@@ -24,7 +24,7 @@
       type="post"
       top="20px"
       dotSize="4px"
-      v-if="post.author === userLS.id || userLS.isAdmin"
+      v-if="post.author === user.id || user.isAdmin"
       @editPost="edit"
     />
   </header>
@@ -43,7 +43,7 @@ const props = defineProps({
   post: { type: Object, required: true },
 });
 
-const userLS = JSON.parse(sessionStorage.getItem(`user`));
+const user = JSON.parse(sessionStorage.getItem(`user`));
 
 const edit = (postId) => {
   emit("editPost", postId);

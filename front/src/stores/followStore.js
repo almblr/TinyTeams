@@ -18,9 +18,9 @@ const useFollowStore = defineStore("follow", () => {
     follows.value.unshift(res.data);
     return res.data;
   };
-  const getOneFollow = async (userId) => {
+  const getOneFollow = async (author, followedUser) => {
     const res = await axios({
-      url: `http://localhost:3000/api/users/follow/getOne/${userId}`,
+      url: `http://localhost:3000/api/users/follow/getOne/${author}/${followedUser}`,
       headers: {
         Authorization: `Bearer ${userStore.token}`,
       },

@@ -31,12 +31,9 @@ const errorMessage = computed(() => {
 
 <style lang="scss" scoped>
 #container {
+  @include container;
   display: flex;
   justify-content: center;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-  background-color: var(--backgroundMain);
   color: var(--textColorSecond);
   & > .error {
     @include fdCol-jcCt-aiCt;

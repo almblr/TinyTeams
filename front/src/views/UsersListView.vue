@@ -41,10 +41,7 @@ onMounted(async () => {
 <style lang="scss" scoped>
 #container {
   @include fdCol-jcCt-aiCt;
-  background-color: var(--backgroundMain);
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
+  @include container;
   gap: 30px;
 }
 .users {

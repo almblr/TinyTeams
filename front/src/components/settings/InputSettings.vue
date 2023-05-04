@@ -2,21 +2,21 @@
   <div
     class="inputContainer"
     :class="{
-      firstname: props.name === 'firstname',
-      lastname: props.name === 'lastname',
+      firstname: input.name === 'firstname',
+      lastname: input.name === 'lastname',
     }"
   >
-    <label :for="props.name">{{ props.label }}</label>
+    <label :for="input.name">{{ input.label }}</label>
     <input
-      :name="props.name"
-      :type="props.type"
-      :readonly="!props.canBeModified"
+      :name="input.name"
+      :type="input.type"
+      :readonly="!input.canBeModified"
       required
       v-model="content"
       @input="sendInputValue"
-      ref="input"
+      ref="inputContent"
     />
-    <span class="passwordInfos" v-if="props.name === 'confirmPassword'">
+    <span class="passwordInfos" v-if="input.name === 'confirmPassword'">
       Doit contenir une majuscule, un chiffre et un caractère spécial (8
       caractères min.)
     </span>
@@ -26,26 +26,21 @@
 <script setup>
 import { ref, computed } from "vue";
 const props = defineProps({
-  name: { type: String, required: true },
-  type: { type: String, required: true },
-  value: { type: String, required: true },
-  label: { type: String, required: true },
-  canBeModified: { type: Boolean, required: true },
-  showValue: { type: Boolean },
-  resetInput: { type: Boolean },
+  input: { type: Object, required: true },
 });
 
 const emit = defineEmits(["getInputValue"]);
+const inputContent = ref(null);
 
-const input = ref(null);
-const sendInputValue = () => emit("getInputValue", input.value, props.name);
+const sendInputValue = () =>
+  emit("getInputValue", inputContent.value, props.name);
 
 const content = computed({
   get() {
-    return props.value;
+    return props.input.value;
   },
   set(value) {
-    input.value = value;
+    inputContent.value = value;
   },
 });
 </script>
@@ -65,8 +60,8 @@ input {
   border-radius: 5px;
   padding-left: 5px;
   border: 1px solid var(--addMediaBackground);
-  color: var(--textColorMain);
   background-color: var(--backgroundSecond);
+  color: var(--textColorMain);
   &:focus {
     outline: none;
   }

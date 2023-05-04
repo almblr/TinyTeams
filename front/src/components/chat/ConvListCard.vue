@@ -18,7 +18,7 @@
           :class="{
             nonReadMessage:
               !conversation.lastMessage.isRead &&
-              conversation.lastMessage.author !== userLS.id,
+              conversation.lastMessage.author !== user.id,
           }"
         >
           {{
@@ -38,7 +38,7 @@
       <div
         v-if="
           !conversation.lastMessage.isRead &&
-          conversation.lastMessage.author !== userLS.id
+          conversation.lastMessage.author !== user.id
         "
         class="conversationBadge"
       ></div>
@@ -49,33 +49,10 @@
 <script setup>
 import router from "@/router/index.js";
 import useChatStore from "@/stores/chatStore.js";
-import relativeTime from "dayjs/plugin/relativeTime";
-import UpdateLocale from "dayjs/plugin/updateLocale";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
-dayjs.locale("fr");
-dayjs.extend(relativeTime);
-dayjs.extend(UpdateLocale);
-dayjs.updateLocale("fr", {
-  relativeTime: {
-    future: "dans %s",
-    past: "il y a %s",
-    s: "1min",
-    m: "1min",
-    mm: "%dmin",
-    h: "1h",
-    hh: "%dh",
-    d: "1j",
-    dd: "%d jrs",
-    M: "1 mois",
-    MM: "%d mois",
-    y: "1 an",
-    yy: "%d ans",
-  },
-});
+import dayjs from "@/dayjs.js";
 
 const chatStore = useChatStore();
-const userLS = JSON.parse(sessionStorage.getItem("user"));
+const user = JSON.parse(sessionStorage.getItem("user"));
 
 const openConversation = (conversationId) => {
   chatStore.newMessage = false;

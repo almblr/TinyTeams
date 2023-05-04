@@ -14,10 +14,7 @@ import PostContainer from "@/components/posts/PostContainer.vue";
 
 <style lang="scss" scoped>
 #container {
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-  background-color: var(--backgroundMain);
+  @include container;
 }
 
 #post {

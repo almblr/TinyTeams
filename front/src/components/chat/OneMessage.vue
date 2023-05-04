@@ -1,15 +1,15 @@
 <template>
   <div
     class="message"
-    :class="message.author === userLS.id ? 'myMessages' : 'othersMessages'"
+    :class="message.author === user.id ? 'myMessages' : 'othersMessages'"
   >
     <img
       class="profilePicture"
-      v-if="showProfilePicture(index) && message.author !== userLS.id"
+      v-if="showProfilePicture(index) && message.author !== user.id"
       :src="conversation.otherUser.profilePicture"
       alt="profilePicture"
     />
-    <div v-else-if="message.author !== userLS.id" class="noImg"></div>
+    <div v-else-if="message.author !== user.id" class="noImg"></div>
     <div class="message__divContent">
       <p
         v-if="message.content"
@@ -42,7 +42,7 @@ const props = defineProps({
   conversation: Object,
 });
 const chatStore = useChatStore();
-const userLS = JSON.parse(sessionStorage.getItem("user"));
+const user = JSON.parse(sessionStorage.getItem("user"));
 
 const showProfilePicture = (index) => {
   const nextUserIdx = index + 1;

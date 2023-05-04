@@ -47,10 +47,7 @@ useInfiniteScroll(
 
 <style lang="scss" scoped>
 #container {
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-  background-color: var(--backgroundMain);
+  @include container;
 }
 
 #posts {
