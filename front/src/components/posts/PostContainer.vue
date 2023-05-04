@@ -108,7 +108,7 @@ article {
   min-width: 356px;
   border-radius: 10px;
   background-color: var(--backgroundSecond);
-  box-shadow: 5px 0px 20px var(--shadowColor);
+  box-shadow: 5px 0 20px var(--shadowColor);
 }
 
 input[type="file"] {

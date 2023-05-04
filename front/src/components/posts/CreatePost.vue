@@ -113,7 +113,7 @@ const sendPost = async () => {
   position: relative;
   width: 100%;
   max-width: 500px;
-  margin: 0px auto;
+  margin: 0 auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   background-color: var(--backgroundSecond);
   border-radius: 5px;
@@ -122,7 +122,7 @@ const sendPost = async () => {
 header {
   position: relative;
   width: 100%;
-  padding: 15px 0px;
+  padding: 15px 0;
   color: var(--textColorSecond);
   font-size: 15px;
   text-align: center;

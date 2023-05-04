@@ -6,7 +6,7 @@ import reactionModel from "../models/reactionModel.js";
 import commentModel from "../models/commentModel.js";
 import followModel from "../models/followModel.js";
 import notificationModel from "../models/notificationModel.js";
-import conversationModel from "../models/conversation.js";
+import isConversationModel from "../models/conversation.js";
 import messageModel from "../models/messageModel.js";
 
 export const User = userModel(sequelize, DataTypes);
@@ -15,7 +15,7 @@ export const React = reactionModel(sequelize, DataTypes);
 export const Comment = commentModel(sequelize, DataTypes);
 export const Follow = followModel(sequelize, DataTypes);
 export const Notification = notificationModel(sequelize, DataTypes);
-export const Conversation = conversationModel(sequelize, DataTypes);
+export const Conversation = isConversationModel(sequelize, DataTypes);
 export const Message = messageModel(sequelize, DataTypes);
 
 /* Création des associations entre les tables */

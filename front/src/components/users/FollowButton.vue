@@ -76,7 +76,7 @@ onMounted(async () => {
   width: 110px;
   height: 35px;
   margin-top: 20px;
-  padding: 0px 15px;
+  padding: 0 15px;
   border: none;
   border-radius: 5px;
   font-size: 15px;

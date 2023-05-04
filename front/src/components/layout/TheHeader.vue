@@ -32,7 +32,7 @@ import AccountButton from "@/components/layout/AccountButton.vue";
   text-align: center;
   font-weight: bold;
   text-decoration: none;
-  color: #ffffff;
+  color: white;
   cursor: pointer;
   &:hover {
     background-color: #ececec15;
@@ -43,16 +43,15 @@ import AccountButton from "@/components/layout/AccountButton.vue";
 header {
   @include jcCt-aiCt;
   position: sticky;
+  z-index: 9999;
   top: 0;
   width: 100%;
   height: 50px;
-  z-index: 9999;
   background-color: #242526;
-  backdrop-filter: blur(1px);
-  padding: 0px 10px 0 5px;
+  padding: 0 10px 0 5px;
   gap: 10px;
   border-bottom: 1px solid #333435;
-  box-shadow: 5px 0px 20px var(--shadowHeader);
+  box-shadow: 5px 0 20px var(--shadowHeader);
   & > .divLogo {
     @include aiCt;
     flex: 1;
@@ -82,8 +81,8 @@ header {
   }
   .buttons {
     @include aiCt;
-    justify-content: flex-end;
     flex: 1;
+    justify-content: flex-end;
     gap: 5px;
   }
 }

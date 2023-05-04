@@ -46,7 +46,7 @@ const props = defineProps({
 input {
   opacity: 1;
   width: 250px;
-  padding: 10px 0px 10px 40px;
+  padding: 10px 0 10px 40px;
   border-radius: 50px;
   border: solid 1px #333;
   transition: all 0.2s ease-in-out;

@@ -34,7 +34,7 @@ const userStore = useUserStore();
   min-height: 250px;
   background-color: var(--backgroundSecond);
   transition: 200ms;
-  box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.2);
 }
 .band {
   min-width: 100%;
@@ -66,7 +66,7 @@ const userStore = useUserStore();
     max-width: 300px;
     height: 35px;
     margin-top: 20px;
-    padding: 0px 15px;
+    padding: 0 15px;
     text-align: center;
     border-radius: 5px;
     font-size: 19px;

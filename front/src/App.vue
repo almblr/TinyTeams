@@ -115,7 +115,7 @@ onMounted(async () => {
   width: 300px;
   height: 75px;
   border-radius: 5px;
-  box-shadow: 5px 0px 20px var(--shadowColor);
+  box-shadow: 5px 0 20px var(--shadowColor);
   animation: notifAnimation 4s ease-in-out forwards;
   cursor: pointer;
 }

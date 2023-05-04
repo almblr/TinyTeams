@@ -1,7 +1,7 @@
 <template>
   <section class="chatbox" v-if="conversation">
     <div class="chatbox__header">
-      <img :src="conversation.otherUser.profilePicture" alt="" />
+      <img :src="conversation.otherUser.profilePicture" alt="profilePicture" />
       <h3>
         {{ conversation.otherUser.firstname }}
         {{ conversation.otherUser.lastname }}
@@ -11,57 +11,26 @@
       >
     </div>
     <div class="chatbox__messagesList" ref="messagesList">
-      <div v-for="(message, index) in sortedMessageArray">
+      <div v-for="(message, index) in sortedMessageArray" v-if="!isLoading">
         <h6 class="date" v-if="showDate(message, index)">
           {{ date(message.createdAt) }}
         </h6>
-        <div class="myMessages message" v-if="message.author === userLS.id">
-          <p
-            v-if="message.content"
-            :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')"
-          >
-            {{ message.content }}
-          </p>
-          <img
-            class="imgContent"
-            v-if="message.imageUrl"
-            :src="message.imageUrl"
-            alt="image"
-          />
-        </div>
-        <div class="othersMessages message" v-else>
-          <img
-            class="profilePicture"
-            v-if="showProfilePicture(index)"
-            :src="conversation.otherUser.profilePicture"
-            alt="profilePicture"
-          />
-          <div v-else class="noImg"></div>
-          <div class="othersMessages_divContent">
-            <p
-              v-if="message.content"
-              :title="dayjs(message.createdAt).format('DD/MM/YY à HH[h]mm')"
-            >
-              {{ message.content }}
-            </p>
-            <img
-              class="imgContent"
-              v-if="message.imageUrl"
-              :src="message.imageUrl"
-              alt="image"
-            />
-          </div>
-        </div>
+        <OneMessage
+          :message="message"
+          :index="index"
+          :conversation="conversation"
+        />
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick, onUpdated } from "vue";
+import { ref, computed, watch, onMounted, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import { useInfiniteScroll } from "@vueuse/core";
 import useChatStore from "@/stores/chatStore.js";
+import OneMessage from "@/components/chat/OneMessage.vue";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
@@ -70,9 +39,9 @@ dayjs.extend(relativeTime);
 
 const route = useRoute();
 const chatStore = useChatStore();
-const userLS = JSON.parse(sessionStorage.getItem("user"));
 const conversation = ref(null);
 const messagesList = ref(null);
+const isLoading = ref(true);
 
 const sortedMessageArray = computed(() => {
   return chatStore.messages.sort((a, b) => {
@@ -106,19 +75,6 @@ const scrollToLastMessage = () => {
   });
 };
 
-const showProfilePicture = (index) => {
-  const nextUserIdx = index + 1;
-  if (nextUserIdx === chatStore.messages.length) {
-    return true;
-  } else if (
-    chatStore.messages[index].author === chatStore.messages[nextUserIdx].author
-  ) {
-    return false;
-  } else {
-    return true;
-  }
-};
-
 const getConversation = async (conversationId) => {
   conversation.value = chatStore.conversations.find(
     (conv) => conv.id === conversationId
@@ -146,6 +102,7 @@ const waitForImages = () => {
       });
     }
   });
+  isLoading.value = false;
   if (loadedImages === images.length) {
     scrollToLastMessage();
   }
@@ -170,18 +127,6 @@ watch(
     }
   }
 );
-
-watch(
-  () => route.params.conversationId,
-  async (newId) => {
-    if (newId) {
-      const conversationId = parseInt(newId);
-      await getConversation(conversationId);
-      scrollToLastMessage();
-    }
-  }
-);
-
 useInfiniteScroll(
   messagesList,
   async () => {
@@ -203,22 +148,32 @@ useInfiniteScroll(
   }
 );
 
+watch(
+  () => route.params.conversationId,
+  async (newId) => {
+    if (newId) {
+      const conversationId = parseInt(newId);
+      await getConversation(conversationId);
+      scrollToLastMessage();
+    }
+  }
+);
+
 onMounted(async () => {
   const conversationId = parseInt(route.params.conversationId);
   await getConversation(conversationId);
-  // On attend que les images soient chargées
-  // pour scroller en bas
+  // On attend que les images soient chargées pour scroller en bas
   waitForImages();
 });
 </script>
 
 <style lang="scss" scoped>
 .chatbox {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  position: relative;
   overflow: hidden;
   max-height: 100%;
   &::-webkit-scrollbar {
@@ -273,7 +228,6 @@ onMounted(async () => {
     flex-direction: column;
     height: 100%;
     width: 100%;
-    gap: 5px;
     padding: 0 10px;
     padding-top: 10px;
     overflow-y: auto;
@@ -289,67 +243,6 @@ onMounted(async () => {
       margin: 20px 0;
       width: 100%;
       color: var(--textColorSecond);
-    }
-    & .message {
-      max-width: 85%;
-      width: fit-content;
-      border-radius: 10px;
-      word-break: break-all;
-      & p {
-        width: fit-content;
-        padding: 10px;
-        border-radius: 10px;
-      }
-      & .imgContent {
-        width: 100%;
-        max-width: 480px;
-        max-height: 200px;
-        object-fit: cover;
-        border-radius: 10px;
-      }
-    }
-    & .myMessages {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      margin-left: auto;
-      gap: 10px;
-      & > p {
-        background-color: #0084ff;
-        color: white;
-      }
-      & > img {
-        width: 400px;
-        max-height: 200px;
-        object-fit: cover;
-        border-radius: 10px;
-      }
-    }
-    & .othersMessages {
-      display: flex;
-      margin-right: auto;
-      gap: 5px;
-      & .profilePicture {
-        margin-top: 4px;
-        width: 35px;
-        height: 35px;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-      & .noImg {
-        min-width: 35px;
-        min-height: 35px;
-        border-radius: 50%;
-      }
-      &__divContent {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-      & p {
-        background-color: var(--messageBg);
-      }
     }
   }
 }

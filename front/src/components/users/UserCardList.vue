@@ -67,7 +67,7 @@ article {
 
 @media all and (min-width: 768px) {
   article {
-    box-shadow: 5px 0px 20px var(--shadowColor);
+    box-shadow: 5px 0 20px var(--shadowColor);
     padding: 15px 40px 15px 15px;
     & .userInfos {
       h2 {

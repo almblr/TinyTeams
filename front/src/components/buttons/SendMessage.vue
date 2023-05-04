@@ -25,7 +25,7 @@ const sendMessage = async () => {
   );
   if (isConversationExists) {
     router.push(`/messages/${isConversationExists.id}`);
-    chatStore.conversationMode = true;
+    chatStore.isConversationMode = true;
     return;
   }
   chatStore.newMessage = true;
@@ -38,7 +38,7 @@ const sendMessage = async () => {
   max-width: 300px;
   width: 110px;
   height: 35px;
-  padding: 0px 15px;
+  padding: 0 15px;
   border: none;
   border-radius: 5px;
   font-size: 15px;

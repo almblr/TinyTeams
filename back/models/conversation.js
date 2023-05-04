@@ -1,4 +1,4 @@
-const conversationModel = (sequelize, DataTypes) => {
+const isConversationModel = (sequelize, DataTypes) => {
   return sequelize.define("conversation", {
     id: {
       type: DataTypes.INTEGER,
@@ -9,4 +9,4 @@ const conversationModel = (sequelize, DataTypes) => {
   });
 };
 
-export default conversationModel;
+export default isConversationModel;

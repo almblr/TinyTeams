@@ -10,7 +10,7 @@ const useChatStore = defineStore("chat", () => {
   const conversations = ref([]);
   const messages = ref([]);
   const nonReadMessages = ref(0);
-  const conversationMode = ref(false);
+  const isConversationMode = ref(false);
   const newMessage = ref(false);
   const showMobileUsersList = ref(false);
   const isDesktop = ref(true);
@@ -142,7 +142,7 @@ const useChatStore = defineStore("chat", () => {
     conversations.value = [];
     messages.value = [];
     nonReadMessages.value = [];
-    conversationMode.value = false;
+    isConversationMode.value = false;
     newMessage.value = false;
     showMobileUsersList.value = false;
     isDesktop.value = true;
@@ -153,7 +153,7 @@ const useChatStore = defineStore("chat", () => {
     messages,
     newMessage,
     nonReadMessages,
-    conversationMode,
+    isConversationMode,
     showMobileUsersList,
     isDesktop,
     createConversation,

@@ -131,7 +131,7 @@ const toggleShowPopup = () => {
   background-color: rgb(98, 179, 98);
   font-size: 1rem;
   font-weight: bold;
-  box-shadow: 5px 0px 20px var(--shadowColor);
+  box-shadow: 5px 0 20px var(--shadowColor);
   color: white;
   z-index: 100;
   opacity: 0;

@@ -121,7 +121,7 @@ const remove = async (postId, commentId) => {
       color: white;
       text-align: center;
       transition: 200ms;
-      padding: 5px 0px;
+      padding: 5px 0;
       &:hover {
         background: rgb(14, 14, 14);
       }

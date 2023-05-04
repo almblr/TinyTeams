@@ -7,19 +7,13 @@
       @click="openTooltip"
     >
       <ion-icon name="notifications"></ion-icon>
-      <div v-if="notifStore.nonViewedNotifs > 0">
-        {{ notifStore.nonViewedNotifs }}
-      </div>
+      <NumberBadge :unread="notifStore.nonViewedNotifs" />
     </div>
     <div class="tooltip" v-show="showTooltip === true" ref="notifs">
       <div class="nothingToShow" v-if="notifStore.notifs.length === 0">
         Aucune notification à afficher
       </div>
-      <router-link
-        :to="notifLink(notif)"
-        v-for="notif of notifStore.notifs"
-        @mouseover="updateNotif(notif.id)"
-      >
+      <router-link :to="notifLink(notif)" v-for="notif of notifStore.notifs">
         <img :src="notif.senderProfilePicture" alt="ProfilePicture" />
         <div class="text">
           <p>
@@ -37,6 +31,7 @@
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useInfiniteScroll } from "@vueuse/core";
+import NumberBadge from "@/components/layout/NumberBadge.vue";
 import useNotifStore from "@/stores/notificationStore.js";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
@@ -53,34 +48,40 @@ const canInfiniteScroll = ref(true);
 
 const openTooltip = async () => {
   showTooltip.value = !showTooltip.value;
+  if (!showTooltip.value) {
+    return;
+  }
   if (!firstload.value) {
-    await notifStore.updateAll();
+    if (notifStore.notifs.every((notif) => notif.isRead)) {
+      return;
+    } else {
+      return await notifStore.getAll(userLS.id);
+    }
   }
   await notifStore.getAll(userLS.id);
   await notifStore.updateAll(userLS.id);
   firstload.value = false;
 };
 const closeTooltip = () => {
-  showTooltip.value === true ? (showTooltip.value = false) : null;
+  showTooltip.value ? (showTooltip.value = false) : null;
 };
 
-const updateNotif = async (notifId) => {
-  const notif = notifStore.notifs.find((notif) => notif.id === notifId);
-  !notif.isRead ? await notifStore.update(notifId) : null;
-};
 const notifLink = (notif) => {
   return notif.postId ? `/post/${notif.postId}` : `/users/${notif.sender}`;
 };
 
 const notifDescription = (notifType) => {
-  if (notifType === "newLike") {
-    return " a aimé votre post";
-  } else if (notifType === "newPost") {
-    return " a publié un nouveau post";
-  } else if (notifType === "newFollow") {
-    return " vous suit !";
-  } else {
-    return " a commenté votre post";
+  switch (notifType) {
+    case "newLike":
+      return " a aimé votre post";
+    case "newPost":
+      return " a publié un nouveau post";
+    case "newFollow":
+      return " vous suit !";
+    case "newComment":
+      return " a commenté votre post";
+    default:
+      return "";
   }
 };
 
@@ -99,10 +100,6 @@ useInfiniteScroll(
     distance: 10,
   }
 );
-
-// onMounted(async () => {
-//   await notifStore.getAll();
-// });
 </script>
 
 <style lang="scss" scoped>
@@ -114,29 +111,16 @@ useInfiniteScroll(
   & > ion-icon {
     font-size: 20px;
   }
-  & > div {
-    @include jcCt-aiCt;
-    width: 17px;
-    height: 17px;
-    position: absolute;
-    top: -2px;
-    right: -3px;
-    font-size: 0.8rem;
-    background-color: red;
-    border-radius: 99px;
-  }
 }
 .tooltip {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include fdCol-aiCt;
   position: absolute;
+  z-index: 99;
   right: 0;
   top: 40px;
   min-width: 300px;
   min-height: 50px;
   max-height: 500px;
-  z-index: 99;
   background: var(--backgroundSecond);
   margin-top: 3px;
   border-radius: 5px;
@@ -153,9 +137,9 @@ useInfiniteScroll(
     align-items: center;
     width: 97%;
     text-decoration: none;
-    gap: 10px;
     border-radius: 10px;
     padding: 10px;
+    gap: 10px;
     &:hover {
       background: rgba(211, 208, 208, 0.082);
     }
@@ -173,14 +157,6 @@ useInfiniteScroll(
       & span {
         font-size: 0.8rem;
       }
-    }
-    & .notificationBadge {
-      position: absolute;
-      right: 16px;
-      width: 10px;
-      height: 10px;
-      border-radius: 99px;
-      background-color: #2e89ff;
     }
   }
 }
