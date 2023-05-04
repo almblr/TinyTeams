@@ -20,7 +20,6 @@ const props = defineProps({
     type: String,
   },
 });
-
 const route = useRoute();
 
 const GetUploadedImg = (event) => {

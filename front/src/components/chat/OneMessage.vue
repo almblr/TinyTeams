@@ -28,13 +28,9 @@
 </template>
 
 <script setup>
-import { watch, computed } from "vue";
+import { computed } from "vue";
 import useChatStore from "@/stores/chatStore.js";
-import relativeTime from "dayjs/plugin/relativeTime";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
-dayjs.locale("fr");
-dayjs.extend(relativeTime);
+import dayjs from "@/dayjs.js";
 
 const props = defineProps({
   message: Object,

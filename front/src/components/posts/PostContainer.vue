@@ -65,10 +65,8 @@ const getOnePost = async () => {
 onBeforeMount(async () => {
   switch (route.name) {
     case "Feed":
-      postStore.getAll();
-      nextTick(() => {
-        isLoading.value = false;
-      });
+      await postStore.getAll();
+      isLoading.value = false;
       break;
     case "UserProfile":
       getUsersPosts();

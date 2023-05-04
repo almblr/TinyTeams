@@ -84,12 +84,9 @@ const userStore = useUserStore();
   }
   &__isFollowing {
     margin-top: 3px;
-    background-color: rgba(88, 87, 87, 0.521);
+    background-color: var(--followInfoBox);
     padding: 3px 5px;
     border-radius: 3px;
-  }
-  :hover {
-    cursor: pointer;
   }
   .edit {
     background-color: rgba(65, 65, 65, 0.555);

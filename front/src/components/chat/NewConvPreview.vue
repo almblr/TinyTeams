@@ -17,24 +17,15 @@ const userStore = useUserStore();
 const route = useRoute();
 const newUser = ref(null);
 
-const getUser = async (userId) => {
-  newUser.value = await userStore.getOne(userId);
+const getUser = async (params) => {
+  if ("userId" in params) {
+    newUser.value = await userStore.getOne(params.userId);
+  }
 };
 
-watch(
-  () => route.params,
-  async (newValue) => {
-    if ("userId" in newValue) {
-      getUser(newValue.userId);
-    }
-  }
-);
+watch(() => route.params, getUser);
 
-onMounted(async () => {
-  if ("userId" in route.params) {
-    getUser(route.params.userId);
-  }
-});
+onMounted(async () => getUser(route.params));
 </script>
 
 <style lang="scss" scoped>

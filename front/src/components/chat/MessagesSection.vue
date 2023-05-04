@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from "vue";
+import { ref, computed, watch, nextTick, onMounted, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
 import { useInfiniteScroll } from "@vueuse/core";
 import useChatStore from "@/stores/chatStore.js";
@@ -87,7 +87,9 @@ const getConversation = async (conversationId) => {
   }
 };
 
+// On attend que les images soient chargées pour scroller en bas
 const waitForImages = () => {
+  if (!messagesList.value) return;
   const images = messagesList.value.getElementsByTagName("img");
   let loadedImages = 0;
   Array.from(images).forEach((img) => {
@@ -97,12 +99,11 @@ const waitForImages = () => {
       img.addEventListener("load", () => {
         loadedImages++;
         if (loadedImages === images.length) {
-          scrollToLastMessage();
+          return scrollToLastMessage();
         }
       });
     }
   });
-  isLoading.value = false;
   if (loadedImages === images.length) {
     scrollToLastMessage();
   }
@@ -161,22 +162,22 @@ watch(
   }
 );
 
-onMounted(async () => {
+onBeforeMount(async () => {
   const conversationId = parseInt(route.params.conversationId);
   await getConversation(conversationId);
   chatStore.isConversationMode = true;
-  // On attend que les images soient chargées pour scroller en bas
   waitForImages();
 });
+
+onMounted(() => (isLoading.value = false));
 </script>
 
 <style lang="scss" scoped>
 .chatbox {
+  @include width-height_max;
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
   overflow: hidden;
   max-height: 100%;
   &::-webkit-scrollbar {
@@ -231,8 +232,7 @@ onMounted(async () => {
     flex-direction: column;
     height: 100%;
     width: 100%;
-    padding: 0 10px;
-    padding-top: 10px;
+    padding: 10px 10px 0;
     overflow-y: auto;
     padding-bottom: 10px;
     &::-webkit-scrollbar {

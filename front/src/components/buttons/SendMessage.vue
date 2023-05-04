@@ -25,8 +25,7 @@ const sendMessage = async () => {
   );
   if (isConversationExists) {
     router.push(`/messages/${isConversationExists.id}`);
-    chatStore.isConversationMode = true;
-    return;
+    return (chatStore.isConversationMode = true);
   }
   chatStore.newMessage = true;
   router.push(`/messages/new/${props.userId}`);

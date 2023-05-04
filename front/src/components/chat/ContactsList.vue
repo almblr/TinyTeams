@@ -48,9 +48,7 @@ useInfiniteScroll(
   }
 );
 
-onMounted(async () => {
-  await userStore.getAll();
-});
+onMounted(async () => await userStore.getAll());
 </script>
 
 <style lang="scss" scoped>

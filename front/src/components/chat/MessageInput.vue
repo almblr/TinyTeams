@@ -53,8 +53,6 @@ const getGif = (path) => {
   mediaToSend.value = path;
 };
 const getUrls = (path, file) => {
-  console.log(path);
-  console.log(file);
   if (file) {
     mediaToSend.value = file;
   } else {
@@ -98,7 +96,6 @@ const sendMessage = async () => {
 .container {
   display: flex;
   flex-direction: column;
-  bottom: 0;
   gap: 5px;
   width: 100%;
   padding: 5px;

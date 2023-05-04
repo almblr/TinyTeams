@@ -68,13 +68,9 @@ useInfiniteScroll(
   background-color: #2374e1;
   border-radius: 70px;
   transition: 0.3s;
-  box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.432);
-  &:hover {
-    transition: 0.3s;
-    cursor: pointer;
-    box-shadow: 5px 4px 10px rgba(0, 0, 0, 0.562);
-  }
-  & > * {
+  box-shadow: 5px 4px 10px var(--shadowColor);
+  cursor: pointer;
+  & > ion-icon {
     position: relative;
     left: 1px;
     font-size: 30px;

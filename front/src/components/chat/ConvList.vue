@@ -38,10 +38,8 @@ const chatStore = useChatStore();
 }
 
 .nothingToDisplay {
-  display: flex;
+  @include fdCol-aiCt;
   flex: 1;
-  justify-content: center;
-  align-items: center;
   font-style: italic;
 }
 
