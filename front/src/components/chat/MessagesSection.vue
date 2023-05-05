@@ -10,11 +10,7 @@
         >Voir profil</router-link
       >
     </div>
-    <div
-      class="chatbox__messagesList"
-      ref="messagesList"
-      v-show="isLoading === false"
-    >
+    <div class="chatbox__messagesList" ref="messagesList" v-show="!isLoading">
       <div v-for="(message, index) in sortedMessageArray">
         <h6 class="date" v-if="showDate(message, index)">
           {{ date(message.createdAt) }}
@@ -73,12 +69,6 @@ const date = (messageDate) => {
   return messageDatejs.format("DD/MM/YY à HH[h]mm");
 };
 
-const scrollToLastMessage = () => {
-  nextTick(() => {
-    messagesList.value.scrollTop = messagesList.value.scrollHeight;
-  });
-};
-
 const getConversation = async (conversationId) => {
   conversation.value = chatStore.conversations.find(
     (conv) => conv.id === conversationId
@@ -91,13 +81,15 @@ const getConversation = async (conversationId) => {
   }
 };
 
+const scrollToLastMessage = () => {
+  messagesList.value.scrollTop = messagesList.value.scrollHeight;
+};
+
 // On attend que les images soient chargées pour scroller en bas
 const waitForImages = async () => {
   if (!messagesList.value) return;
-
   const images = messagesList.value.getElementsByTagName("img");
   let loadedImages = 0;
-
   await Promise.all(
     Array.from(images).map((img) => {
       return new Promise((resolve) => {
@@ -113,9 +105,10 @@ const waitForImages = async () => {
       });
     })
   );
-
   isLoading.value = false;
-  scrollToLastMessage();
+  nextTick(() => {
+    scrollToLastMessage();
+  });
 };
 
 useInfiniteScroll(
@@ -154,7 +147,6 @@ watch(
         );
         conversation.lastMessage.isRead = true;
       }
-      waitForImages();
     }
   }
 );
