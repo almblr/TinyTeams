@@ -10,8 +10,12 @@
         >Voir profil</router-link
       >
     </div>
-    <div class="chatbox__messagesList" ref="messagesList">
-      <div v-for="(message, index) in sortedMessageArray" v-if="!isLoading">
+    <div
+      class="chatbox__messagesList"
+      ref="messagesList"
+      v-show="isLoading === false"
+    >
+      <div v-for="(message, index) in sortedMessageArray">
         <h6 class="date" v-if="showDate(message, index)">
           {{ date(message.createdAt) }}
         </h6>
@@ -26,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick, onMounted, onBeforeMount } from "vue";
+import { ref, computed, watch, nextTick, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useInfiniteScroll } from "@vueuse/core";
 import useChatStore from "@/stores/chatStore.js";
@@ -88,25 +92,30 @@ const getConversation = async (conversationId) => {
 };
 
 // On attend que les images soient chargées pour scroller en bas
-const waitForImages = () => {
+const waitForImages = async () => {
   if (!messagesList.value) return;
+
   const images = messagesList.value.getElementsByTagName("img");
   let loadedImages = 0;
-  Array.from(images).forEach((img) => {
-    if (img.complete) {
-      loadedImages++;
-    } else {
-      img.addEventListener("load", () => {
-        loadedImages++;
-        if (loadedImages === images.length) {
-          return scrollToLastMessage();
+
+  await Promise.all(
+    Array.from(images).map((img) => {
+      return new Promise((resolve) => {
+        if (img.complete) {
+          loadedImages++;
+          resolve();
+        } else {
+          img.addEventListener("load", () => {
+            loadedImages++;
+            resolve();
+          });
         }
       });
-    }
-  });
-  if (loadedImages === images.length) {
-    scrollToLastMessage();
-  }
+    })
+  );
+
+  isLoading.value = false;
+  scrollToLastMessage();
 };
 
 useInfiniteScroll(
@@ -157,19 +166,17 @@ watch(
       const conversationId = parseInt(newId);
       await getConversation(conversationId);
       chatStore.isConversationMode = true;
-      scrollToLastMessage();
+      waitForImages();
     }
   }
 );
 
-onBeforeMount(async () => {
+onMounted(async () => {
   const conversationId = parseInt(route.params.conversationId);
-  await getConversation(conversationId);
   chatStore.isConversationMode = true;
+  await getConversation(conversationId);
   waitForImages();
 });
-
-onMounted(() => (isLoading.value = false));
 </script>
 
 <style lang="scss" scoped>
