@@ -79,8 +79,7 @@ const signup = async () => {
 <style lang="scss" scoped>
 @import "@/scss/inputStyle.scss";
 .form__body__name {
-  display: flex;
-  justify-content: space-between;
+  @include jcSb;
   gap: 10px;
   width: 100%;
 }

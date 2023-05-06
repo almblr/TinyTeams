@@ -163,8 +163,7 @@ onBeforeMount(() => {
     }
   }
   &__stats {
-    display: flex;
-    align-items: center;
+    @include aiCt;
     flex: 1;
     margin-left: 15px;
     gap: 3px;

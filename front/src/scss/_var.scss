@@ -52,6 +52,11 @@ html.dark {
   justify-content: center;
 }
 
+@mixin jcSb {
+  display: flex;
+  justify-content: space-between;
+}
+
 @mixin aiCt {
   display: flex;
   align-items: center;

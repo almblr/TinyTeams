@@ -187,8 +187,7 @@ onMounted(async () => {
   }
   &__header {
     position: sticky;
-    display: flex;
-    align-items: center;
+    @include aiCt;
     z-index: 99;
     width: 100%;
     min-height: 50px;

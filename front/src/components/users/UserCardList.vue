@@ -48,10 +48,9 @@ article {
     object-fit: cover;
   }
   & .userInfos {
-    display: flex;
+    @include jcCt;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
     flex: 1;
     h2 {
       font-size: 20px;

@@ -107,8 +107,7 @@ const sendMessage = async () => {
     max-width: 150px;
   }
   &__textarea {
-    display: flex;
-    align-items: center;
+    @include aiCt;
     max-height: 200px;
     min-height: 30px;
     width: 100%;

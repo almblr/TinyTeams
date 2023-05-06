@@ -52,8 +52,7 @@ const edit = (postId) => {
 
 <style lang="scss" scoped>
 .post__header {
-  display: flex;
-  justify-content: space-between;
+  @include jcSb;
   width: 100%;
   padding: 1% 3%;
   gap: 5px;

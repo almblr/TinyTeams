@@ -18,7 +18,6 @@ import followRoutes from "./routes/followRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
-import { log, table } from "console";
 
 export const app = express();
 export const httpServer = createServer(app);
@@ -60,7 +59,6 @@ sequelize
       },
     });
     if (!findUserAdmin) {
-      // Pour éviter de recréer un user admin s'il y en a déjà un
       bcrypt.hash(process.env.ADMINPASSWORD, 10).then((hash) => {
         User.create({
           email: "admin@gmail.com",
@@ -155,4 +153,3 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(process.env.PORT || 3000);
-// app.listen(process.env.PORT || 3000);

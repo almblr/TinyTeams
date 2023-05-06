@@ -121,8 +121,7 @@ watch(
   padding: 5px 10px 5px 10px;
   color: var(--textColorMain);
   & > header {
-    display: flex;
-    align-items: center;
+    @include aiCt;
     justify-content: space-between;
     position: relative;
     min-width: 100%;

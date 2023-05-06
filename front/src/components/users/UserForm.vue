@@ -3,22 +3,22 @@
     <div class="formContainer">
       <TheLogo />
       <main class="form">
-        <h2 class="form__title">{{ props.title }}</h2>
-        <form class="form__body" @submit.prevent="props.submit">
+        <h2 class="form__title">{{ title }}</h2>
+        <form class="form__body" @submit.prevent="submit">
           <slot></slot>
         </form>
       </main>
       <footer>
         <p>
-          {{ props.question }}
-          <router-link :to="props.link" @click="userStore.$reset()">{{
-            props.reponse
+          {{ question }}
+          <router-link :to="link" @click="userStore.$reset()">{{
+            reponse
           }}</router-link>
         </p>
       </footer>
     </div>
-    <div class="error" v-if="props.popup">
-      <span> {{ props.error }} </span>
+    <div class="error" v-if="popup">
+      <span> {{ error }} </span>
     </div>
   </div>
 </template>

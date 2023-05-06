@@ -16,9 +16,8 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .container {
+  @include width-height_max;
   position: relative;
-  min-width: 100%;
-  min-height: 100%;
   img {
     border-radius: 10px;
     width: 100%;

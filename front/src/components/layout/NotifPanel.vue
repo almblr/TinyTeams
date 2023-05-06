@@ -35,8 +35,8 @@ import NumberBadge from "@/components/layout/NumberBadge.vue";
 import useNotifStore from "@/stores/notificationStore.js";
 import dayjs from "@/dayjs.js";
 
-const notifStore = useNotifStore();
 const user = JSON.parse(sessionStorage.getItem(`user`));
+const notifStore = useNotifStore();
 const firstload = ref(true);
 const showTooltip = ref(null);
 const notifs = ref(null);
@@ -44,9 +44,7 @@ const canInfiniteScroll = ref(true);
 
 const openTooltip = async () => {
   showTooltip.value = !showTooltip.value;
-  if (!showTooltip.value) {
-    return;
-  }
+  if (!showTooltip.value) return;
   if (!firstload.value) {
     if (notifStore.notifs.every((notif) => notif.isRead)) {
       return;
@@ -129,8 +127,7 @@ useInfiniteScroll(
     font-style: italic;
   }
   & a {
-    display: flex;
-    align-items: center;
+    @include aiCt;
     width: 97%;
     text-decoration: none;
     border-radius: 10px;

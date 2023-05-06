@@ -35,8 +35,8 @@ const userStore = useUserStore();
 
 <style lang="scss" scoped>
 .container {
-  position: relative;
   @include fdCol-jcCt-aiCt;
+  position: relative;
   max-width: 768px;
   width: 100%;
   min-height: 280px;

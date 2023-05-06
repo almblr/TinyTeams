@@ -178,10 +178,8 @@ section {
     }
   }
   .inputs {
-    display: flex;
+    @include jcSb-aiCt;
     flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
     width: 100%;
     row-gap: 10px;
     .formButtons {

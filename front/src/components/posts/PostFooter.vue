@@ -2,8 +2,8 @@
   <footer class="footer">
     <div class="footer__writeComment">
       <ProfilePicture
-        :url="post.user.profilePicture"
-        alt="Profil picture"
+        :url="user.profilePicture"
+        alt="Profile picture"
         width="35px"
         height="35px"
       />
@@ -23,6 +23,7 @@ import ProfilePicture from "@/components/layout/ProfilePicture.vue";
 import TextareaComponent from "@/components/posts/TextareaComponent.vue";
 import CommentSection from "@/components/posts/CommentSection.vue";
 
+const user = JSON.parse(sessionStorage.getItem(`user`));
 const props = defineProps({
   post: { type: Object, required: true },
 });

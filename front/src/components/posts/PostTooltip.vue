@@ -95,8 +95,7 @@ const remove = async (postId, commentId) => {
     cursor: pointer;
   }
   & > .icon {
-    display: flex;
-    align-items: center;
+    @include aiCt;
     gap: 1px;
     & > .dot {
       width: v-bind("props.dotSize");

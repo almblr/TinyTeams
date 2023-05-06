@@ -1,12 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import useChatStore from "@/stores/chatStore.js";
 import Login from "@/views/LoginView.vue";
-import Feed from "@/views/FeedView.vue";
 import Signup from "@/views/SignupView.vue";
-import UserProfile from "@/views/UserProfilView.vue";
-import UsersList from "@/views/UsersListView.vue";
-import Settings from "@/views/SettingsView.vue";
-import PostView from "@/views/PostView.vue";
 import NotFound from "@/views/NotFoundView.vue";
 
 const routes = [

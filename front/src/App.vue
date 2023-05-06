@@ -109,10 +109,10 @@ onMounted(async () => {
 
 .notif {
   @include jcCt-aiCt;
-  text-align: center;
-  text-decoration: none;
   position: absolute;
   bottom: 0;
+  text-align: center;
+  text-decoration: none;
   left: calc(50% - 150px);
   background-color: var(--backgroundSecond);
   border: 1px solid rgba(206, 205, 205, 0.075);

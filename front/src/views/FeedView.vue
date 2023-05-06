@@ -60,15 +60,15 @@ useInfiniteScroll(
 .createPost {
   @include jcCt-aiCt;
   position: fixed;
-  border: none;
   bottom: 20px;
   right: 20px;
   width: 50px;
   height: 50px;
   background-color: #2374e1;
+  box-shadow: 5px 4px 10px var(--shadowColor);
+  border: none;
   border-radius: 70px;
   transition: 0.3s;
-  box-shadow: 5px 4px 10px var(--shadowColor);
   cursor: pointer;
   & > ion-icon {
     position: relative;

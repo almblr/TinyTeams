@@ -33,10 +33,10 @@
 
 <script setup>
 import { ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
 import useUserStore from "@/stores/userStore.js";
 import useChatStore from "@/stores/chatStore.js";
 import router from "@/router/index.js";
-import { onClickOutside } from "@vueuse/core";
 
 const userStore = useUserStore();
 const chatStore = useChatStore();
@@ -55,7 +55,6 @@ onClickOutside(tooltip, () => {
 });
 
 const selectUser = (user) => {
-  console.log(user.id);
   const isConversationExist = chatStore.conversations.find(
     (c) => c.user1 === user.id || c.user2 === user.id
   );
@@ -79,10 +78,8 @@ const selectUser = (user) => {
   min-height: 50px;
   height: 50px;
   .search-user {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+    @include width-height_max;
+    @include aiCt;
     padding-left: 15px;
     background-color: var(--backgroundSecond);
     border-bottom: 1px solid var(--border);

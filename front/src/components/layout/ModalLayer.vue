@@ -8,9 +8,8 @@
 
 <style lang="scss" scoped>
 .modal__layer {
-  @include jcCt;
+  @include jcCt-aiCt;
   @include width-height_max;
-  align-items: center;
   position: fixed;
   z-index: 999;
   top: 0;

@@ -32,8 +32,7 @@ const errorMessage = computed(() => {
 <style lang="scss" scoped>
 #container {
   @include container;
-  display: flex;
-  justify-content: center;
+  @include jcCt;
   color: var(--textColorSecond);
   & > .error {
     @include fdCol-jcCt-aiCt;
