@@ -64,6 +64,10 @@ const useUserStore = defineStore("user", () => {
     if (Object.values(res.data).includes("No more users")) {
       return console.log("No more users to load");
     }
+    if (lastUserViewed) {
+      users.value.push(...res.data);
+      return res.data;
+    }
     users.value = res.data;
     return res.data;
   };

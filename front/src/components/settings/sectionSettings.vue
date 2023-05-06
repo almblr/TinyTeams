@@ -14,7 +14,7 @@
         >Annuler</span
       >
     </div>
-    <form class="inputs" @submit.prevent="submit(section.submit)">
+    <form class="inputs" @submit.prevent="submit(section.function)">
       <InputSettings
         v-for="input in section.inputs"
         :input="input"
@@ -80,15 +80,16 @@ const profilePictureUrl = computed(() => {
 });
 
 const updateValue = (inputValue, inputName) => {
-  if (props.section.sectionName === "user") {
+  if (props.section.name === "user") {
     const userKeys = Object.keys(updatedUser.value);
     for (const key of userKeys) {
       if (inputName === key) {
         updatedUser.value[key] = inputValue;
       }
     }
+    console.log(updatedUser.value);
   }
-  if (props.section.sectionName === "password") {
+  if (props.section.name === "password") {
     const passwordKeys = Object.keys(updatedPassword.value);
     for (const key of passwordKeys) {
       if (inputName === key) {
@@ -122,6 +123,7 @@ const submit = async (type) => {
   emit("showPopup");
   canSaveChanges.value = false;
 };
+
 watch(
   () => updatedUser.value,
   (newValue) => {

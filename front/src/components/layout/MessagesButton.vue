@@ -1,7 +1,7 @@
 <template>
   <router-link to="/messages" class="btn"
     ><ion-icon name="chatbubble-ellipses"></ion-icon>
-    <NumberBadge :unread="chatStore.nonReadMessages.length" />
+    <NumberBadge :unread="chatStore.nonReadMessages" />
   </router-link>
 </template>
 

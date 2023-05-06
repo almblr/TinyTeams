@@ -73,8 +73,8 @@ const defineMarginBottom = computed(() => {
   display: flex;
   max-width: 85%;
   width: fit-content;
-  word-break: break-all;
   margin-bottom: v-bind("defineMarginBottom");
+  word-break: break-word;
   & .profilePicture,
   .noImg {
     width: 35px;

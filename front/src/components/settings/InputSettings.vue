@@ -33,7 +33,7 @@ const emit = defineEmits(["getInputValue"]);
 const inputContent = ref(null);
 
 const sendInputValue = () =>
-  emit("getInputValue", inputContent.value, props.name);
+  emit("getInputValue", inputContent.value, props.input.name);
 
 const content = computed({
   get() {
