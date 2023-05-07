@@ -20,38 +20,17 @@ const messageController = {
       return res.status(400).json({ message: "Empty message" });
     }
     try {
-      let conversation;
-      if (!conversationId) {
-        conversation = await Conversation.findOne({
-          where: {
-            [Op.or]: [
-              { user1: userId, user2: body.user2 },
-              { user1: body.user2, user2: userId },
-            ],
-          },
-        });
-        if (!conversation) {
-          conversation = await Conversation.create({
-            user1: userId,
-            user2: body.user2,
-          });
-        }
-      } else {
-        conversation = await Conversation.findByPk(conversationId);
-      }
+      const conversation = await Conversation.findByPk(conversationId);
       const createdMessage = await Message.create({
         author: userId,
-        conversationId: conversation?.id || parseInt(conversationId),
+        conversationId: conversation.id,
         content: content || null,
         imageUrl: files.imageUrl
           ? `${protocol}://${req.get("host")}/images/${
               files.imageUrl[0].filename
             }`
           : imageUrl,
-      });
-      conversation.changed("updatedAt", true);
-      conversation.update({
-        updatedAt: createdMessage.createdAt,
+        isRead: false,
       });
       const otherUser =
         conversation.user2 !== req.auth.userId

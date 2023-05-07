@@ -22,9 +22,8 @@ const conversationController = {
           ],
         },
       });
-      if (isConversationExists) {
+      if (isConversationExists)
         return res.status(400).send({ message: "Conversation already exists" });
-      }
       const createdConversation = await Conversation.create({
         user1: req.auth.userId,
         user2: req.body.user2,

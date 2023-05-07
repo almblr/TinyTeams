@@ -37,6 +37,7 @@ import "dayjs/locale/fr";
 dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
+const user = JSON.parse(sessionStorage.getItem("user"));
 const route = useRoute();
 const chatStore = useChatStore();
 const conversation = ref(null);
@@ -145,6 +146,7 @@ watch(
         const conversation = chatStore.conversations.find(
           (conv) => conv.id === newValue.conversationId
         );
+        if (conversation.lastMessage.author === user.id) return;
         conversation.lastMessage.isRead = true;
       }
     }

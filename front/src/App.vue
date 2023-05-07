@@ -65,7 +65,7 @@ watch(state.newMessage, async (newValue) => {
     const conversationIdParam = parseInt(route.params.conversationId);
     if (conversationIdParam === newValue[0].conversationId) {
       chatStore.messages.push(newValue[0]);
-      await chatStore.markAsRead(conversationIdParam, newValue[0].id);
+      return await chatStore.markAsRead(conversationIdParam, newValue[0].id);
     }
     const conversationIndex = chatStore.conversations.findIndex(
       (c) => c.id === newValue[0].conversationId
