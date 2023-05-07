@@ -18,6 +18,7 @@ const props = defineProps({
 .container {
   @include width-height_max;
   position: relative;
+  background-color: black;
   img {
     border-radius: 10px;
     width: 100%;

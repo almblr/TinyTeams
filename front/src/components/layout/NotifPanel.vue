@@ -7,7 +7,7 @@
       @click="openTooltip"
     >
       <ion-icon name="notifications"></ion-icon>
-      <NumberBadge :unread="notifStore.nonViewedNotifs.length" />
+      <NumberBadge :unread="notifStore.nonViewedNotifs" />
     </div>
     <div class="tooltip" v-show="showTooltip === true" ref="notifs">
       <div class="nothingToShow" v-if="notifStore.notifs.length === 0">
@@ -137,6 +137,7 @@ useInfiniteScroll(
       background: rgba(211, 208, 208, 0.082);
     }
     & img {
+      min-width: 60px;
       width: 60px;
       height: 60px;
       border-radius: 30px;

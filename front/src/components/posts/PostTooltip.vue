@@ -10,7 +10,7 @@
       <span class="dot"></span>
       <span class="dot"></span>
     </div>
-    <div class="tooltip" v-show="showTooltip === true">
+    <div :class="tooltipClass" v-show="showTooltip === true">
       <span v-if="props.author === userId" @click="modify(props.postId)"
         >Modifier</span
       >
@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import usePostStore from "@/stores/postStore.js";
 import { vOnClickOutside } from "@vueuse/components";
 
@@ -44,13 +44,18 @@ const props = defineProps({
   dotSize: String,
 });
 
+const tooltipClass = computed(() => {
+  const direction = spaceUp.value ? "up" : "down";
+  return `tooltip-${direction} tooltip`;
+});
+
 const calculateAvailableSpace = () => {
   const clientHeight = document.documentElement.clientHeight;
   const bottomToCenterBtn =
     clientHeight -
     btn.value.getBoundingClientRect().top -
     btn.value.style.width / 2;
-  if (bottomToCenterBtn > clientHeight / 2) {
+  if (bottomToCenterBtn + 70 > clientHeight / 2) {
     spaceUp.value = false; // More space down
   } else {
     spaceUp.value = true; // More space up
@@ -103,6 +108,12 @@ const remove = async (postId, commentId) => {
       background: var(--textColorSecond);
       border-radius: 5px;
     }
+  }
+  .tooltip-up {
+    bottom: 8px;
+  }
+  .tooltip-down {
+    top: 5px;
   }
   & .tooltip {
     @include fdCol-aiCt;

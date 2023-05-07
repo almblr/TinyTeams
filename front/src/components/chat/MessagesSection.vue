@@ -207,6 +207,9 @@ onMounted(async () => {
     & > h3 {
       font-size: 1.2rem;
       flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     & > a {
       border: none;

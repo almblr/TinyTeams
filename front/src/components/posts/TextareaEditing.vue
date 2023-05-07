@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed, nextTick } from "vue";
+import { onMounted, computed } from "vue";
 import usePostStore from "@/stores/postStore.js";
 import { useTextareaAutosize } from "@vueuse/core";
 
@@ -28,7 +28,7 @@ const props = defineProps({
   content: String,
   textareaType: String,
 });
-
+console.log(props.commentId);
 const postStore = usePostStore();
 
 const content = computed({

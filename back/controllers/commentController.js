@@ -71,6 +71,9 @@ const commentController = {
   },
   update: async (req, res) => {
     const comment = await Comment.findByPk(req.params.commentId);
+    console.log(comment);
+    // console.log(req.auth.userId);
+    // console.log(comment.author);
     if (!comment || req.auth.userId !== comment.author) {
       return res
         .status(401)

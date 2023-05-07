@@ -33,7 +33,7 @@
     <TextareaEditing
       v-else
       :postId="props.comment.postId"
-      :commentId="props.comment.commentId"
+      :commentId="props.comment.id"
       :content="props.comment.content"
       v-model:show="editingMode"
       textareaType="comment"

@@ -5,7 +5,6 @@ import useUserStore from "./userStore.js";
 import axios from "axios";
 
 const useChatStore = defineStore("chat", () => {
-  const user = JSON.parse(sessionStorage.getItem("user"));
   const userStore = useUserStore();
   const conversations = ref([]);
   const messages = ref([]);
@@ -103,9 +102,7 @@ const useChatStore = defineStore("chat", () => {
         Authorization: `Bearer ${userStore.token}`,
       },
     });
-    res.data.unreadMessages === 0
-      ? null
-      : (nonReadMessages.value = res.data.unreadMessages);
+    nonReadMessages.value = res.data.unreadMessages;
     return res.data.unreadMessages;
   };
   const markAsRead = async (conversationId, messageId) => {
