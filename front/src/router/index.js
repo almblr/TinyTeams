@@ -77,7 +77,12 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.name !== "Login" && to.name !== "Signup") {
+  if (
+    to.name !== "Login" &&
+    to.name !== "Signup" &&
+    window.sessionStorage.getItem("user") &&
+    from.name !== "Login"
+  ) {
     const chatStore = useChatStore();
     await chatStore.getNonReadMessages();
     return next();

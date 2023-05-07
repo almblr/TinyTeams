@@ -19,7 +19,7 @@ const useUserStore = defineStore("user", () => {
         lastname: data.lastname,
       },
     });
-    login(data);
+    await login(data);
   };
   const login = async (data) => {
     try {

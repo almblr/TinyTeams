@@ -138,11 +138,11 @@ const useChatStore = defineStore("chat", () => {
   function $reset() {
     conversations.value = [];
     messages.value = [];
-    nonReadMessages.value = [];
     isConversationMode.value = false;
     newMessage.value = false;
     showMobileUsersList.value = false;
     isDesktop.value = true;
+    nonReadMessages.value = 0;
   }
 
   return {
