@@ -109,7 +109,7 @@ footer {
   width: 300px;
   height: 50px;
   background-color: #df2222;
-  border-radius: 10px;
+  border-radius: 5px;
   transform: translate(-50%, 0);
   animation: displayError 5s 1;
   box-shadow: 5px 5px 20px #0000003d;
@@ -127,7 +127,7 @@ footer {
     opacity: 0;
   }
   7% {
-    opacity: 0.9;
+    opacity: 1;
   }
   90% {
     opacity: 1;

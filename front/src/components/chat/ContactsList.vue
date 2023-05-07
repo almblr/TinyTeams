@@ -59,6 +59,9 @@ onMounted(async () => await userStore.getAll());
   width: 100%;
   min-height: 100%;
   box-shadow: -20px -10px 5px rgba(0, 0, 0, 0.05);
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 .users {
   @include fdCol-aiCt;

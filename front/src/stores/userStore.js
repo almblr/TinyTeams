@@ -12,12 +12,12 @@ const useUserStore = defineStore("user", () => {
     await axios({
       url: "http://localhost:3000/api/users/signup",
       method: "POST",
-      data: JSON.stringify({
+      data: {
         email: data.email,
         password: data.password,
         firstname: data.firstname,
         lastname: data.lastname,
-      }),
+      },
     });
     login(data);
   };
