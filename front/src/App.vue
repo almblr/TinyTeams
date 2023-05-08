@@ -119,7 +119,8 @@ onMounted(async () => {
   text-decoration: none;
   left: calc(50% - 150px);
   background-color: var(--backgroundSecond);
-  border: 1px solid rgba(206, 205, 205, 0.075);
+  border: 1px solid rgba(206, 205, 205, 0.233);
+  border: 1px solid var(--border);
   color: var(--textColorSecond);
   width: 300px;
   height: 75px;

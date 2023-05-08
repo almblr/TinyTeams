@@ -80,8 +80,7 @@ router.beforeEach(async (to, from, next) => {
   if (
     to.name !== "Login" &&
     to.name !== "Signup" &&
-    window.sessionStorage.getItem("user") &&
-    from.name !== "Login"
+    window.sessionStorage.getItem("user")
   ) {
     const chatStore = useChatStore();
     await chatStore.getNonReadMessages();
