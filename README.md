@@ -2,7 +2,7 @@
 
 **TinyTeams** est un réseau social d'entreprise mais également mon projet le plus ambitieux. En effet, pour ce projet, j'ai décidé de partir de zéro et de réaliser le back et le front de mon site en m'inspirant du réseau social Facebook.
 
-**Technologies déployées** : Vue 3, Node.js, Sequelize, SQLite, Socket.io, VueUse
+**Technologies déployées** : Vue 3, Express.js, Sequelize, SQLite, Socket.io, VueUse
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
