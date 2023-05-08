@@ -29,6 +29,7 @@ const sendMessage = async () => {
   }
   chatStore.newMessage = true;
   router.push(`/messages/new/${props.userId}`);
+  chatStore.isConversationMode = true;
 };
 </script>
 <style lang="scss" scoped>

@@ -87,7 +87,6 @@ const updateValue = (inputValue, inputName) => {
         updatedUser.value[key] = inputValue;
       }
     }
-    console.log(updatedUser.value);
   }
   if (props.section.name === "password") {
     const passwordKeys = Object.keys(updatedPassword.value);

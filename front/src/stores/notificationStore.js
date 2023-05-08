@@ -27,7 +27,6 @@ const useNotifStore = defineStore("notif", () => {
         return notifs.value.push(...res.data);
       }
       notifs.value = res.data.notifs;
-      console.log(notifs.value);
       nonViewedNotifs.value = res.data.nonViewedNotifs;
     } catch (error) {
       console.log(error.response);

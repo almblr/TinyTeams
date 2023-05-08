@@ -28,7 +28,6 @@ const props = defineProps({
   content: String,
   textareaType: String,
 });
-console.log(props.commentId);
 const postStore = usePostStore();
 
 const content = computed({

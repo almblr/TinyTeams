@@ -12,25 +12,26 @@ const getOneUser = async (userId) => {
 /// MESSAGES CONTROLLER ///
 const messageController = {
   create: async (req, res) => {
-    const { body, auth, protocol, files } = req;
-    const { userId } = auth;
-    const { conversationId } = req.params;
-    const { content, imageUrl } = body;
-    if (!content && Object.keys(req.files).length === 0 && !imageUrl) {
+    if (
+      !req.body.content &&
+      Object.keys(req.files).length === 0 &&
+      !req.body.imageUrl
+    ) {
       return res.status(400).json({ message: "Empty message" });
     }
     try {
-      const conversation = await Conversation.findByPk(conversationId);
+      const conversation = await Conversation.findByPk(
+        req.params.conversationId
+      );
       const createdMessage = await Message.create({
-        author: userId,
+        author: req.auth.userId,
         conversationId: conversation.id,
-        content: content || null,
-        imageUrl: files.imageUrl
-          ? `${protocol}://${req.get("host")}/images/${
-              files.imageUrl[0].filename
+        content: req.body.content || null,
+        imageUrl: req.files.imageUrl
+          ? `${req.protocol}://${req.get("host")}/images/${
+              req.files.imageUrl[0].filename
             }`
-          : imageUrl,
-        isRead: false,
+          : req.body.imageUrl,
       });
       const otherUser =
         conversation.user2 !== req.auth.userId

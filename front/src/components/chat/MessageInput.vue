@@ -73,9 +73,11 @@ const sendMessage = async () => {
   if (input.value) {
     formData.append("content", input.value);
   }
+  // Si on est sur la page de création d'une conversation
   if (route.name === "newMessage") {
     const newConv = await chatStore.createConversation(route.params.userId);
     await chatStore.createMessage(newConv.id, formData);
+    chatStore.justCreatedConversation = true;
     router.push(`/messages/${newConv.id}`);
   } else {
     await chatStore.createMessage(

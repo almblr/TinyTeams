@@ -56,13 +56,8 @@ const user = JSON.parse(sessionStorage.getItem("user"));
 
 const openConversation = (conversationId) => {
   chatStore.newMessage = false;
-  const conversation = chatStore.conversations.find(
-    (conv) => conv.id === conversationId
-  );
   router.push(`/messages/${conversationId}`);
-  if (conversation.lastMessage) {
-    conversation.lastMessage.isRead = true;
-  }
+  chatStore.isConversationMode = true;
 };
 </script>
 

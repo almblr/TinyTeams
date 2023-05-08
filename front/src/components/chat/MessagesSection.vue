@@ -70,16 +70,24 @@ const date = (messageDate) => {
   return messageDatejs.format("DD/MM/YY à HH[h]mm");
 };
 
-const getConversation = async (conversationId) => {
+const getConversation = async (convId) => {
+  const conversationId = parseInt(convId);
   conversation.value = chatStore.conversations.find(
     (conv) => conv.id === conversationId
   );
   await chatStore.getConversationMessages(conversationId);
   for (const message of chatStore.messages) {
-    if (message.isRead === false && message.conversationId === conversationId) {
+    conversation.lastMessage ? (conversation.lastMessage.isRead = true) : null;
+    if (
+      message.isRead === false &&
+      message.conversationId === conversationId &&
+      message.author !== user.id
+    ) {
       await chatStore.markAsRead(message.conversationId, message.id);
     }
   }
+  chatStore.isConversationMode = true;
+  waitForImages();
 };
 
 const scrollToLastMessage = () => {
@@ -134,15 +142,12 @@ useInfiniteScroll(
 );
 
 watch(
-  // On observe le dernier message
+  // On observe le dernier message de la conversation
   () => chatStore.messages[chatStore.messages.length - 1],
   (newValue, oldValue) => {
-    // S'il y a un nouveau message, on scroll en bas
+    // S'il y a un nouveau message, on scroll en bas de la conversation
     if (newValue !== oldValue && messagesList.value) {
-      if (
-        newValue &&
-        newValue.conversationId === parseInt(route.params.conversationId)
-      ) {
+      if (newValue.conversationId === parseInt(route.params.conversationId)) {
         const conversation = chatStore.conversations.find(
           (conv) => conv.id === newValue.conversationId
         );
@@ -155,21 +160,12 @@ watch(
 
 watch(
   () => route.params.conversationId,
-  async (newId) => {
-    if (newId) {
-      const conversationId = parseInt(newId);
-      await getConversation(conversationId);
-      chatStore.isConversationMode = true;
-      waitForImages();
-    }
+  (newValue) => {
+    getConversation(newValue);
   }
 );
-
 onMounted(async () => {
-  const conversationId = parseInt(route.params.conversationId);
-  chatStore.isConversationMode = true;
-  await getConversation(conversationId);
-  waitForImages();
+  await getConversation(route.params.conversationId);
 });
 </script>
 

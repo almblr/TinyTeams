@@ -62,6 +62,7 @@ const selectUser = (user) => {
     router.push(`/messages/${isConversationExist.id}`);
   } else {
     router.push(`/messages/new/${user.id}`);
+    chatStore.isConversationMode = true;
     chatStore.newMessage = true;
     searchTerm.value = "";
     chatStore.showContactList = false;

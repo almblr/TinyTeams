@@ -14,7 +14,7 @@ const getOneUser = async (userId) => {
 const conversationController = {
   create: async (req, res) => {
     try {
-      const isConversationExists = await Conversation.findOne({
+      const conversationAlreadyExist = await Conversation.findOne({
         where: {
           [Op.or]: [
             { user1: req.auth.userId, user2: req.body.user2 },
@@ -22,22 +22,25 @@ const conversationController = {
           ],
         },
       });
-      if (isConversationExists)
-        return res.status(400).send({ message: "Conversation already exists" });
-      const createdConversation = await Conversation.create({
-        user1: req.auth.userId,
-        user2: req.body.user2,
-      });
-      const otherUser =
-        createdConversation.user2 !== req.auth.userId
-          ? await getOneUser(createdConversation.user2)
-          : await getOneUser(createdConversation.user1);
-      createdConversation.setDataValue("otherUser", otherUser);
-      const conversationToSend = await Conversation.findByPk(
-        createdConversation.id
-      );
-      conversationToSend.setDataValue("otherUser", otherUser);
-      res.status(201).send(conversationToSend);
+      // Si la conversation existe déjà, on renvoie une erreur
+      if (conversationAlreadyExist) {
+        res.status(400).send({ message: "Conversation already exists" });
+      } else {
+        const createdConversation = await Conversation.create({
+          user1: req.auth.userId,
+          user2: req.body.user2,
+        });
+        const otherUser =
+          createdConversation.user2 !== req.auth.userId
+            ? await getOneUser(createdConversation.user2)
+            : await getOneUser(createdConversation.user1);
+        createdConversation.setDataValue("otherUser", otherUser);
+        const conversationToSend = await Conversation.findByPk(
+          createdConversation.id
+        );
+        conversationToSend.setDataValue("otherUser", otherUser);
+        res.status(201).send(conversationToSend);
+      }
     } catch {
       res.status(500).send();
     }
@@ -47,9 +50,8 @@ const conversationController = {
       const conversation = await Conversation.findByPk(
         req.params.conversationId
       );
-      if (!conversation) {
+      if (!conversation)
         return res.status(404).send({ message: "Conversation not found" });
-      }
       const otherUser =
         conversation.user1 !== req.auth.userId
           ? await getOneUser(conversation.user1)

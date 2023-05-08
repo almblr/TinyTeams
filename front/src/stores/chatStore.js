@@ -10,6 +10,7 @@ const useChatStore = defineStore("chat", () => {
   const messages = ref([]);
   const nonReadMessages = ref(0);
   const isConversationMode = ref(false);
+  const justCreatedConversation = ref(false);
   const newMessage = ref(false);
   const showMobileUsersList = ref(false);
   const isDesktop = ref(true);
@@ -26,7 +27,6 @@ const useChatStore = defineStore("chat", () => {
         user2: parseInt(userId),
       },
     });
-    conversations.value.unshift(res.data);
     return res.data;
   };
   const getOneConversation = async (conversationId) => {
@@ -68,10 +68,19 @@ const useChatStore = defineStore("chat", () => {
       },
       data,
     });
-    const conv = conversations.value.find((c) => c.id === conversationId);
-    socket.emit("newMessage", { id: conv.otherUser.id }, res.data.message);
-    const convIdx = conversations.value.indexOf(conv);
-    conversations.value.splice(convIdx, 1);
+    const conversation = res.data.conversation;
+    socket.emit(
+      "newMessage",
+      { id: conversation.otherUser.id },
+      res.data.message
+    );
+    const conversationIdx = conversations.value.findIndex(
+      (conv) => conv.id === conversation.id
+    );
+    if (conversationIdx === -1) {
+      return conversations.value.unshift(res.data.conversation);
+    }
+    conversations.value.splice(conversationIdx, 1);
     conversations.value.unshift(res.data.conversation);
     messages.value.push(res.data.message);
   };
@@ -139,6 +148,7 @@ const useChatStore = defineStore("chat", () => {
     conversations.value = [];
     messages.value = [];
     isConversationMode.value = false;
+    justCreatedConversation.value = false;
     newMessage.value = false;
     showMobileUsersList.value = false;
     isDesktop.value = true;
@@ -148,6 +158,7 @@ const useChatStore = defineStore("chat", () => {
   return {
     conversations,
     messages,
+    justCreatedConversation,
     newMessage,
     nonReadMessages,
     isConversationMode,

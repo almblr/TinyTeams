@@ -29,6 +29,7 @@ import ConvList from "@/components/chat/ConvList.vue";
 import AutoSuggest from "@/components/layout/AutoSuggest.vue";
 import ChatArea from "@/components/chat/ChatArea.vue";
 
+const user = JSON.parse(sessionStorage.getItem("user"));
 const isLoading = ref(true);
 const route = useRoute();
 const chatStore = useChatStore();
@@ -45,11 +46,9 @@ watch(
 watch(
   () => route.name,
   (newName) => {
-    // Page d'accueil des messages
     if (newName === "Messages" && chatStore.isDesktop) {
       chatStore.showMobileUsersList = false;
     }
-    // Page de création de message
     if (newName === "newMessage") {
       chatStore.newMessage = true;
     }
@@ -58,23 +57,16 @@ watch(
 );
 
 const checkParams = (newValue) => {
-  chatStore.isConversationMode =
-    "conversationId" in newValue || "userId" in newValue;
   if ("conversationId" in newValue) {
     const convId = parseInt(newValue.conversationId);
     const conversation = chatStore.conversations.find(
       (conv) => conv.id === convId
     );
-    if (conversation) {
-      conversation.lastMessage
-        ? (conversation.lastMessage.isRead = true)
-        : null;
-    } else {
+    if (!conversation) {
       router.push(`/notfound/conversation/${route.params.conversationId}`);
     }
-    for (const message of chatStore.messages) {
-      message.isRead === false ? (message.isRead = true) : null;
-    }
+    chatStore.isConversationMode =
+      "conversationId" in newValue || "userId" in newValue;
   }
   width.value > 768
     ? (chatStore.isDesktop = true)
