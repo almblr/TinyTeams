@@ -4,6 +4,8 @@
 
 **Technologies déployées** : Vue 3, Node.js, Sequelize, SQLite, Socket.io, VueUse
 
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+
 # Fonctionnalités disponibles
 
 - créer un compte
