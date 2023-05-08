@@ -27,8 +27,8 @@
 # Installation du projet
 
 - Clonez ce projet sur votre machine
-- Dans le dossier back, complétez le fichier **.env** puis exécutez la commande `npm init` suivie de `npm run dev`
-- Dans le dossier front, exécutez la commande `npm init` suivie de `npm run dev`. Le lien apparaîtra dans la console
+- Dans le dossier back, complétez le fichier **.env** puis exécutez la commande `npm install` suivie de `npm run dev`
+- Dans le dossier front, exécutez la commande `npm install` suivie de `npm run dev`. Le lien apparaîtra dans la console
 
 # Quelques screenshots
 
