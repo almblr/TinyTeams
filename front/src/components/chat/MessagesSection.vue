@@ -147,13 +147,16 @@ watch(
   (newValue, oldValue) => {
     // S'il y a un nouveau message, on scroll en bas de la conversation
     if (newValue !== oldValue && messagesList.value) {
+      console.log(newValue);
       if (newValue.conversationId === parseInt(route.params.conversationId)) {
         const conversation = chatStore.conversations.find(
           (conv) => conv.id === newValue.conversationId
         );
-        if (conversation.lastMessage.author === user.id) return;
         conversation.lastMessage.isRead = true;
       }
+      nextTick(() => {
+        scrollToLastMessage();
+      });
     }
   }
 );
