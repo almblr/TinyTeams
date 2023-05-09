@@ -54,7 +54,6 @@ watch(state.newComment, async (newValue) => {
 
 watch(state.newFollow, async (newValue) => {
   if (newValue) {
-    console.log(newValue[0]);
     path.value = `users/${newValue[0].sender}`;
     notifContent.value = `${newValue[0].senderUsername} vous suit !`;
     showNotif();
